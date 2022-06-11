@@ -1,28 +1,24 @@
-package ubuntu
+package linux
 
 import (
 	"log"
 	"testing"
 )
 
-func TestMirrors(t *testing.T) {
-	mirrors, err := GetGeoMirrors()
+func TestBenchmark(t *testing.T) {
+	_, err := benchmark(UBUNTU_MIRROR_URLS, "", benchmarkTimes)
 	if err != nil {
 		t.Fatal(err)
-	}
-
-	if len(mirrors.URLs) == 0 {
-		t.Fatal("No mirrors found")
 	}
 }
 
 func TestMirrorsBenchmark(t *testing.T) {
-	mirrors, err := GetGeoMirrors()
+	mirrors, err := getGeoMirrors(UBUNTU_MIRROR_URLS)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	fastest, err := mirrors.Fastest()
+	fastest, err := fastest(mirrors, UBUNTU_BENCHMAKR_URL)
 	if err != nil {
 		t.Fatal(err)
 	}

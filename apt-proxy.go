@@ -5,43 +5,65 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/lox/apt-proxy/proxy"
-	"github.com/lox/httpcache"
-	"github.com/lox/httpcache/httplog"
+	"github.com/soulteary/apt-proxy/httpcache"
+	"github.com/soulteary/apt-proxy/linux"
+	"github.com/soulteary/apt-proxy/pkgs/httplog"
+	"github.com/soulteary/apt-proxy/proxy"
 )
 
 const (
-	defaultListen = "0.0.0.0:3142"
-	defaultDir    = "./.aptcache"
+	DEFAULT_HOST      = "0.0.0.0"
+	DEFAULT_PORT      = "3142"
+	DEFAULT_CACHE_DIR = "./.aptcache"
+	DEFAULT_MIRROR    = "" // "https://mirrors.tuna.tsinghua.edu.cn/ubuntu/"
+	DEFAULT_TYPE      = linux.UBUNTU
+	DEFAULT_DEBUG     = false
 )
 
 var (
-	version string
-	listen  string
-	dir     string
-	debug   bool
+	version  string
+	listen   string
+	mirror   string
+	types    string
+	cacheDir string
+	debug    bool
 )
 
 func init() {
-	flag.StringVar(&listen, "listen", defaultListen, "the host and port to bind to")
-	flag.StringVar(&dir, "cachedir", defaultDir, "the dir to store cache data in")
-	flag.BoolVar(&debug, "debug", false, "whether to output debugging logging")
+	var (
+		host string
+		port string
+	)
+	flag.StringVar(&host, "host", DEFAULT_HOST, "the host to bind to")
+	flag.StringVar(&port, "port", DEFAULT_PORT, "the port to bind to")
+	flag.BoolVar(&debug, "debug", DEFAULT_DEBUG, "whether to output debugging logging")
+	flag.StringVar(&mirror, "mirror", DEFAULT_MIRROR, "the mirror for fetching packages")
+	flag.StringVar(&types, "type", DEFAULT_TYPE, "select the type of system to cache: ubuntu/debian")
+	flag.StringVar(&cacheDir, "cachedir", DEFAULT_CACHE_DIR, "the dir to store cache data in")
 	flag.Parse()
+
+	if types != linux.UBUNTU && types != linux.DEBIAN {
+		types = linux.UBUNTU
+	}
+
+	listen = host + ":" + port
 }
 
 func main() {
+
 	log.Printf("running apt-proxy %s", version)
 
 	if debug {
+		log.Printf("enable debug: true")
 		httpcache.DebugLogging = true
 	}
 
-	cache, err := httpcache.NewDiskCache(dir)
+	cache, err := httpcache.NewDiskCache(cacheDir)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	ap := proxy.NewAptProxyFromDefaults()
+	ap := proxy.NewAptProxyFromDefaults(mirror, types)
 	ap.Handler = httpcache.NewHandler(cache, ap.Handler)
 
 	logger := httplog.NewResponseLogger(ap.Handler)

@@ -24,8 +24,13 @@ http_proxy=http://192.168.33.1:3142 apt-get -o Debug::pkgProblemResolver=true -o
 
 ## Licenses, contains dependent software
 
-- MIT: [lox/httpcache](https://github.com/lox/httpcache/blob/master/LICENSE)
-- NOT FOUND: [lox/apt-proxy](https://github.com/lox/apt-proxy#readme)
-- MIT: [djherbis/stream](https://github.com/djherbis/stream/blob/master/LICENSE)
-- MPL 2.0 [rainycape/vfs](https://github.com/rainycape/vfs/blob/master/LICENSE)
-- MIT: [stretchr/testify](https://github.com/stretchr/testify/blob/master/LICENSE)
+This project is under the [Apache License 2.0](https://github.com/soulteary/apt-proxy/blob/master/LICENSE), and base on those software (or codebase).
+
+- License NOT Found
+    - [lox/apt-proxy](https://github.com/lox/apt-proxy#readme)
+- MIT License
+    - [lox/httpcache](https://github.com/lox/httpcache/blob/master/LICENSE)
+    - [djherbis/stream](https://github.com/djherbis/stream/blob/master/LICENSE)
+    - [stretchr/testify](https://github.com/stretchr/testify/blob/master/LICENSE)
+- Mozilla Public License 2.0
+    - [rainycape/vfs](https://github.com/rainycape/vfs/blob/master/LICENSE)

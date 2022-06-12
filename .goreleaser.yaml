@@ -1,0 +1,24 @@
+project_name: apt-proxy
+builds:
+  - env: [CGO_ENABLED=0]
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+dockers:
+  - image_templates:
+    - "soulteary/apt-proxy:latest"
+    - "soulteary/apt-proxy:{{ .Tag }}"
+    dockerfile: docker/Dockerfile.gorelease
+    build_flag_templates:
+      - "--pull"
+      - --label=org.opencontainers.image.title={{ .ProjectName }}
+      - --label=org.opencontainers.image.description={{ .ProjectName }}
+      - --label=org.opencontainers.image.url=https://github.com/soulteary/apt-proxy
+      - --label=org.opencontainers.image.source=https://github.com/soulteary/apt-proxy
+      - --label=org.opencontainers.image.version={{ .Version }}
+      - --label=org.opencontainers.image.created={{ .Date }}
+      - --label=org.opencontainers.image.revision={{ .FullCommit }}
+      - --label=org.opencontainers.image.licenses=Apache-v2

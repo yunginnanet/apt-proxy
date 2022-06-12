@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestParseFlags(t *testing.T) {
+func TestParseFlagsAndDaemonInit(t *testing.T) {
 	os.Args = append(os.Args, "--type=not-support-os")
 	flags := ParseFlags()
 
@@ -28,4 +28,12 @@ func TestParseFlags(t *testing.T) {
 	if flags.CacheDir != DEFAULT_CACHE_DIR {
 		t.Fatal("Default option `CacheDir` value mismatch")
 	}
+
+	cache, err := initStore(flags)
+	if err != nil {
+		t.Fatal("Init Store Failed")
+	}
+
+	ap := initProxy(flags, cache)
+	initLogger(flags, ap)
 }

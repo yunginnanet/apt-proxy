@@ -1,10 +1,12 @@
 package main
 
 import (
+	"os"
 	"testing"
 )
 
 func TestParseFlags(t *testing.T) {
+	os.Args = append(os.Args, "--type=not-support-os")
 	flags := parseFlags()
 
 	if flags.Debug != DEFAULT_DEBUG {

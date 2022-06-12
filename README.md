@@ -24,6 +24,9 @@ ok  	github.com/soulteary/apt-proxy	0.793s
 View coverage report:
 
 ```
+go test -coverprofile=coverage.out ./...
+go tool cover -html=coverage.out
+
 # go test -coverprofile=coverage.out ./...
 PASS
 coverage: 86.7% of statements

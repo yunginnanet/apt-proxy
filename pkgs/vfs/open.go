@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -113,11 +114,17 @@ func TarBzip2(r io.Reader) (VFS, error) {
 //  - .tar.gz
 //  - .tar.bz2
 func Open(filename string) (VFS, error) {
-	f, err := os.Open(filename)
+	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
-	defer f.Close()
+
+	defer func() {
+		if err := file.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
+
 	base := filepath.Base(filename)
 	ext := strings.ToLower(filepath.Ext(base))
 	nonExt := filename[:len(filename)-len(ext)]
@@ -126,17 +133,17 @@ func Open(filename string) (VFS, error) {
 	}
 	switch ext {
 	case ".zip":
-		st, err := f.Stat()
+		st, err := file.Stat()
 		if err != nil {
 			return nil, err
 		}
-		return Zip(f, st.Size())
+		return Zip(file, st.Size())
 	case ".tar":
-		return Tar(f)
+		return Tar(file)
 	case ".tar.gz":
-		return TarGzip(f)
+		return TarGzip(file)
 	case ".tar.bz2":
-		return TarBzip2(f)
+		return TarBzip2(file)
 	}
 	return nil, fmt.Errorf("can't open a VFS from a %s file", ext)
 }

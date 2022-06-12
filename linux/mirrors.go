@@ -3,6 +3,7 @@ package linux
 import (
 	"bufio"
 	"net/http"
+	"net/url"
 	"regexp"
 )
 
@@ -15,6 +16,12 @@ func getGeoMirrors(mirrorListUrl string) (m Mirrors, err error) {
 		m.URLs = DEBIAN_MIRROR_URLS
 		return m, nil
 	}
+
+	_, err = url.ParseRequestURI(mirrorListUrl)
+	if err != nil {
+		return m, nil
+	}
+
 	response, err := http.Get(mirrorListUrl)
 	if err != nil {
 		return

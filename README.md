@@ -9,6 +9,31 @@ You can safely use it instead of [apt-cacher-ng](https://www.unix-ag.uni-kl.de/~
 - Binaries
 - Docker
 
+## Development
+
+coverage:
+
+```bash
+# go test -cover ./...
+
+PASS
+coverage: 86.7% of statements
+ok  	github.com/soulteary/apt-proxy	0.793s
+```
+
+View coverage report:
+
+```
+# go test -coverprofile=coverage.out ./...
+PASS
+coverage: 86.7% of statements
+ok  	github.com/soulteary/apt-proxy	0.485s
+
+# go tool cover -html=coverage.out
+```
+
+
+
 ### (WIP) Development
 
 ```bash

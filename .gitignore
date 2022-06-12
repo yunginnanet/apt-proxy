@@ -1,4 +1,3 @@
 .aptcache
-cachedata
 apt-proxy
-last-cid
+coverage.out

@@ -1,7 +1,6 @@
 package linux
 
 import (
-	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -11,8 +10,6 @@ func TestNewRewriter(t *testing.T) {
 	ap := *NewRewriter("", LINUX_DISTROS_UBUNTU)
 
 	time.Sleep((BENCHMARK_DETECT_TIMEOUT + 1) * time.Second)
-
-	fmt.Println(ap)
 
 	if len(ap.mirror.Path) == 0 {
 		t.Fatal("No mirrors found")

@@ -18,9 +18,6 @@ builds:
       - "7"
       - "6"
 
-changelog:
-  skip: true
-
 dockers:
 
   - image_templates:
@@ -29,10 +26,29 @@ dockers:
     dockerfile: docker/Dockerfile.gorelease
     use: buildx
     goarch: amd64
-    skip_push: "false"
     build_flag_templates:
       - "--pull"
       - "--platform=linux/amd64"
+      - "--label=org.opencontainers.image.title={{ .ProjectName }}"
+      - "--label=org.opencontainers.image.description={{ .ProjectName }}"
+      - "--label=org.opencontainers.image.url=https://github.com/soulteary/apt-proxy"
+      - "--label=org.opencontainers.image.source=https://github.com/soulteary/apt-proxy"
+      - "--label=org.opencontainers.image.version={{ .Version }}"
+      - "--label=org.opencontainers.image.created={{ .Date }}"
+      - "--label=org.opencontainers.image.revision={{ .FullCommit }}"
+      - "--label=org.opencontainers.image.licenses=Apache-v2"
+
+  - image_templates:
+      - "soulteary/apt-proxy:linux-arm64-{{ .Tag }}"
+      - "soulteary/apt-proxy:linux-arm64"
+    dockerfile: docker/Dockerfile.gorelease
+    use: buildx
+    goos: linux
+    goarch: arm64
+    goarm: ''
+    build_flag_templates:
+      - "--pull"
+      - "--platform=linux/arm64"
       - "--label=org.opencontainers.image.title={{ .ProjectName }}"
       - "--label=org.opencontainers.image.description={{ .ProjectName }}"
       - "--label=org.opencontainers.image.url=https://github.com/soulteary/apt-proxy"
@@ -46,9 +62,11 @@ docker_manifests:
   - name_template: "soulteary/apt-proxy:{{ .Tag }}"
     image_templates:
       - "soulteary/apt-proxy:linux-amd64-{{ .Tag }}"
+      - "soulteary/apt-proxy:linux-arm64-{{ .Tag }}"
     skip_push: "false"
 
   - name_template: "soulteary/apt-proxy:latest"
     image_templates:
       - "soulteary/apt-proxy:linux-amd64-{{ .Tag }}"
+      - "soulteary/apt-proxy:linux-arm64-{{ .Tag }}"
     skip_push: "false"

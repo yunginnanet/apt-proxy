@@ -28,7 +28,7 @@ var StdFileSystem FileSystem = stdFS{}
 type stdFS struct{}
 
 func (fs stdFS) Create(name string) (File, error) {
-	return os.Create(name)
+	return os.Create(filepath.Clean(name))
 }
 
 func (fs stdFS) Open(name string) (File, error) {

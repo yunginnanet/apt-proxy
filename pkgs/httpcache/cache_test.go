@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/soulteary/apt-proxy/httpcache"
+	"github.com/soulteary/apt-proxy/pkgs/httpcache"
 	"github.com/stretchr/testify/require"
 )
 

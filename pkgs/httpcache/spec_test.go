@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/soulteary/apt-proxy/httpcache"
+	"github.com/soulteary/apt-proxy/pkgs/httpcache"
 	"github.com/soulteary/apt-proxy/pkgs/httplog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

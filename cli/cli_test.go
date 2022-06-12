@@ -1,4 +1,4 @@
-package main
+package cli
 
 import (
 	"os"
@@ -7,7 +7,7 @@ import (
 
 func TestParseFlags(t *testing.T) {
 	os.Args = append(os.Args, "--type=not-support-os")
-	flags := parseFlags()
+	flags := ParseFlags()
 
 	if flags.Debug != DEFAULT_DEBUG {
 		t.Fatal("Default option `Debug` value mismatch")

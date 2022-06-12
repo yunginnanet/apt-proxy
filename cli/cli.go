@@ -1,45 +1,43 @@
 package cli
 
 import (
-	"log"
-	"net/http"
+	"flag"
 
-	"github.com/soulteary/apt-proxy/pkgs/httpcache"
-	"github.com/soulteary/apt-proxy/pkgs/httplog"
-	"github.com/soulteary/apt-proxy/proxy"
+	"github.com/soulteary/apt-proxy/linux"
 )
 
-type AppFlags struct {
-	Debug    bool
-	Version  string
-	CacheDir string
-	Mirror   string
-	Types    string
-	Listen   string
-}
+const (
+	DEFAULT_HOST      = "0.0.0.0"
+	DEFAULT_PORT      = "3142"
+	DEFAULT_CACHE_DIR = "./.aptcache"
+	DEFAULT_MIRROR    = "" // "https://mirrors.tuna.tsinghua.edu.cn/ubuntu/"
+	DEFAULT_TYPE      = linux.LINUX_DISTROS_UBUNTU
+	DEFAULT_DEBUG     = false
+)
 
-func Parse(appFlags AppFlags) {
-	log.Printf("running apt-proxy %s", appFlags.Version)
+var version string
 
-	if appFlags.Debug {
-		log.Printf("enable debug: true")
-		httpcache.DebugLogging = true
+func ParseFlags() (appFlags AppFlags) {
+	var (
+		host  string
+		port  string
+		types string
+	)
+	flag.StringVar(&host, "host", DEFAULT_HOST, "the host to bind to")
+	flag.StringVar(&port, "port", DEFAULT_PORT, "the port to bind to")
+	flag.StringVar(&types, "type", DEFAULT_TYPE, "select the type of system to cache: ubuntu/debian")
+	flag.BoolVar(&appFlags.Debug, "debug", DEFAULT_DEBUG, "whether to output debugging logging")
+	flag.StringVar(&appFlags.CacheDir, "cachedir", DEFAULT_CACHE_DIR, "the dir to store cache data in")
+	flag.StringVar(&appFlags.Mirror, "mirror", DEFAULT_MIRROR, "the mirror for fetching packages")
+	flag.Parse()
+
+	if types != linux.LINUX_DISTROS_UBUNTU && types != linux.LINUX_DISTROS_DEBIAN {
+		types = linux.LINUX_DISTROS_UBUNTU
 	}
 
-	cache, err := httpcache.NewDiskCache(appFlags.CacheDir)
-	if err != nil {
-		log.Fatal(err)
-	}
+	appFlags.Types = types
+	appFlags.Listen = host + ":" + port
+	appFlags.Version = version
 
-	ap := proxy.NewAptProxyFromDefaults(appFlags.Mirror, appFlags.Types)
-	ap.Handler = httpcache.NewHandler(cache, ap.Handler)
-
-	logger := httplog.NewResponseLogger(ap.Handler)
-	logger.DumpRequests = appFlags.Debug
-	logger.DumpResponses = appFlags.Debug
-	logger.DumpErrors = appFlags.Debug
-	ap.Handler = logger
-
-	log.Printf("proxy listening on %s", appFlags.Listen)
-	log.Fatal(http.ListenAndServe(appFlags.Listen, ap))
+	return appFlags
 }

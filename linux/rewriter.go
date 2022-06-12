@@ -21,7 +21,7 @@ func NewRewriter(mirror string, osType string) *URLRewriter {
 		if err == nil {
 			log.Printf("using ubuntu mirror %s", mirror)
 			u.mirror = mirrorUrl
-			_, _, pattern := getPredefinedConfiguration(osType)
+			_, _, pattern := GetPredefinedConfiguration(osType)
 			u.pattern = pattern
 			return u
 		}
@@ -29,15 +29,15 @@ func NewRewriter(mirror string, osType string) *URLRewriter {
 
 	// benchmark in the background to make sure we have the fastest
 	go func() {
-		mirrorsListUrl, benchmarkUrl, pattern := getPredefinedConfiguration(osType)
+		mirrorsListUrl, benchmarkUrl, pattern := GetPredefinedConfiguration(osType)
 		u.pattern = pattern
 
-		mirrors, err := getGeoMirrors(mirrorsListUrl)
+		mirrors, err := GetGeoMirrors(mirrorsListUrl)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		mirror, err := fastest(mirrors, benchmarkUrl)
+		mirror, err := Fastest(mirrors, benchmarkUrl)
 		if err != nil {
 			log.Println("Error finding fastest mirror", err)
 		}

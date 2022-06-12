@@ -10,7 +10,7 @@ type Mirrors struct {
 	URLs []string
 }
 
-func getGeoMirrors(mirrorListUrl string) (m Mirrors, err error) {
+func GetGeoMirrors(mirrorListUrl string) (m Mirrors, err error) {
 	if len(mirrorListUrl) == 0 {
 		m.URLs = DEBIAN_MIRROR_URLS
 		return m, nil
@@ -31,7 +31,7 @@ func getGeoMirrors(mirrorListUrl string) (m Mirrors, err error) {
 	return m, scanner.Err()
 }
 
-func getPredefinedConfiguration(osType string) (string, string, *regexp.Regexp) {
+func GetPredefinedConfiguration(osType string) (string, string, *regexp.Regexp) {
 	if osType == UBUNTU {
 		return UBUNTU_MIRROR_URLS, UBUNTU_BENCHMAKR_URL, UBUNTU_HOST_PATTERN
 	} else {

@@ -113,7 +113,7 @@ func testVFS(t *testing.T, fs VFS) {
 		t.Fatal(err)
 	}
 	if exp := []string{"c", "c/d"}; !reflect.DeepEqual(exp, walkedNames) {
-		t.Error("expecting walked names %v, got %v", exp, walkedNames)
+		t.Error(fmt.Printf("expecting walked names %v, got %v", exp, walkedNames))
 	}
 	for _, v := range walked {
 		if !v.IsDir() {

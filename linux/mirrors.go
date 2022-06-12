@@ -32,7 +32,7 @@ func getGeoMirrors(mirrorListUrl string) (m Mirrors, err error) {
 }
 
 func getPredefinedConfiguration(osType string) (string, string, *regexp.Regexp) {
-	if osType == UBUNTU {
+	if osType == LINUX_DISTROS_UBUNTU {
 		return UBUNTU_MIRROR_URLS, UBUNTU_BENCHMAKR_URL, UBUNTU_HOST_PATTERN
 	} else {
 		return "", DEBIAN_BENCHMAKR_URL, DEBIAN_HOST_PATTERN

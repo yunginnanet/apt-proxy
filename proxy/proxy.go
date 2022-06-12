@@ -25,9 +25,9 @@ type AptProxy struct {
 func NewAptProxyFromDefaults(mirror string, osType string) *AptProxy {
 	rewriter = linux.NewRewriter(mirror, osType)
 	var rules []linux.Rule
-	if osType == linux.UBUNTU {
+	if osType == linux.LINUX_DISTROS_UBUNTU {
 		rules = linux.UBUNTU_DEFAULT_CACHE_RULES
-	} else if osType == linux.DEBIAN {
+	} else if osType == linux.LINUX_DISTROS_DEBIAN {
 		rules = linux.DEBIAN_DEFAULT_CACHE_RULES
 	}
 

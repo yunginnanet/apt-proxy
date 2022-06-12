@@ -8,27 +8,25 @@ import (
 	"time"
 )
 
-func resourceBenchmark(base string, query string, times int) (time.Duration, error) {
+func benchmark(base string, query string, times int) (time.Duration, error) {
 	var sum int64
-	var d time.Duration
-	url := base + query
 
-	timeout := time.Duration(mirrorTimeout * time.Second)
+	timeout := time.Duration(BENCHMARK_MAX_TIMEOUT * time.Second)
 	client := http.Client{
 		Timeout: timeout,
 	}
 
 	for i := 0; i < times; i++ {
 		timer := time.Now()
-		response, err := client.Get(url)
+		response, err := client.Get(base + query)
 		if err != nil {
-			return d, err
+			return timeout, err
 		}
 
 		defer response.Body.Close()
 		_, err = ioutil.ReadAll(response.Body)
 		if err != nil {
-			return d, err
+			return timeout, err
 		}
 
 		sum = sum + int64(time.Since(timer))
@@ -42,26 +40,26 @@ type benchmarkResult struct {
 	Duration time.Duration
 }
 
-func fastest(m Mirrors, testUrl string) (string, error) {
+func getTheFastestMirror(m Mirrors, testUrl string) (string, error) {
 	ch := make(chan benchmarkResult)
 	log.Printf("Start benchmarking mirrors")
 	// kick off all benchmarks in parallel
 	for _, url := range m.URLs {
 		go func(u string) {
-			duration, err := resourceBenchmark(u, testUrl, benchmarkTimes)
+			duration, err := benchmark(u, testUrl, BENCHMARK_MAX_TRIES)
 			if err == nil {
 				ch <- benchmarkResult{u, duration}
 			}
 		}(url)
 	}
 
-	readN := len(m.URLs)
-	if 3 < readN {
-		readN = 3
+	maxTries := len(m.URLs)
+	if 3 < maxTries {
+		maxTries = 3
 	}
 
 	// wait for the fastest results to come back
-	results, err := readResults(ch, readN)
+	results, err := readResults(ch, maxTries)
 	log.Printf("Finished benchmarking mirrors")
 	if len(results) == 0 {
 		return "", errors.New("No results found: " + err.Error())
@@ -80,7 +78,7 @@ func readResults(ch <-chan benchmarkResult, size int) (br []benchmarkResult, err
 			if len(br) >= size {
 				return br, nil
 			}
-		case <-time.After(benchmarkTimeout * time.Second):
+		case <-time.After(BENCHMARK_DETECT_TIMEOUT * time.Second):
 			return br, errors.New("Timed out waiting for results")
 		}
 	}

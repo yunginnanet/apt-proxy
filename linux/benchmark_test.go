@@ -5,8 +5,8 @@ import (
 	"testing"
 )
 
-func TestBenchmark(t *testing.T) {
-	_, err := resourceBenchmark(UBUNTU_MIRROR_URLS, "", benchmarkTimes)
+func TestResourceBenchmark(t *testing.T) {
+	_, err := benchmark(UBUNTU_MIRROR_URLS, "", BENCHMARK_MAX_TRIES)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -18,7 +18,7 @@ func TestMirrorsBenchmark(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	mirror, err := fastest(mirrors, UBUNTU_BENCHMAKR_URL)
+	mirror, err := getTheFastestMirror(mirrors, UBUNTU_BENCHMAKR_URL)
 	if err != nil {
 		t.Fatal(err)
 	}

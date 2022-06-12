@@ -3,8 +3,8 @@ package linux
 import "regexp"
 
 const (
-	UBUNTU string = "ubuntu"
-	DEBIAN        = "debian"
+	LINUX_DISTROS_UBUNTU string = "ubuntu"
+	LINUX_DISTROS_DEBIAN        = "debian"
 )
 
 type Rule struct {
@@ -14,9 +14,9 @@ type Rule struct {
 }
 
 const (
-	mirrorTimeout    = 15 // seconds, detect resource timeout
-	benchmarkTimes   = 3  // times, maximum number of attempts
-	benchmarkTimeout = 10 // 10 seconds, for select fast mirror
+	BENCHMARK_MAX_TIMEOUT    = 15 // 15 seconds, detect resource timeout
+	BENCHMARK_MAX_TRIES      = 3  // times, maximum number of attempts
+	BENCHMARK_DETECT_TIMEOUT = 3  // 3 seconds, for select fast mirror
 )
 
 // DEBIAN

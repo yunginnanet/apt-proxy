@@ -12,7 +12,7 @@ const (
 	DEFAULT_PORT      = "3142"
 	DEFAULT_CACHE_DIR = "./.aptcache"
 	DEFAULT_MIRROR    = "" // "https://mirrors.tuna.tsinghua.edu.cn/ubuntu/"
-	DEFAULT_TYPE      = linux.UBUNTU
+	DEFAULT_TYPE      = linux.LINUX_DISTROS_UBUNTU
 	DEFAULT_DEBUG     = false
 )
 
@@ -32,8 +32,8 @@ func parseFlags() (appFlags cli.AppFlags) {
 	flag.StringVar(&appFlags.Mirror, "mirror", DEFAULT_MIRROR, "the mirror for fetching packages")
 	flag.Parse()
 
-	if types != linux.UBUNTU && types != linux.DEBIAN {
-		types = linux.UBUNTU
+	if types != linux.LINUX_DISTROS_UBUNTU && types != linux.LINUX_DISTROS_DEBIAN {
+		types = linux.LINUX_DISTROS_UBUNTU
 	}
 
 	appFlags.Types = types

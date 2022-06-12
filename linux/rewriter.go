@@ -13,40 +13,37 @@ type URLRewriter struct {
 	pattern *regexp.Regexp
 }
 
-func NewRewriter(mirror string, osType string) *URLRewriter {
+func NewRewriter(mirrorUrl string, osType string) *URLRewriter {
 	u := &URLRewriter{}
 
-	if len(mirror) > 0 {
-		mirrorUrl, err := url.Parse(mirror)
+	if len(mirrorUrl) > 0 {
+		mirror, err := url.Parse(mirrorUrl)
 		if err == nil {
-			log.Printf("using ubuntu mirror %s", mirror)
-			u.mirror = mirrorUrl
+			log.Printf("using specify mirror %s", mirrorUrl)
+			u.mirror = mirror
 			_, _, pattern := getPredefinedConfiguration(osType)
 			u.pattern = pattern
 			return u
 		}
 	}
 
-	// benchmark in the background to make sure we have the fastest
-	go func() {
-		mirrorsListUrl, benchmarkUrl, pattern := getPredefinedConfiguration(osType)
-		u.pattern = pattern
+	mirrorsListUrl, benchmarkUrl, pattern := getPredefinedConfiguration(osType)
+	u.pattern = pattern
 
-		mirrors, err := getGeoMirrors(mirrorsListUrl)
-		if err != nil {
-			log.Fatal(err)
-		}
+	mirrors, err := getGeoMirrors(mirrorsListUrl)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-		mirror, err := getTheFastestMirror(mirrors, benchmarkUrl)
-		if err != nil {
-			log.Println("Error finding fastest mirror", err)
-		}
+	mirrorUrl, err = getTheFastestMirror(mirrors, benchmarkUrl)
+	if err != nil {
+		log.Println("Error finding fastest mirror", err)
+	}
 
-		if mirrorUrl, err := url.Parse(mirror); err == nil {
-			log.Printf("using ubuntu mirror %s", mirror)
-			u.mirror = mirrorUrl
-		}
-	}()
+	if mirror, err := url.Parse(mirrorUrl); err == nil {
+		log.Printf("using fastest mirror %s", mirrorUrl)
+		u.mirror = mirror
+	}
 
 	return u
 }

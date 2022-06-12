@@ -8,12 +8,12 @@ import (
 	"time"
 )
 
-func Benchmark(base string, query string, times int) (time.Duration, error) {
+func resourceBenchmark(base string, query string, times int) (time.Duration, error) {
 	var sum int64
 	var d time.Duration
 	url := base + query
 
-	timeout := time.Duration(MirrorTimeout * time.Second)
+	timeout := time.Duration(mirrorTimeout * time.Second)
 	client := http.Client{
 		Timeout: timeout,
 	}
@@ -37,20 +37,20 @@ func Benchmark(base string, query string, times int) (time.Duration, error) {
 	return time.Duration(sum / int64(times)), nil
 }
 
-type BenchmarkResult struct {
+type benchmarkResult struct {
 	URL      string
 	Duration time.Duration
 }
 
-func Fastest(m Mirrors, testUrl string) (string, error) {
-	ch := make(chan BenchmarkResult)
+func fastest(m Mirrors, testUrl string) (string, error) {
+	ch := make(chan benchmarkResult)
 	log.Printf("Start benchmarking mirrors")
 	// kick off all benchmarks in parallel
 	for _, url := range m.URLs {
 		go func(u string) {
-			duration, err := Benchmark(u, testUrl, BenchmarkTimes)
+			duration, err := resourceBenchmark(u, testUrl, benchmarkTimes)
 			if err == nil {
-				ch <- BenchmarkResult{u, duration}
+				ch <- benchmarkResult{u, duration}
 			}
 		}(url)
 	}
@@ -72,7 +72,7 @@ func Fastest(m Mirrors, testUrl string) (string, error) {
 	return results[0].URL, nil
 }
 
-func readResults(ch <-chan BenchmarkResult, size int) (br []BenchmarkResult, err error) {
+func readResults(ch <-chan benchmarkResult, size int) (br []benchmarkResult, err error) {
 	for {
 		select {
 		case r := <-ch:
@@ -80,7 +80,7 @@ func readResults(ch <-chan BenchmarkResult, size int) (br []BenchmarkResult, err
 			if len(br) >= size {
 				return br, nil
 			}
-		case <-time.After(BenchmarkTimeout * time.Second):
+		case <-time.After(benchmarkTimeout * time.Second):
 			return br, errors.New("Timed out waiting for results")
 		}
 	}

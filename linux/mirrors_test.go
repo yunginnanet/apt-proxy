@@ -1,13 +1,11 @@
-package linux_test
+package linux
 
 import (
 	"testing"
-
-	"github.com/soulteary/apt-proxy/linux"
 )
 
 func TestGetGeoMirrors(t *testing.T) {
-	mirrors, err := linux.GetGeoMirrors(linux.UBUNTU_MIRROR_URLS)
+	mirrors, err := getGeoMirrors(UBUNTU_MIRROR_URLS)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -18,8 +16,8 @@ func TestGetGeoMirrors(t *testing.T) {
 }
 
 func TestGetMirrorsUrlAndBenchmarkUrl(t *testing.T) {
-	url, res, pattern := linux.GetPredefinedConfiguration(linux.UBUNTU)
-	if url != linux.UBUNTU_MIRROR_URLS || res != linux.UBUNTU_BENCHMAKR_URL {
+	url, res, pattern := getPredefinedConfiguration(UBUNTU)
+	if url != UBUNTU_MIRROR_URLS || res != UBUNTU_BENCHMAKR_URL {
 		t.Fatal("Failed to get resource link")
 	}
 

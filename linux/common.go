@@ -14,9 +14,9 @@ type Rule struct {
 }
 
 const (
-	MirrorTimeout    = 15 // seconds, detect resource timeout
-	BenchmarkTimes   = 3  // times, maximum number of attempts
-	BenchmarkTimeout = 10 // 10 seconds, for select fast mirror
+	mirrorTimeout    = 15 // seconds, detect resource timeout
+	benchmarkTimes   = 3  // times, maximum number of attempts
+	benchmarkTimeout = 10 // 10 seconds, for select fast mirror
 )
 
 // DEBIAN

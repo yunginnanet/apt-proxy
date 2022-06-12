@@ -1,29 +1,27 @@
-package linux_test
+package linux
 
 import (
 	"log"
 	"testing"
-
-	"github.com/soulteary/apt-proxy/linux"
 )
 
 func TestBenchmark(t *testing.T) {
-	_, err := linux.Benchmark(linux.UBUNTU_MIRROR_URLS, "", linux.BenchmarkTimes)
+	_, err := resourceBenchmark(UBUNTU_MIRROR_URLS, "", benchmarkTimes)
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestMirrorsBenchmark(t *testing.T) {
-	mirrors, err := linux.GetGeoMirrors(linux.UBUNTU_MIRROR_URLS)
+	mirrors, err := getGeoMirrors(UBUNTU_MIRROR_URLS)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	fastest, err := linux.Fastest(mirrors, linux.UBUNTU_BENCHMAKR_URL)
+	mirror, err := fastest(mirrors, UBUNTU_BENCHMAKR_URL)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	log.Printf("Fastest mirror is %s", fastest)
+	log.Printf("Fastest mirror is %s", mirror)
 }

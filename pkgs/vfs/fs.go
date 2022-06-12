@@ -44,7 +44,7 @@ func (fs *fileSystem) Open(path string) (RFile, error) {
 }
 
 func (fs *fileSystem) OpenFile(path string, flag int, mode os.FileMode) (WFile, error) {
-	f, err := os.OpenFile(filepath.Clean(fs.path(path)), flag, mode)
+	f, err := os.OpenFile(fs.path(filepath.Clean(path)), flag, mode)
 	if err != nil {
 		return nil, err
 	}

@@ -15,7 +15,7 @@ const (
 	DEFAULT_DEBUG     = false
 )
 
-var version string
+var Version string
 
 func ParseFlags() (appFlags AppFlags) {
 	var (
@@ -37,7 +37,7 @@ func ParseFlags() (appFlags AppFlags) {
 
 	appFlags.Types = types
 	appFlags.Listen = host + ":" + port
-	appFlags.Version = version
+	appFlags.Version = Version
 
 	return appFlags
 }

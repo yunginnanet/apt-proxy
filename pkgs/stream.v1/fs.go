@@ -3,6 +3,7 @@ package stream
 import (
 	"io"
 	"os"
+	"path/filepath"
 )
 
 // File is a backing data-source for a Stream.
@@ -31,7 +32,7 @@ func (fs stdFS) Create(name string) (File, error) {
 }
 
 func (fs stdFS) Open(name string) (File, error) {
-	return os.Open(name)
+	return os.Open(filepath.Clean(name))
 }
 
 func (fs stdFS) Remove(name string) error {

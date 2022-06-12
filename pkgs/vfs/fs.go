@@ -36,7 +36,7 @@ func (fs *fileSystem) IsTemporary() bool {
 }
 
 func (fs *fileSystem) Open(path string) (RFile, error) {
-	f, err := os.Open(fs.path(path))
+	f, err := os.Open(filepath.Clean(fs.path(path)))
 	if err != nil {
 		return nil, err
 	}

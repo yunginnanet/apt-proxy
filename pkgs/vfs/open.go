@@ -114,7 +114,7 @@ func TarBzip2(r io.Reader) (VFS, error) {
 //  - .tar.gz
 //  - .tar.bz2
 func Open(filename string) (VFS, error) {
-	file, err := os.Open(filename)
+	file, err := os.Open(filepath.Clean(filename))
 	if err != nil {
 		return nil, err
 	}

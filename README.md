@@ -1,17 +1,85 @@
 # APT Proxy
 
-Small and Reliable APT packages cache tool, supports both Ubuntu and Debian.
+> Lightweight **APT CHACHE PROXY** with only 2MB+ size!
+
+<img src="screenshot/dockerhub.png" width="600"/>
+
+APT Proxy is a Lightweight and Reliable APT packages (Ubuntu / Debian) cache tool, supports a large number of common system and Docker usage.
 
 You can safely use it instead of [apt-cacher-ng](https://www.unix-ag.uni-kl.de/~bloch/acng/).
 
-## (WIP) Usage
+## Supported Systems and Architectures
 
-- Binaries
-- Docker
+- Linux: x86_64 / x86_32
+- ARM: ARM64v8 / ARM32v6 / ARM32v7
+- macOS: x86_64 / M1 ARM64v8
 
-## Development
+## Usage
 
-coverage:
+Just run it:
+
+```bash
+./apt-proxy
+
+2022/06/12 16:15:40 running apt-proxy
+2022/06/12 16:15:41 Start benchmarking mirrors
+2022/06/12 16:15:41 Finished benchmarking mirrors
+2022/06/12 16:15:41 using fastest mirror https://mirrors.company.ltd/ubuntu/
+2022/06/12 16:15:41 proxy listening on 0.0.0.0:3142
+```
+
+An APT proxy software with a cache function is started.
+
+Then rewrite the command where you need to execute the `apt-get` command and execute it:
+
+```bash
+# `apt-get update` with apt-proxy service
+http_proxy=http://your-domain-or-ip-address:3142 apt-get -o pkgProblemResolver=true -o Acquire::http=true update 
+# `apt-get install vim -y` with apt-proxy service
+http_proxy=http://your-domain-or-ip-address:3142 apt-get -o pkgProblemResolver=true -o Acquire::http=true install vim -y
+```
+
+When we need to execute the above commands repeatedly in batches, the speed of update and installation **will be greatly improved**.
+
+## Docker
+
+Just one command:
+
+```bash
+docker run -d --name=apt-proxy -p 3142:3142 soulteary/apt-proxy
+```
+
+## Options
+
+View configuration items:
+
+```bash
+./apt-proxy -h
+
+Usage of apt-proxy:
+  -cachedir string
+    	the dir to store cache data in (default "./.aptcache")
+  -debug
+    	whether to output debugging logging
+  -host string
+    	the host to bind to (default "0.0.0.0")
+  -mirror string
+    	the mirror for fetching packages
+  -port string
+    	the port to bind to (default "3142")
+  -type string
+    	select the type of system to cache: ubuntu/debian (default "ubuntu")
+```
+
+## [WIP] Development
+
+Start the application in development mode:
+
+```bash
+go run apt-proxy.go
+```
+
+### Run Test And Get Coverage
 
 ```bash
 # go test -cover ./...
@@ -40,15 +108,7 @@ ok  	github.com/soulteary/apt-proxy	0.485s
 # go tool cover -html=coverage.out
 ```
 
-
-
-### (WIP) Development
-
-```bash
-go run apt-proxy.go
-```
-
-## Ubuntu / Debian Debugging
+### Ubuntu / Debian Debugging
 
 ```
 http_proxy=http://192.168.33.1:3142 apt-get -o Debug::pkgProblemResolver=true -o Debug::Acquire::http=true update

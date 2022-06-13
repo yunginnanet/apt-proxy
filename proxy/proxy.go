@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/soulteary/apt-proxy/linux"
+	"github.com/soulteary/apt-proxy/state"
 )
 
 var rewriter *linux.URLRewriter
@@ -22,17 +23,19 @@ type AptProxy struct {
 	Rules   []linux.Rule
 }
 
-func CreateAptProxyRouter(mirror string, osType string) *AptProxy {
-	rewriter = linux.NewRewriter(mirror, osType)
-	var rules []linux.Rule
-	if osType == linux.LINUX_DISTROS_UBUNTU {
-		rules = linux.UBUNTU_DEFAULT_CACHE_RULES
-	} else if osType == linux.LINUX_DISTROS_DEBIAN {
-		rules = linux.DEBIAN_DEFAULT_CACHE_RULES
-	}
+func init() {
+
+}
+
+func CreateAptProxyRouter() *AptProxy {
+	mirror := state.DEBIAN_MIRROR
+
+	// TODO support both ubuntu and debian
+	proxyMode := state.GetProxyMode()
+	rewriter = linux.NewRewriter(mirror, proxyMode)
 
 	return &AptProxy{
-		Rules: rules,
+		Rules: linux.GetRewriteRulesByMode(proxyMode),
 		Handler: &httputil.ReverseProxy{
 			Director:  func(r *http.Request) {},
 			Transport: defaultTransport,

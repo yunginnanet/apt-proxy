@@ -16,24 +16,24 @@ func TestGetGeoMirrors(t *testing.T) {
 }
 
 func TestGetMirrorUrlsByGeo(t *testing.T) {
-	mirrors := getGeoMirrorUrlsByMode(LINUX_ALL_DISTROS)
+	mirrors := getGeoMirrorUrlsByMode(TYPE_LINUX_ALL_DISTROS)
 	if len(mirrors) == 0 {
 		t.Fatal("No mirrors found")
 	}
 
-	mirrors = getGeoMirrorUrlsByMode(LINUX_DISTROS_DEBIAN)
+	mirrors = getGeoMirrorUrlsByMode(TYPE_LINUX_DISTROS_DEBIAN)
 	if len(mirrors) != len(BUILDIN_DEBIAN_MIRRORS) {
 		t.Fatal("Get mirrors error")
 	}
 
-	mirrors = getGeoMirrorUrlsByMode(LINUX_DISTROS_UBUNTU)
+	mirrors = getGeoMirrorUrlsByMode(TYPE_LINUX_DISTROS_UBUNTU)
 	if len(mirrors) == 0 {
 		t.Fatal("No mirrors found")
 	}
 }
 
 func TestGetPredefinedConfiguration(t *testing.T) {
-	res, pattern := getPredefinedConfiguration(LINUX_DISTROS_UBUNTU)
+	res, pattern := getPredefinedConfiguration(TYPE_LINUX_DISTROS_UBUNTU)
 	if res != UBUNTU_BENCHMAKR_URL {
 		t.Fatal("Failed to get resource link")
 	}
@@ -41,7 +41,7 @@ func TestGetPredefinedConfiguration(t *testing.T) {
 		t.Fatal("Failed to verify domain name rules")
 	}
 
-	res, pattern = getPredefinedConfiguration(LINUX_DISTROS_DEBIAN)
+	res, pattern = getPredefinedConfiguration(TYPE_LINUX_DISTROS_DEBIAN)
 	if res != DEBIAN_BENCHMAKR_URL {
 		t.Fatal("Failed to get resource link")
 	}

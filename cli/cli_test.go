@@ -8,10 +8,15 @@ import (
 )
 
 func TestGetProxyMode(t *testing.T) {
-	if getProxyMode("not-support-os") != linux.LINUX_ALL_DISTROS {
+	if getProxyMode("not-support-os") != linux.TYPE_LINUX_ALL_DISTROS {
 		t.Fatal("Incorrect return default value")
 	}
-	if getProxyMode(linux.LINUX_DISTROS_DEBIAN) != linux.LINUX_DISTROS_DEBIAN {
+
+	if getProxyMode(linux.LINUX_DISTROS_DEBIAN) != linux.TYPE_LINUX_DISTROS_DEBIAN {
+		t.Fatal("Incorrect return value")
+	}
+
+	if getProxyMode(linux.LINUX_DISTROS_UBUNTU) != linux.TYPE_LINUX_DISTROS_UBUNTU {
 		t.Fatal("Incorrect return value")
 	}
 }
@@ -28,12 +33,16 @@ func TestParseFlagsAndDaemonInit(t *testing.T) {
 		t.Fatal("Default option `Listen` value mismatch")
 	}
 
-	if flags.Mode != DEFAULT_TYPE {
+	if flags.Mode != getProxyMode(DEFAULT_MODE_NAME) {
 		t.Fatal("Default option `Mode` value mismatch")
 	}
 
-	if flags.Mirror != DEFAULT_MIRROR {
-		t.Fatal("Default option `Mirror` value mismatch")
+	if flags.Ubuntu != DEFAULT_UBUNTU_MIRROR {
+		t.Fatal("Default option `Ubuntu` value mismatch")
+	}
+
+	if flags.Debian != DEFAULT_DEBIAN_MIRROR {
+		t.Fatal("Default option `Debian` value mismatch")
 	}
 
 	if flags.CacheDir != DEFAULT_CACHE_DIR {

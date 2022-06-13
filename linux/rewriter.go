@@ -13,25 +13,38 @@ type URLRewriter struct {
 	pattern *regexp.Regexp
 }
 
-func NewRewriter(mirrorUrl string, osType string) *URLRewriter {
+func GetRewriteRulesByMode(mode int) (rules []Rule) {
+	if mode == TYPE_LINUX_DISTROS_UBUNTU {
+		return UBUNTU_DEFAULT_CACHE_RULES
+	}
+	if mode == TYPE_LINUX_DISTROS_DEBIAN {
+		return DEBIAN_DEFAULT_CACHE_RULES
+	}
+
+	rules = append(rules, UBUNTU_DEFAULT_CACHE_RULES...)
+	rules = append(rules, DEBIAN_DEFAULT_CACHE_RULES...)
+	return rules
+}
+
+func NewRewriter(mirrorUrl string, proxyMode int) *URLRewriter {
 	u := &URLRewriter{}
 
 	// user specify mirror
-	// TODO Both systems are supported
+	// TODO support both ubuntu and debian
 	if len(mirrorUrl) > 0 {
 		mirror, err := url.Parse(mirrorUrl)
 		if err == nil {
 			log.Printf("using specify mirror %s", mirrorUrl)
 			u.mirror = mirror
-			_, pattern := getPredefinedConfiguration(osType)
+			_, pattern := getPredefinedConfiguration(proxyMode)
 			u.pattern = pattern
 			return u
 		}
 	}
 
-	benchmarkUrl, pattern := getPredefinedConfiguration(osType)
+	benchmarkUrl, pattern := getPredefinedConfiguration(proxyMode)
 	u.pattern = pattern
-	mirrors := getGeoMirrorUrlsByMode(osType)
+	mirrors := getGeoMirrorUrlsByMode(proxyMode)
 	mirrorUrl, err := getTheFastestMirror(mirrors, benchmarkUrl)
 	if err != nil {
 		log.Println("Error finding fastest mirror", err)

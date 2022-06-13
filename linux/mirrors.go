@@ -6,8 +6,8 @@ import (
 	"regexp"
 )
 
-func getGeoMirrorUrlsByMode(mode string) (mirrors []string) {
-	if mode == LINUX_DISTROS_UBUNTU {
+func getGeoMirrorUrlsByMode(mode int) (mirrors []string) {
+	if mode == TYPE_LINUX_DISTROS_UBUNTU {
 		ubuntuMirrorsOnline, err := getUbuntuMirrorUrlsByGeo()
 		if err != nil {
 			return BUILDIN_UBUNTU_MIRRORS
@@ -15,7 +15,7 @@ func getGeoMirrorUrlsByMode(mode string) (mirrors []string) {
 		return ubuntuMirrorsOnline
 	}
 
-	if mode == LINUX_DISTROS_DEBIAN {
+	if mode == TYPE_LINUX_DISTROS_DEBIAN {
 		return BUILDIN_DEBIAN_MIRRORS
 	}
 
@@ -40,8 +40,8 @@ func getUbuntuMirrorUrlsByGeo() (mirrors []string, err error) {
 	return mirrors, scanner.Err()
 }
 
-func getPredefinedConfiguration(osType string) (string, *regexp.Regexp) {
-	if osType == LINUX_DISTROS_UBUNTU {
+func getPredefinedConfiguration(proxyMode int) (string, *regexp.Regexp) {
+	if proxyMode == TYPE_LINUX_DISTROS_UBUNTU {
 		return UBUNTU_BENCHMAKR_URL, UBUNTU_HOST_PATTERN
 	} else {
 		return DEBIAN_BENCHMAKR_URL, DEBIAN_HOST_PATTERN

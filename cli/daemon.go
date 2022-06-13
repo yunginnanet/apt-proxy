@@ -30,7 +30,6 @@ func initStore(appFlags AppFlags) (cache httpcache.Cache, err error) {
 }
 
 func initProxy(appFlags AppFlags, cache httpcache.Cache) (ap *proxy.AptProxy) {
-	// TODO support both ubuntu and debian
 	ap = proxy.CreateAptProxyRouter()
 	ap.Handler = httpcache.NewHandler(cache, ap.Handler)
 	return ap

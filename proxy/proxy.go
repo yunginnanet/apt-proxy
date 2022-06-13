@@ -22,7 +22,7 @@ type AptProxy struct {
 	Rules   []linux.Rule
 }
 
-func NewAptProxyFromDefaults(mirror string, osType string) *AptProxy {
+func CreateAptProxyRouter(mirror string, osType string) *AptProxy {
 	rewriter = linux.NewRewriter(mirror, osType)
 	var rules []linux.Rule
 	if osType == linux.LINUX_DISTROS_UBUNTU {
@@ -45,18 +45,14 @@ func (ap *AptProxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	if match {
 		r.Header.Del("Cache-Control")
 		if rule.Rewrite {
-			ap.rewriteRequest(r)
+			before := r.URL.String()
+			linux.Rewrite(r, rewriter)
+			log.Printf("rewrote %q to %q", before, r.URL.String())
+			r.Host = r.URL.Host
 		}
 	}
 
 	ap.Handler.ServeHTTP(&responseWriter{rw, rule}, r)
-}
-
-func (ap *AptProxy) rewriteRequest(r *http.Request) {
-	before := r.URL.String()
-	linux.Rewrite(r, rewriter)
-	log.Printf("rewrote %q to %q", before, r.URL.String())
-	r.Host = r.URL.Host
 }
 
 type responseWriter struct {

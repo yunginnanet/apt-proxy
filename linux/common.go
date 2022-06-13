@@ -25,7 +25,7 @@ const (
 	DEBIAN_BENCHMAKR_URL = "dists/bullseye/main/binary-amd64/Release"
 )
 
-var DEBIAN_MIRROR_URLS = []string{
+var BUILDIN_DEBIAN_MIRRORS = []string{
 	"http://ftp.cn.debian.org/debian/",
 	"http://mirror.bjtu.edu.cn/debian/",
 	"http://mirror.lzu.edu.cn/debian/",
@@ -59,9 +59,32 @@ var DEBIAN_DEFAULT_CACHE_RULES = []Rule{
 
 // Ubuntu
 const (
-	UBUNTU_MIRROR_URLS   = "http://mirrors.ubuntu.com/mirrors.txt"
-	UBUNTU_BENCHMAKR_URL = "dists/jammy/main/binary-amd64/Release"
+	UBUNTU_GEO_MIRROR_API = "http://mirrors.ubuntu.com/mirrors.txt"
+	UBUNTU_BENCHMAKR_URL  = "dists/jammy/main/binary-amd64/Release"
 )
+
+var BUILDIN_UBUNTU_MIRRORS = []string{
+	"http://mirrors.aliyun.com/ubuntu/",
+	"http://mirrors.huaweicloud.com/repository/ubuntu/",
+	"http://mirror.dlut.edu.cn/ubuntu/",
+	"http://mirrors.dgut.edu.cn/ubuntu/",
+	"http://mirrors.njupt.edu.cn/ubuntu/",
+	"https://mirrors.hit.edu.cn/ubuntu/",
+	"http://mirrors.yun-idc.com/ubuntu/",
+	"http://ftp.sjtu.edu.cn/ubuntu/",
+	"https://mirror.nju.edu.cn/ubuntu/",
+	"https://mirrors.bupt.edu.cn/ubuntu/",
+	"http://mirrors.skyshe.cn/ubuntu/",
+	"https://repo.huaweicloud.com/ubuntu/",
+	"http://mirror.lzu.edu.cn/ubuntu/",
+	"http://mirrors.cn99.com/ubuntu/",
+	"http://mirrors.cqu.edu.cn/ubuntu/",
+	"https://mirrors.cloud.tencent.com/ubuntu/",
+	"https://mirrors.ustc.edu.cn/ubuntu/",
+	"https://mirror.bjtu.edu.cn/ubuntu/",
+	"http://mirrors.sohu.com/ubuntu/",
+	"http://archive.ubuntu.com/ubuntu/",
+}
 
 var UBUNTU_HOST_PATTERN = regexp.MustCompile(
 	`https?://(security|archive).ubuntu.com/ubuntu/(.+)$`,

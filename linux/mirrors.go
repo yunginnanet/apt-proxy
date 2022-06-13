@@ -3,45 +3,47 @@ package linux
 import (
 	"bufio"
 	"net/http"
-	"net/url"
 	"regexp"
 )
 
-type Mirrors struct {
-	URLs []string
+func getGeoMirrorUrlsByMode(mode string) (mirrors []string) {
+	if mode == LINUX_DISTROS_UBUNTU {
+		ubuntuMirrorsOnline, err := getUbuntuMirrorUrlsByGeo()
+		if err != nil {
+			return BUILDIN_UBUNTU_MIRRORS
+		}
+		return ubuntuMirrorsOnline
+	}
+
+	if mode == LINUX_DISTROS_DEBIAN {
+		return BUILDIN_DEBIAN_MIRRORS
+	}
+
+	mirrors = append(mirrors, BUILDIN_UBUNTU_MIRRORS...)
+	mirrors = append(mirrors, BUILDIN_DEBIAN_MIRRORS...)
+	return mirrors
 }
 
-func getGeoMirrors(mirrorListUrl string) (m Mirrors, err error) {
-	if len(mirrorListUrl) == 0 {
-		m.URLs = DEBIAN_MIRROR_URLS
-		return m, nil
-	}
-
-	_, err = url.ParseRequestURI(mirrorListUrl)
+func getUbuntuMirrorUrlsByGeo() (mirrors []string, err error) {
+	response, err := http.Get(UBUNTU_GEO_MIRROR_API)
 	if err != nil {
-		return m, nil
-	}
-
-	response, err := http.Get(mirrorListUrl)
-	if err != nil {
-		return
+		return mirrors, err
 	}
 
 	defer response.Body.Close()
 	scanner := bufio.NewScanner(response.Body)
-	m.URLs = []string{}
 
 	for scanner.Scan() {
-		m.URLs = append(m.URLs, scanner.Text())
+		mirrors = append(mirrors, scanner.Text())
 	}
 
-	return m, scanner.Err()
+	return mirrors, scanner.Err()
 }
 
-func getPredefinedConfiguration(osType string) (string, string, *regexp.Regexp) {
+func getPredefinedConfiguration(osType string) (string, *regexp.Regexp) {
 	if osType == LINUX_DISTROS_UBUNTU {
-		return UBUNTU_MIRROR_URLS, UBUNTU_BENCHMAKR_URL, UBUNTU_HOST_PATTERN
+		return UBUNTU_BENCHMAKR_URL, UBUNTU_HOST_PATTERN
 	} else {
-		return "", DEBIAN_BENCHMAKR_URL, DEBIAN_HOST_PATTERN
+		return DEBIAN_BENCHMAKR_URL, DEBIAN_HOST_PATTERN
 	}
 }

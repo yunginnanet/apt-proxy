@@ -27,7 +27,7 @@ func initStore(appFlags AppFlags) (cache httpcache.Cache, err error) {
 }
 
 func initProxy(appFlags AppFlags, cache httpcache.Cache) (ap *proxy.AptProxy) {
-	ap = proxy.NewAptProxyFromDefaults(appFlags.Mirror, appFlags.Mode)
+	ap = proxy.CreateAptProxyRouter(appFlags.Mirror, appFlags.Mode)
 	ap.Handler = httpcache.NewHandler(cache, ap.Handler)
 	return ap
 }

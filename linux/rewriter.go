@@ -16,26 +16,23 @@ type URLRewriter struct {
 func NewRewriter(mirrorUrl string, osType string) *URLRewriter {
 	u := &URLRewriter{}
 
+	// user specify mirror
+	// TODO Both systems are supported
 	if len(mirrorUrl) > 0 {
 		mirror, err := url.Parse(mirrorUrl)
 		if err == nil {
 			log.Printf("using specify mirror %s", mirrorUrl)
 			u.mirror = mirror
-			_, _, pattern := getPredefinedConfiguration(osType)
+			_, pattern := getPredefinedConfiguration(osType)
 			u.pattern = pattern
 			return u
 		}
 	}
 
-	mirrorsListUrl, benchmarkUrl, pattern := getPredefinedConfiguration(osType)
+	benchmarkUrl, pattern := getPredefinedConfiguration(osType)
 	u.pattern = pattern
-
-	mirrors, err := getGeoMirrors(mirrorsListUrl)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	mirrorUrl, err = getTheFastestMirror(mirrors, benchmarkUrl)
+	mirrors := getGeoMirrorUrlsByMode(osType)
+	mirrorUrl, err := getTheFastestMirror(mirrors, benchmarkUrl)
 	if err != nil {
 		log.Println("Error finding fastest mirror", err)
 	}

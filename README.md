@@ -106,12 +106,12 @@ go run apt-proxy.go
 # go test -cover ./...
 
 ?   	github.com/soulteary/apt-proxy	[no test files]
-ok  	github.com/soulteary/apt-proxy/cli	2.492s	coverage: 68.4% of statements
-ok  	github.com/soulteary/apt-proxy/linux	7.420s	coverage: 76.7% of statements
-ok  	github.com/soulteary/apt-proxy/pkgs/httpcache	2.575s	coverage: 82.7% of statements
+ok  	github.com/soulteary/apt-proxy/cli	1.433s	coverage: 69.2% of statements
+ok  	github.com/soulteary/apt-proxy/linux	8.099s	coverage: 80.2% of statements
+ok  	github.com/soulteary/apt-proxy/pkgs/httpcache	2.357s	coverage: 82.7% of statements
 ?   	github.com/soulteary/apt-proxy/pkgs/httplog	[no test files]
 ok  	github.com/soulteary/apt-proxy/pkgs/stream.v1	1.238s	coverage: 100.0% of statements
-ok  	github.com/soulteary/apt-proxy/pkgs/vfs	2.255s	coverage: 59.4% of statements
+ok  	github.com/soulteary/apt-proxy/pkgs/vfs	0.930s	coverage: 59.3% of statements
 ?   	github.com/soulteary/apt-proxy/proxy	[no test files]
 ```
 

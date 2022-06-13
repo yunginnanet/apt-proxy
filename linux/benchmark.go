@@ -40,11 +40,11 @@ type benchmarkResult struct {
 	Duration time.Duration
 }
 
-func getTheFastestMirror(m Mirrors, testUrl string) (string, error) {
+func getTheFastestMirror(mirrors []string, testUrl string) (string, error) {
 	ch := make(chan benchmarkResult)
 	log.Printf("Start benchmarking mirrors")
 	// kick off all benchmarks in parallel
-	for _, url := range m.URLs {
+	for _, url := range mirrors {
 		go func(u string) {
 			duration, err := benchmark(u, testUrl, BENCHMARK_MAX_TRIES)
 			if err == nil {
@@ -53,8 +53,8 @@ func getTheFastestMirror(m Mirrors, testUrl string) (string, error) {
 		}(url)
 	}
 
-	maxTries := len(m.URLs)
-	if 3 < maxTries {
+	maxTries := len(mirrors)
+	if maxTries > 3 {
 		maxTries = 3
 	}
 

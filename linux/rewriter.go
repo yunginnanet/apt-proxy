@@ -103,16 +103,15 @@ func CreateNewRewriters(mode int) *URLRewriters {
 	return rewriters
 }
 
-func Rewrite(r *http.Request, rewriters *URLRewriters, mode int) {
+func RewriteRequestByMode(r *http.Request, rewriters *URLRewriters, mode int) {
 	uri := r.URL.String()
 	var rewriter *URLRewriter
 	if mode == TYPE_LINUX_DISTROS_UBUNTU {
 		rewriter = rewriters.ubuntu
-	}
-	if mode == TYPE_LINUX_DISTROS_DEBIAN {
+	} else {
+		// mode == TYPE_LINUX_DISTROS_DEBIAN
 		rewriter = rewriters.debian
 	}
-	// TODO support both ubuntu and debian
 
 	if rewriter.mirror != nil && rewriter.pattern.MatchString(uri) {
 		r.Header.Add("Content-Location", uri)

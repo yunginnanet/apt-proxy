@@ -46,8 +46,7 @@ func (ap *AptProxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r.Header.Del("Cache-Control")
 		if rule.Rewrite {
 			before := r.URL.String()
-			mode := state.GetProxyMode()
-			linux.Rewrite(r, rewriter, mode)
+			linux.RewriteRequestByMode(r, rewriter, rule.OS)
 			log.Printf("rewrote %q to %q", before, r.URL.String())
 			r.Host = r.URL.Host
 		}

@@ -1,5 +1,8 @@
 # APT Proxy
 
+[![Security Scan](https://github.com/soulteary/apt-proxy/actions/workflows/scan.yml/badge.svg)](https://github.com/soulteary/apt-proxy/actions/workflows/scan.yml) [![Release](https://github.com/soulteary/apt-proxy/actions/workflows/release.yaml/badge.svg)](https://github.com/soulteary/apt-proxy/actions/workflows/release.yaml)
+
+
 > Lightweight **APT CHACHE PROXY** with only 2MB+ size!
 
 <img src="screenshot/dockerhub.png" width="600"/>

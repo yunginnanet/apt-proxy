@@ -90,7 +90,7 @@ func TestCreateNewRewritersWithSpecifyMirror(t *testing.T) {
 		t.Fatal("mirror path incorrect")
 	}
 
-	state.ClearUbuntuMirror()
+	state.ResetUbuntuMirror()
 }
 
 func TestMatchingRule(t *testing.T) {

@@ -4,13 +4,17 @@ name: "Security Scan"
 # The scheduled workflow runs every at 00:00 on Sunday UTC time.
 on:
   push:
+    branches:    
+      - main
     paths:
-      - 'cli'
-      - 'linux'
-      - 'pkgs'
-      - 'proxy'
-      - 'apt-proxy.go'
+      - 'cli/**'
+      - 'linux/**'
+      - 'pkgs/**'
+      - 'proxy/**'
+      - '*.go'
   pull_request:
+    branches:    
+      - main
   schedule:
   - cron: '0 0 * * 0'
 

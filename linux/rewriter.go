@@ -6,7 +6,14 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+
+	"github.com/soulteary/apt-proxy/state"
 )
+
+type URLRewriters struct {
+	ubuntu *URLRewriter
+	debian *URLRewriter
+}
 
 type URLRewriter struct {
 	mirror  *url.URL
@@ -26,40 +33,87 @@ func GetRewriteRulesByMode(mode int) (rules []Rule) {
 	return rules
 }
 
-func NewRewriter(mirrorUrl string, proxyMode int) *URLRewriter {
+func getRewriterForDebian() *URLRewriter {
 	u := &URLRewriter{}
+	debianMirror := state.GetDebianMirror()
+	benchmarkUrl, pattern := getPredefinedConfiguration(TYPE_LINUX_DISTROS_DEBIAN)
+	u.pattern = pattern
 
-	// user specify mirror
-	// TODO support both ubuntu and debian
-	if len(mirrorUrl) > 0 {
-		mirror, err := url.Parse(mirrorUrl)
-		if err == nil {
-			log.Printf("using specify mirror %s", mirrorUrl)
-			u.mirror = mirror
-			_, pattern := getPredefinedConfiguration(proxyMode)
-			u.pattern = pattern
-			return u
-		}
+	if debianMirror != nil {
+		log.Printf("using specify ubuntu mirror %s", debianMirror)
+		u.mirror = debianMirror
+		return u
 	}
 
-	benchmarkUrl, pattern := getPredefinedConfiguration(proxyMode)
-	u.pattern = pattern
-	mirrors := getGeoMirrorUrlsByMode(proxyMode)
-	mirrorUrl, err := getTheFastestMirror(mirrors, benchmarkUrl)
+	mirrors := getGeoMirrorUrlsByMode(TYPE_LINUX_DISTROS_DEBIAN)
+	fastest, err := getTheFastestMirror(mirrors, benchmarkUrl)
 	if err != nil {
 		log.Println("Error finding fastest mirror", err)
 	}
 
-	if mirror, err := url.Parse(mirrorUrl); err == nil {
-		log.Printf("using fastest mirror %s", mirrorUrl)
+	if mirror, err := url.Parse(fastest); err == nil {
+		log.Printf("using fastest mirror %s", fastest)
 		u.mirror = mirror
 	}
 
 	return u
 }
 
-func Rewrite(r *http.Request, rewriter *URLRewriter) {
+func getRewriterForUbuntu() *URLRewriter {
+	u := &URLRewriter{}
+	ubuntuMirror := state.GetUbuntuMirror()
+	benchmarkUrl, pattern := getPredefinedConfiguration(TYPE_LINUX_DISTROS_UBUNTU)
+	u.pattern = pattern
+
+	if ubuntuMirror != nil {
+		log.Printf("using specify ubuntu mirror %s", ubuntuMirror)
+		u.mirror = ubuntuMirror
+		return u
+	}
+
+	mirrors := getGeoMirrorUrlsByMode(TYPE_LINUX_DISTROS_UBUNTU)
+	fastest, err := getTheFastestMirror(mirrors, benchmarkUrl)
+	if err != nil {
+		log.Println("Error finding fastest mirror", err)
+	}
+
+	if mirror, err := url.Parse(fastest); err == nil {
+		log.Printf("using fastest mirror %s", fastest)
+		u.mirror = mirror
+	}
+
+	return u
+}
+
+func CreateNewRewriters(mode int) *URLRewriters {
+	rewriters := &URLRewriters{}
+
+	if mode == TYPE_LINUX_DISTROS_DEBIAN {
+		rewriters.debian = getRewriterForDebian()
+		return rewriters
+	}
+
+	if mode == TYPE_LINUX_DISTROS_UBUNTU {
+		rewriters.ubuntu = getRewriterForUbuntu()
+		return rewriters
+	}
+
+	rewriters.debian = getRewriterForDebian()
+	rewriters.ubuntu = getRewriterForUbuntu()
+	return rewriters
+}
+
+func Rewrite(r *http.Request, rewriters *URLRewriters, mode int) {
 	uri := r.URL.String()
+	var rewriter *URLRewriter
+	if mode == TYPE_LINUX_DISTROS_UBUNTU {
+		rewriter = rewriters.ubuntu
+	}
+	if mode == TYPE_LINUX_DISTROS_DEBIAN {
+		rewriter = rewriters.debian
+	}
+	// TODO support both ubuntu and debian
+
 	if rewriter.mirror != nil && rewriter.pattern.MatchString(uri) {
 		r.Header.Add("Content-Location", uri)
 		m := rewriter.pattern.FindAllStringSubmatch(uri, -1)

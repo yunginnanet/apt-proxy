@@ -1,7 +1,11 @@
 package state
 
-var UBUNTU_MIRROR = ""
-var DEBIAN_MIRROR = ""
+import (
+	"net/url"
+)
+
+var UBUNTU_MIRROR *url.URL
+var DEBIAN_MIRROR *url.URL
 var PROXY_MODE = 0
 
 func SetProxyMode(mode int) {
@@ -13,17 +17,33 @@ func GetProxyMode() int {
 }
 
 func SetUbuntuMirror(mirror string) {
-	UBUNTU_MIRROR = mirror
+	url, err := url.Parse(mirror)
+	if err != nil || mirror == "" {
+		UBUNTU_MIRROR = nil
+	}
+	UBUNTU_MIRROR = url
 }
 
-func GetUbuntuMirror() string {
+func GetUbuntuMirror() *url.URL {
 	return UBUNTU_MIRROR
 }
 
-func SetDebianMirror(mirror string) {
-	DEBIAN_MIRROR = mirror
+func ClearUbuntuMirror() {
+	UBUNTU_MIRROR = nil
 }
 
-func GetDebianMirror() string {
+func SetDebianMirror(mirror string) {
+	url, err := url.Parse(mirror)
+	if err != nil || mirror == "" {
+		DEBIAN_MIRROR = nil
+	}
+	DEBIAN_MIRROR = url
+}
+
+func GetDebianMirror() *url.URL {
 	return DEBIAN_MIRROR
+}
+
+func ClearDebianMirror() {
+	DEBIAN_MIRROR = nil
 }

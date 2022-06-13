@@ -1,6 +1,7 @@
 package proxy
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -10,7 +11,7 @@ import (
 	"github.com/soulteary/apt-proxy/state"
 )
 
-var rewriter *linux.URLRewriter
+var rewriter *linux.URLRewriters
 
 var defaultTransport http.RoundTripper = &http.Transport{
 	Proxy:                 http.ProxyFromEnvironment,
@@ -23,19 +24,15 @@ type AptProxy struct {
 	Rules   []linux.Rule
 }
 
-func init() {
-
-}
-
 func CreateAptProxyRouter() *AptProxy {
-	mirror := state.DEBIAN_MIRROR
 
+	mode := state.GetProxyMode()
+	fmt.Println("mode", mode)
 	// TODO support both ubuntu and debian
-	proxyMode := state.GetProxyMode()
-	rewriter = linux.NewRewriter(mirror, proxyMode)
+	rewriter = linux.CreateNewRewriters(mode)
 
 	return &AptProxy{
-		Rules: linux.GetRewriteRulesByMode(proxyMode),
+		Rules: linux.GetRewriteRulesByMode(mode),
 		Handler: &httputil.ReverseProxy{
 			Director:  func(r *http.Request) {},
 			Transport: defaultTransport,
@@ -49,7 +46,8 @@ func (ap *AptProxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		r.Header.Del("Cache-Control")
 		if rule.Rewrite {
 			before := r.URL.String()
-			linux.Rewrite(r, rewriter)
+			mode := state.GetProxyMode()
+			linux.Rewrite(r, rewriter, mode)
 			log.Printf("rewrote %q to %q", before, r.URL.String())
 			r.Host = r.URL.Host
 		}

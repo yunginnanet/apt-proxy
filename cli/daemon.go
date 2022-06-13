@@ -6,7 +6,7 @@ import (
 
 	"github.com/soulteary/apt-proxy/pkgs/httpcache"
 	"github.com/soulteary/apt-proxy/pkgs/httplog"
-	"github.com/soulteary/apt-proxy/proxy"
+	"github.com/soulteary/apt-proxy/server"
 )
 
 type AppFlags struct {
@@ -29,13 +29,13 @@ func initStore(appFlags AppFlags) (cache httpcache.Cache, err error) {
 	return cache, nil
 }
 
-func initProxy(appFlags AppFlags, cache httpcache.Cache) (ap *proxy.AptProxy) {
-	ap = proxy.CreateAptProxyRouter()
+func initProxy(appFlags AppFlags, cache httpcache.Cache) (ap *server.AptProxy) {
+	ap = server.CreateAptProxyRouter()
 	ap.Handler = httpcache.NewHandler(cache, ap.Handler)
 	return ap
 }
 
-func initLogger(appFlags AppFlags, ap *proxy.AptProxy) {
+func initLogger(appFlags AppFlags, ap *server.AptProxy) {
 	if appFlags.Debug {
 		log.Printf("enable debug: true")
 		httpcache.DebugLogging = true
@@ -47,7 +47,7 @@ func initLogger(appFlags AppFlags, ap *proxy.AptProxy) {
 	ap.Handler = logger
 }
 
-func StartServer(appFlags *AppFlags, ap *proxy.AptProxy) {
+func StartServer(appFlags *AppFlags, ap *server.AptProxy) {
 	log.Printf("proxy listening on %s", appFlags.Listen)
 	log.Fatal(http.ListenAndServe(appFlags.Listen, ap))
 }

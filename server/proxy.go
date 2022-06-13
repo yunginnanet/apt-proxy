@@ -1,4 +1,4 @@
-package proxy
+package server
 
 import (
 	"log"
@@ -37,17 +37,22 @@ func CreateAptProxyRouter() *AptProxy {
 }
 
 func (ap *AptProxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	rule, match := linux.MatchingRule(r.URL.Path, ap.Rules)
-	if match {
-		r.Header.Del("Cache-Control")
-		if rule.Rewrite {
-			before := r.URL.String()
-			linux.RewriteRequestByMode(r, rewriter, rule.OS)
-			log.Printf("rewrote %q to %q", before, r.URL.String())
-			r.Host = r.URL.Host
+	var rule *linux.Rule
+	if isInternalUrls(r.URL.Path) {
+		rule = nil
+		renderInternalUrls(r.URL.Path, &rw)
+	} else {
+		rule, match := linux.MatchingRule(r.URL.Path, ap.Rules)
+		if match {
+			r.Header.Del("Cache-Control")
+			if rule.Rewrite {
+				before := r.URL.String()
+				linux.RewriteRequestByMode(r, rewriter, rule.OS)
+				log.Printf("rewrote %q to %q", before, r.URL.String())
+				r.Host = r.URL.Host
+			}
 		}
 	}
-
 	ap.Handler.ServeHTTP(&responseWriter{rw, rule}, r)
 }
 

@@ -1,7 +1,6 @@
 package proxy
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -25,10 +24,7 @@ type AptProxy struct {
 }
 
 func CreateAptProxyRouter() *AptProxy {
-
 	mode := state.GetProxyMode()
-	fmt.Println("mode", mode)
-	// TODO support both ubuntu and debian
 	rewriter = linux.CreateNewRewriters(mode)
 
 	return &AptProxy{

@@ -44,6 +44,17 @@ http_proxy=http://your-domain-or-ip-address:3142 apt-get -o pkgProblemResolver=t
 
 When we need to execute the above commands repeatedly in batches, the speed of update and installation **will be greatly improved**.
 
+### Specified Mirror
+
+```bash
+# proxy cache for both `ubuntu` and `debian`
+./apt-proxy --ubuntu=https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ --debian=https://mirrors.tuna.tsinghua.edu.cn/debian/
+# proxy cache for `ubuntu` only
+./apt-proxy --mode=ubuntu --ubuntu=https://mirrors.tuna.tsinghua.edu.cn/ubuntu/
+# proxy cache for `debian` only
+./apt-proxy --mode=debian --debian=https://mirrors.tuna.tsinghua.edu.cn/debian/
+```
+
 ### Speed UP Docker Container
 
 Assuming you have started a container:
@@ -80,16 +91,18 @@ View configuration items:
 Usage of apt-proxy:
   -cachedir string
     	the dir to store cache data in (default "./.aptcache")
+  -debian string
+    	the debian mirror for fetching packages
   -debug
     	whether to output debugging logging
   -host string
     	the host to bind to (default "0.0.0.0")
-  -mirror string
-    	the mirror for fetching packages
   -mode all
     	select the mode of system to cache: all / `ubuntu` / `debian` (default "all")
   -port string
     	the port to bind to (default "3142")
+  -ubuntu string
+    	the ubuntu mirror for fetching packages
 ```
 
 ## [WIP] Development

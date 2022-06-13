@@ -41,6 +41,24 @@ http_proxy=http://your-domain-or-ip-address:3142 apt-get -o pkgProblemResolver=t
 
 When we need to execute the above commands repeatedly in batches, the speed of update and installation **will be greatly improved**.
 
+### Speed UP Docker Container
+
+Assuming you have started a container:
+
+```bash
+# Ubuntu
+docker run --rm -it ubuntu
+# or Debian
+docker run --rm -it debian
+```
+
+And your Apt-Proxy is started on host machine, you can speed up the installation with the following command:
+
+```bash
+http_proxy=http://host.docker.internal:3142 apt-get -o Debug::pkgProblemResolver=true -o Debug::Acquire::http=true update && \
+http_proxy=http://host.docker.internal:3142 apt-get -o Debug::pkgProblemResolver=true -o Debug::Acquire::http=true install vim -y
+```
+
 ## Docker
 
 Just one command:

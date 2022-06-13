@@ -142,7 +142,8 @@ func WriteFile(fs VFS, path string, data []byte, perm os.FileMode) error {
 	if err != nil {
 		return err
 	}
-	if _, err := f.Write(data); err != nil {
+	_, err = f.Write(data)
+	if err != nil {
 		f.Close()
 		return err
 	}

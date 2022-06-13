@@ -86,10 +86,10 @@ Usage of apt-proxy:
     	the host to bind to (default "0.0.0.0")
   -mirror string
     	the mirror for fetching packages
+  -mode all
+    	select the mode of system to cache: all / `ubuntu` / `debian` (default "all")
   -port string
     	the port to bind to (default "3142")
-  -type string
-    	select the type of system to cache: ubuntu/debian (default "ubuntu")
 ```
 
 ## [WIP] Development
@@ -106,13 +106,14 @@ go run apt-proxy.go
 # go test -cover ./...
 
 ?   	github.com/soulteary/apt-proxy	[no test files]
-ok  	github.com/soulteary/apt-proxy/cli	2.492s	coverage: 68.4% of statements
-ok  	github.com/soulteary/apt-proxy/linux	7.420s	coverage: 76.7% of statements
-ok  	github.com/soulteary/apt-proxy/pkgs/httpcache	2.575s	coverage: 82.7% of statements
+ok  	github.com/soulteary/apt-proxy/cli	0.852s	coverage: 73.9% of statements
+ok  	github.com/soulteary/apt-proxy/linux	7.465s	coverage: 82.7% of statements
+ok  	github.com/soulteary/apt-proxy/pkgs/httpcache	(cached)	coverage: 82.7% of statements
 ?   	github.com/soulteary/apt-proxy/pkgs/httplog	[no test files]
-ok  	github.com/soulteary/apt-proxy/pkgs/stream.v1	1.238s	coverage: 100.0% of statements
-ok  	github.com/soulteary/apt-proxy/pkgs/vfs	2.255s	coverage: 59.4% of statements
+ok  	github.com/soulteary/apt-proxy/pkgs/stream.v1	(cached)	coverage: 100.0% of statements
+ok  	github.com/soulteary/apt-proxy/pkgs/vfs	(cached)	coverage: 59.3% of statements
 ?   	github.com/soulteary/apt-proxy/proxy	[no test files]
+?   	github.com/soulteary/apt-proxy/state	[no test files]
 ```
 
 View coverage report:

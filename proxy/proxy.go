@@ -1,15 +1,17 @@
 package proxy
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httputil"
 	"time"
 
 	"github.com/soulteary/apt-proxy/linux"
+	"github.com/soulteary/apt-proxy/state"
 )
 
-var rewriter *linux.URLRewriter
+var rewriter *linux.URLRewriters
 
 var defaultTransport http.RoundTripper = &http.Transport{
 	Proxy:                 http.ProxyFromEnvironment,
@@ -22,17 +24,15 @@ type AptProxy struct {
 	Rules   []linux.Rule
 }
 
-func NewAptProxyFromDefaults(mirror string, osType string) *AptProxy {
-	rewriter = linux.NewRewriter(mirror, osType)
-	var rules []linux.Rule
-	if osType == linux.LINUX_DISTROS_UBUNTU {
-		rules = linux.UBUNTU_DEFAULT_CACHE_RULES
-	} else if osType == linux.LINUX_DISTROS_DEBIAN {
-		rules = linux.DEBIAN_DEFAULT_CACHE_RULES
-	}
+func CreateAptProxyRouter() *AptProxy {
+
+	mode := state.GetProxyMode()
+	fmt.Println("mode", mode)
+	// TODO support both ubuntu and debian
+	rewriter = linux.CreateNewRewriters(mode)
 
 	return &AptProxy{
-		Rules: rules,
+		Rules: linux.GetRewriteRulesByMode(mode),
 		Handler: &httputil.ReverseProxy{
 			Director:  func(r *http.Request) {},
 			Transport: defaultTransport,
@@ -45,18 +45,14 @@ func (ap *AptProxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	if match {
 		r.Header.Del("Cache-Control")
 		if rule.Rewrite {
-			ap.rewriteRequest(r)
+			before := r.URL.String()
+			linux.RewriteRequestByMode(r, rewriter, rule.OS)
+			log.Printf("rewrote %q to %q", before, r.URL.String())
+			r.Host = r.URL.Host
 		}
 	}
 
 	ap.Handler.ServeHTTP(&responseWriter{rw, rule}, r)
-}
-
-func (ap *AptProxy) rewriteRequest(r *http.Request) {
-	before := r.URL.String()
-	linux.Rewrite(r, rewriter)
-	log.Printf("rewrote %q to %q", before, r.URL.String())
-	r.Host = r.URL.Host
 }
 
 type responseWriter struct {

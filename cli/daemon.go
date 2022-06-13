@@ -13,9 +13,12 @@ type AppFlags struct {
 	Debug    bool
 	Version  string
 	CacheDir string
-	Mirror   string
-	Types    string
+	Mode     int
 	Listen   string
+
+	// mirror
+	Ubuntu string
+	Debian string
 }
 
 func initStore(appFlags AppFlags) (cache httpcache.Cache, err error) {
@@ -27,7 +30,8 @@ func initStore(appFlags AppFlags) (cache httpcache.Cache, err error) {
 }
 
 func initProxy(appFlags AppFlags, cache httpcache.Cache) (ap *proxy.AptProxy) {
-	ap = proxy.NewAptProxyFromDefaults(appFlags.Mirror, appFlags.Types)
+	// TODO support both ubuntu and debian
+	ap = proxy.CreateAptProxyRouter()
 	ap.Handler = httpcache.NewHandler(cache, ap.Handler)
 	return ap
 }

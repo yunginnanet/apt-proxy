@@ -3,7 +3,8 @@ package linux
 import "regexp"
 
 const (
-	LINUX_DISTROS_UBUNTU string = "ubuntu"
+	LINUX_ALL_DISTROS    string = "all"
+	LINUX_DISTROS_UBUNTU        = "ubuntu"
 	LINUX_DISTROS_DEBIAN        = "debian"
 )
 

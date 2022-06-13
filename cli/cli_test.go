@@ -3,10 +3,21 @@ package cli
 import (
 	"os"
 	"testing"
+
+	"github.com/soulteary/apt-proxy/linux"
 )
 
+func TestGetProxyMode(t *testing.T) {
+	if getProxyMode("not-support-os") != linux.LINUX_ALL_DISTROS {
+		t.Fatal("Incorrect return default value")
+	}
+	if getProxyMode(linux.LINUX_DISTROS_DEBIAN) != linux.LINUX_DISTROS_DEBIAN {
+		t.Fatal("Incorrect return value")
+	}
+}
+
 func TestParseFlagsAndDaemonInit(t *testing.T) {
-	os.Args = append(os.Args, "--type=not-support-os")
+	os.Args = append(os.Args, "--mode=not-support-os")
 	flags := ParseFlags()
 
 	if flags.Debug != DEFAULT_DEBUG {
@@ -17,8 +28,8 @@ func TestParseFlagsAndDaemonInit(t *testing.T) {
 		t.Fatal("Default option `Listen` value mismatch")
 	}
 
-	if flags.Types != DEFAULT_TYPE {
-		t.Fatal("Default option `Types` value mismatch")
+	if flags.Mode != DEFAULT_TYPE {
+		t.Fatal("Default option `Mode` value mismatch")
 	}
 
 	if flags.Mirror != DEFAULT_MIRROR {

@@ -45,7 +45,10 @@ func Zip(r io.Reader, size int64) (VFS, error) {
 			return nil, err
 		}
 		data, err := ioutil.ReadAll(f)
-		f.Close()
+		errClose := f.Close()
+		if errClose != nil {
+			return nil, errClose
+		}
 		if err != nil {
 			return nil, err
 		}

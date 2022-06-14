@@ -2,23 +2,28 @@ package server
 
 import (
 	"io"
+	"io/ioutil"
 	"net/http"
+	"strconv"
+	"strings"
+
+	"github.com/soulteary/apt-proxy/pkgs/system"
 )
 
 const (
 	INTERNAL_PAGE_HOME string = "/"
-	INTERNAL_PAGE_HELP        = "/_/help"
 )
 
 const (
 	TYPE_NOT_FOUND int = 0
 	TYPE_HOME          = 1
-	TYPE_HELP          = 2
 )
 
 func isInternalUrls(url string) bool {
-	return url == INTERNAL_PAGE_HOME ||
-		url == INTERNAL_PAGE_HELP
+	if strings.Contains(url, "ubuntu") || strings.Contains(url, "debian") {
+		return false
+	}
+	return url == INTERNAL_PAGE_HOME
 }
 
 func getInternalResType(url string) int {
@@ -26,15 +31,30 @@ func getInternalResType(url string) int {
 		return TYPE_HOME
 	}
 
-	if url == INTERNAL_PAGE_HELP {
-		return TYPE_HELP
-	}
 	return TYPE_NOT_FOUND
 }
 
-// TODO Home, Help, Stats
 func renderInternalUrls(url string, rw *http.ResponseWriter) {
-	if getInternalResType(url) != 0 {
-		io.WriteString(*rw, "Hello, APT Proxy!\n")
+	types := getInternalResType(url)
+	if types == TYPE_NOT_FOUND {
+		return
 	}
+
+	if types == TYPE_HOME {
+		cacheSize, _ := system.DirSize("./.aptcache")
+		files, _ := ioutil.ReadDir("./.aptcache/header/v1")
+		available, _ := system.DiskAvailable()
+
+		memoryUsage, goroutine := system.GetMemoryUsageAndGoroutine()
+
+		io.WriteString(*rw, getBaseTemplate(
+			system.HumanFileSize(cacheSize),
+			strconv.Itoa(len(files)),
+			system.HumanFileSize(available),
+			system.HumanFileSize(memoryUsage),
+			goroutine,
+		))
+		return
+	}
+
 }

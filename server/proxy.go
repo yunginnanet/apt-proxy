@@ -40,7 +40,13 @@ func (ap *AptProxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	var rule *linux.Rule
 	if isInternalUrls(r.URL.Path) {
 		rule = nil
+
 		renderInternalUrls(r.URL.Path, &rw)
+
+		if getInternalResType(r.URL.Path) == TYPE_HOME {
+			rw.Header().Set("Content-Type", "text/html; charset=utf-8")
+		}
+
 	} else {
 		rule, match := linux.MatchingRule(r.URL.Path, ap.Rules)
 		if match {

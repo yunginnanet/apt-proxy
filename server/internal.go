@@ -4,6 +4,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 
@@ -40,22 +41,43 @@ func getInternalResType(url string) int {
 	return TYPE_NOT_FOUND
 }
 
+const LABEL_NO_VALID_VALUE = "N/A"
+
 func renderInternalUrls(url string, rw *http.ResponseWriter) {
 	types := getInternalResType(url)
 	if types == TYPE_NOT_FOUND {
 		return
 	} else if types == TYPE_HOME {
-		cacheSize, _ := system.DirSize("./.aptcache")
-		files, _ := ioutil.ReadDir("./.aptcache/header/v1")
-		available, _ := system.DiskAvailable()
 
+		cacheSizeLabel := LABEL_NO_VALID_VALUE
+		cacheSize, err := system.DirSize("./.aptcache")
+		if err == nil {
+			cacheSizeLabel = system.ByteCountDecimal(cacheSize)
+		}
+
+		filesNumberLabel := LABEL_NO_VALID_VALUE
+		if _, err := os.Stat("./.aptcache/header/v1"); !os.IsNotExist(err) {
+			files, err := ioutil.ReadDir("./.aptcache/header/v1")
+			if err == nil {
+				filesNumberLabel = strconv.Itoa(len(files))
+			}
+		}
+
+		diskAvailableLabel := LABEL_NO_VALID_VALUE
+		available, err := system.DiskAvailable()
+		if err == nil {
+			diskAvailableLabel = system.ByteCountDecimal(available)
+		}
+
+		memoryUsageLabel := LABEL_NO_VALID_VALUE
 		memoryUsage, goroutine := system.GetMemoryUsageAndGoroutine()
+		memoryUsageLabel = system.ByteCountDecimal(memoryUsage)
 
 		io.WriteString(*rw, getBaseTemplate(
-			system.HumanFileSize(cacheSize),
-			strconv.Itoa(len(files)),
-			system.HumanFileSize(available),
-			system.HumanFileSize(memoryUsage),
+			cacheSizeLabel,
+			filesNumberLabel,
+			diskAvailableLabel,
+			memoryUsageLabel,
 			goroutine,
 		))
 	} else if types == TYPE_PING {

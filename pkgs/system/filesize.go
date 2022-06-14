@@ -1,10 +1,10 @@
 package system
 
 import (
+	"fmt"
 	"math"
 	"os"
 	"path/filepath"
-	"strconv"
 
 	"golang.org/x/sys/unix"
 )
@@ -50,20 +50,16 @@ func fileSizeRound(val float64, roundOn float64, places int) float64 {
 	return round / pow
 }
 
-func HumanFileSize(input int64) string {
-	size := float64(input)
-
-	var units = []string{
-		0: "B",
-		1: "KB",
-		2: "MB",
-		3: "GB",
-		4: "TB",
+// https://programming.guide/go/formatting-byte-size-to-human-readable-format.html
+func ByteCountDecimal(b int64) string {
+	const unit = 1000
+	if b < unit {
+		return fmt.Sprintf("%d B", b)
 	}
-
-	level := math.Log(size) / math.Log(1024)
-	fileSize := fileSizeRound(math.Pow(1024, level-math.Floor(level)), .5, 2)
-	unit := units[int(math.Floor(level))]
-
-	return strconv.FormatFloat(fileSize, 'f', -1, 64) + " " + string(unit)
+	div, exp := int64(unit), 0
+	for n := b / unit; n >= unit; n /= unit {
+		div *= unit
+		exp++
+	}
+	return fmt.Sprintf("%.1f %cB", float64(b)/float64(div), "kMGTPE"[exp])
 }

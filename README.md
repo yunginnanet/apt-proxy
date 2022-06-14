@@ -7,6 +7,8 @@
 
 <img src="screenshot/dockerhub.png" width="600"/>
 
+<img src="screenshot/ui.png" width="600"/>
+
 APT Proxy is a Lightweight and Reliable APT packages (Ubuntu / Debian) cache tool, supports a large number of common system and Docker usage.
 
 You can safely use it instead of [apt-cacher-ng](https://www.unix-ag.uni-kl.de/~bloch/acng/).

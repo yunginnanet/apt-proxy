@@ -16,7 +16,15 @@ func GetProxyMode() int {
 	return PROXY_MODE
 }
 
-func SetUbuntuMirror(mirror string) {
+func SetUbuntuMirror(input string) {
+	mirror := ""
+	alias := getUbuntuMirrorByAliases(input)
+	if alias == "" {
+		mirror = input
+	} else {
+		mirror = alias
+	}
+
 	url, err := url.Parse(mirror)
 	if err != nil || mirror == "" {
 		UBUNTU_MIRROR = nil
@@ -33,7 +41,15 @@ func ResetUbuntuMirror() {
 	UBUNTU_MIRROR = nil
 }
 
-func SetDebianMirror(mirror string) {
+func SetDebianMirror(input string) {
+	mirror := ""
+	alias := getDebianMirrorByAliases(input)
+	if alias == "" {
+		mirror = input
+	} else {
+		mirror = alias
+	}
+
 	url, err := url.Parse(mirror)
 	if err != nil || mirror == "" {
 		DEBIAN_MIRROR = nil

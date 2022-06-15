@@ -1,4 +1,4 @@
-package linux
+package state
 
 type buildin_custom_mirror struct {
 	url   string
@@ -21,4 +21,22 @@ var BUILDIN_CUSTOM_DEBIAN_MIRRORS = []buildin_custom_mirror{
 	{url: "https://mirrors.aliyun.com/debian/", alias: "cn:aliyun"},
 	{url: "https://repo.huaweicloud.com/debian/", alias: "cn:huawei"},
 	{url: "https://mirrors.cloud.tencent.com/debian/", alias: "cn:tencent"},
+}
+
+func getUbuntuMirrorByAliases(alias string) string {
+	for _, mirror := range BUILDIN_CUSTOM_UBUNTU_MIRRORS {
+		if mirror.alias == alias {
+			return mirror.url
+		}
+	}
+	return ""
+}
+
+func getDebianMirrorByAliases(alias string) string {
+	for _, mirror := range BUILDIN_CUSTOM_DEBIAN_MIRRORS {
+		if mirror.alias == alias {
+			return mirror.url
+		}
+	}
+	return ""
 }

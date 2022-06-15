@@ -32,7 +32,7 @@ const (
 	DEBIAN_BENCHMAKR_URL = "dists/bullseye/main/binary-amd64/Release"
 )
 
-var BUILDIN_DEBIAN_MIRRORS = []string{
+var BUILDIN_OFFICAL_DEBIAN_MIRRORS = []string{
 	"http://ftp.cn.debian.org/debian/",
 	"http://mirror.bjtu.edu.cn/debian/",
 	"http://mirror.lzu.edu.cn/debian/",
@@ -70,7 +70,7 @@ const (
 	UBUNTU_BENCHMAKR_URL  = "dists/jammy/main/binary-amd64/Release"
 )
 
-var BUILDIN_UBUNTU_MIRRORS = []string{
+var BUILDIN_OFFICAL_UBUNTU_MIRRORS = []string{
 	"http://mirrors.aliyun.com/ubuntu/",
 	"http://mirrors.huaweicloud.com/repository/ubuntu/",
 	"http://mirror.dlut.edu.cn/ubuntu/",

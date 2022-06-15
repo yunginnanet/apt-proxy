@@ -10,17 +10,17 @@ func getGeoMirrorUrlsByMode(mode int) (mirrors []string) {
 	if mode == TYPE_LINUX_DISTROS_UBUNTU {
 		ubuntuMirrorsOnline, err := getUbuntuMirrorUrlsByGeo()
 		if err != nil {
-			return BUILDIN_UBUNTU_MIRRORS
+			return BUILDIN_OFFICAL_UBUNTU_MIRRORS
 		}
 		return ubuntuMirrorsOnline
 	}
 
 	if mode == TYPE_LINUX_DISTROS_DEBIAN {
-		return BUILDIN_DEBIAN_MIRRORS
+		return BUILDIN_OFFICAL_DEBIAN_MIRRORS
 	}
 
-	mirrors = append(mirrors, BUILDIN_UBUNTU_MIRRORS...)
-	mirrors = append(mirrors, BUILDIN_DEBIAN_MIRRORS...)
+	mirrors = append(mirrors, BUILDIN_OFFICAL_UBUNTU_MIRRORS...)
+	mirrors = append(mirrors, BUILDIN_OFFICAL_DEBIAN_MIRRORS...)
 	return mirrors
 }
 

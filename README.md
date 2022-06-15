@@ -48,6 +48,10 @@ When we need to execute the above commands repeatedly in batches, the speed of u
 
 ### Specified Mirror
 
+There are currently two ways to specify:
+
+**Use Full URL**
+
 ```bash
 # proxy cache for both `ubuntu` and `debian`
 ./apt-proxy --ubuntu=https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ --debian=https://mirrors.tuna.tsinghua.edu.cn/debian/
@@ -56,6 +60,25 @@ When we need to execute the above commands repeatedly in batches, the speed of u
 # proxy cache for `debian` only
 ./apt-proxy --mode=debian --debian=https://mirrors.tuna.tsinghua.edu.cn/debian/
 ```
+
+**Use Shorthand**
+
+```bash
+go run apt-proxy.go --ubuntu=cn:tsinghua --debian=cn:163
+2022/06/15 10:55:26 running apt-proxy
+2022/06/15 10:55:26 using specify debian mirror https://mirrors.163.com/debian/
+2022/06/15 10:55:26 using specify ubuntu mirror https://mirrors.tuna.tsinghua.edu.cn/ubuntu/
+2022/06/15 10:55:26 proxy listening on 0.0.0.0:3142
+```
+
+Shorthand list:
+
+- cn:tsinghua
+- cn:ustc
+- cn:163
+- cn:aliyun
+- cn:huawei
+- cn:tencent
 
 ### Speed UP Docker Container
 

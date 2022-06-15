@@ -17,7 +17,11 @@ func DiskAvailable() (int64, error) {
 		return 0, err
 	}
 
-	unix.Statfs(wd, &stat)
+	err = unix.Statfs(wd, &stat)
+	if err != nil {
+		return 0, err
+	}
+
 	return int64(stat.Bavail * uint64(stat.Bsize)), nil
 }
 

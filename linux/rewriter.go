@@ -40,7 +40,7 @@ func getRewriterForDebian() *URLRewriter {
 	u.pattern = pattern
 
 	if debianMirror != nil {
-		log.Printf("using specify ubuntu mirror %s", debianMirror)
+		log.Printf("using specify debian mirror %s", debianMirror)
 		u.mirror = debianMirror
 		return u
 	}

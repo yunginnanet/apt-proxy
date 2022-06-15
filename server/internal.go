@@ -42,6 +42,7 @@ func getInternalResType(url string) int {
 }
 
 const LABEL_NO_VALID_VALUE = "N/A"
+const CACHE_META_DIR = "./.aptcache/header/v1"
 
 func renderInternalUrls(url string, rw *http.ResponseWriter) {
 	types := getInternalResType(url)
@@ -56,8 +57,8 @@ func renderInternalUrls(url string, rw *http.ResponseWriter) {
 		}
 
 		filesNumberLabel := LABEL_NO_VALID_VALUE
-		if _, err := os.Stat("./.aptcache/header/v1"); !os.IsNotExist(err) {
-			files, err := ioutil.ReadDir("./.aptcache/header/v1")
+		if _, err := os.Stat(CACHE_META_DIR); !os.IsNotExist(err) {
+			files, err := ioutil.ReadDir(CACHE_META_DIR)
 			if err == nil {
 				filesNumberLabel = strconv.Itoa(len(files))
 			}

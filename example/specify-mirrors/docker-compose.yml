@@ -1,0 +1,11 @@
+version: "3"
+services:
+
+  apt-proxy:
+    image: soulteary/apt-proxy
+    restart: always
+    command: --ubuntu=cn:tsinghua --debian=cn:tsinghua
+    environment:
+      - TZ=Asia/Shanghai
+    ports:
+      - "3142:3142"

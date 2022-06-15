@@ -17,16 +17,19 @@ func GetProxyMode() int {
 }
 
 func SetUbuntuMirror(input string) {
-	mirror := ""
+	if input == "" {
+		UBUNTU_MIRROR = nil
+		return
+	}
+
+	mirror := input
 	alias := getUbuntuMirrorByAliases(input)
-	if alias == "" {
-		mirror = input
-	} else {
+	if alias != "" {
 		mirror = alias
 	}
 
 	url, err := url.Parse(mirror)
-	if err != nil || mirror == "" {
+	if err != nil {
 		UBUNTU_MIRROR = nil
 		return
 	}
@@ -42,16 +45,19 @@ func ResetUbuntuMirror() {
 }
 
 func SetDebianMirror(input string) {
-	mirror := ""
+	if input == "" {
+		DEBIAN_MIRROR = nil
+		return
+	}
+
+	mirror := input
 	alias := getDebianMirrorByAliases(input)
-	if alias == "" {
-		mirror = input
-	} else {
+	if alias != "" {
 		mirror = alias
 	}
 
 	url, err := url.Parse(mirror)
-	if err != nil || mirror == "" {
+	if err != nil {
 		DEBIAN_MIRROR = nil
 		return
 	}

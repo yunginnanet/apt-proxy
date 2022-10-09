@@ -2,9 +2,7 @@ package vfs
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
-	"path"
 	"path/filepath"
 )
 
@@ -20,7 +18,7 @@ type fileSystem struct {
 }
 
 func (fs *fileSystem) path(name string) string {
-	name = path.Clean("/" + name)
+	name = filepath.Clean("/" + name)
 	return filepath.Join(fs.root, filepath.FromSlash(name))
 }
 
@@ -68,10 +66,20 @@ func (fs *fileSystem) Stat(path string) (os.FileInfo, error) {
 }
 
 func (fs *fileSystem) ReadDir(path string) ([]os.FileInfo, error) {
-	files, err := ioutil.ReadDir(fs.path(path))
+	entries, err := os.ReadDir(fs.path(path))
 	if err != nil {
 		return nil, err
 	}
+
+	files := make([]os.FileInfo, 0, len(entries))
+	for _, entry := range entries {
+		info, err := entry.Info()
+		if err != nil {
+			return nil, err
+		}
+		files = append(files, info)
+	}
+
 	return files, nil
 }
 
@@ -119,7 +127,7 @@ func FS(root string) (VFS, error) {
 // done with the temporary filesystem, you might can all its files by calling
 // its Close method.
 func TmpFS(prefix string) (TemporaryVFS, error) {
-	dir, err := ioutil.TempDir("", prefix)
+	dir, err := os.MkdirTemp("", prefix)
 	if err != nil {
 		return nil, err
 	}

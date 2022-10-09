@@ -49,8 +49,14 @@ func fileData(f *File) ([]byte, error) {
 	}
 	defer zr.Close()
 	var out bytes.Buffer
-	if _, err := io.Copy(&out, zr); err != nil {
-		return nil, err
+	for {
+		_, err := io.CopyN(&out, zr, 1024)
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			return nil, err
+		}
 	}
 	return out.Bytes(), nil
 }

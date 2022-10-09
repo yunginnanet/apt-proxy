@@ -141,8 +141,9 @@ func (c *cache) storeBody(r io.Reader, key string) error {
 func (c *cache) storeHeader(code int, h http.Header, key string) error {
 	hb := &bytes.Buffer{}
 	hb.Write([]byte(fmt.Sprintf("HTTP/1.1 %d %s\r\n", code, http.StatusText(code))))
-	headersToWriter(h, hb)
-
+	if err := headersToWriter(h, hb); err != nil {
+		return err
+	}
 	if err := c.vfsWrite(headerPrefix+formatPrefix+hashKey(key), bytes.NewReader(hb.Bytes())); err != nil {
 		return err
 	}
@@ -201,7 +202,10 @@ func (c *cache) Freshen(res *Resource, keys ...string) error {
 
 func hashKey(key string) string {
 	h := fnv.New64a()
-	h.Write([]byte(key))
+	_, err := h.Write([]byte(key))
+	if err != nil {
+		return "unable-to-calculate"
+	}
 	return fmt.Sprintf("%x", h.Sum(nil))
 }
 

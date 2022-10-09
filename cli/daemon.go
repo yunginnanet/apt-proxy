@@ -3,6 +3,7 @@ package cli
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/soulteary/apt-proxy/pkgs/httpcache"
 	"github.com/soulteary/apt-proxy/pkgs/httplog"
@@ -49,7 +50,15 @@ func initLogger(appFlags AppFlags, ap *server.AptProxy) {
 
 func StartServer(appFlags *AppFlags, ap *server.AptProxy) {
 	log.Printf("proxy listening on %s", appFlags.Listen)
-	log.Fatal(http.ListenAndServe(appFlags.Listen, ap))
+
+	server := &http.Server{
+		Addr:              appFlags.Listen,
+		Handler:           ap,
+		ReadHeaderTimeout: 5 * time.Second,
+		ReadTimeout:       5 * time.Second,
+	}
+
+	log.Fatal(server.ListenAndServe())
 }
 
 func Daemon(appFlags *AppFlags) {

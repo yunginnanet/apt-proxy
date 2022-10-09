@@ -26,7 +26,7 @@ const (
 )
 
 // Returned when a resource doesn't exist
-var ErrNotFoundInCache = errors.New("Not found in cache")
+var ErrNotFoundInCache = errors.New("not found in cache")
 
 type Cache interface {
 	Header(key string) (Header, error)

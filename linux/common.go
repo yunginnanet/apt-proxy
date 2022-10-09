@@ -94,7 +94,7 @@ var BUILDIN_OFFICAL_UBUNTU_MIRRORS = []string{
 }
 
 var UBUNTU_HOST_PATTERN = regexp.MustCompile(
-	`https?://(security|archive).ubuntu.com/ubuntu/(.+)$`,
+	`https?://(\w+)?(security|archive).ubuntu.com/ubuntu/(.+)$`,
 )
 
 var UBUNTU_DEFAULT_CACHE_RULES = []Rule{

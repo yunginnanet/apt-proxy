@@ -77,11 +77,16 @@ func TestSpecResponseCacheControl(t *testing.T) {
 		upstream.CacheControl = c.cacheControl
 		client.cacheHandler.Shared = c.shared
 
-		assert.Equal(t, http.StatusOK, client.get("/").Code)
+		if http.StatusOK != client.get("/").Code {
+			t.Fatalf("HTTP status code: %d not equal Status OK", client.get("/").Code)
+		}
 		upstream.timeTravel(time.Second * time.Duration(c.secondsElapsed))
 
 		r := client.get("/")
-		assert.Equal(t, http.StatusOK, r.statusCode)
+		if http.StatusOK != r.statusCode {
+			t.Fatalf("HTTP status code: %d not equal Status OK", r.statusCode)
+		}
+
 		require.Equal(t, c.requests, upstream.requests,
 			fmt.Sprintf("case #%d failed, %+v", idx+1, c))
 
@@ -98,20 +103,28 @@ func TestSpecResponseCacheControlWithPrivateHeaders(t *testing.T) {
 	upstream.CacheControl = `max-age=10, private=X-Llamas, private=Set-Cookie"`
 	upstream.Header.Add("X-Llamas", "fully")
 	upstream.Header.Add("Set-Cookie", "llamas=true")
-	assert.Equal(t, http.StatusOK, client.get("/r1").Code)
+	if http.StatusOK != client.get("/r1").Code {
+		t.Fatalf("HTTP status code: %d not equal Status OK", client.get("/r1").Code)
+	}
 
 	r1 := client.get("/r1")
-	assert.Equal(t, http.StatusOK, r1.statusCode)
+	if http.StatusOK != r1.statusCode {
+		t.Fatalf("HTTP status code: %d not equal Status OK", r1.statusCode)
+	}
 	assert.Equal(t, "HIT", r1.cacheStatus)
 	assert.Equal(t, "fully", r1.HeaderMap.Get("X-Llamas"))
 	assert.Equal(t, "llamas=true", r1.HeaderMap.Get("Set-Cookie"))
 	assert.Equal(t, 1, upstream.requests)
 
 	client.cacheHandler.Shared = true
-	assert.Equal(t, http.StatusOK, client.get("/r2").Code)
+	if http.StatusOK != client.get("/r2").Code {
+		t.Fatalf("HTTP status code: %d not equal Status OK", client.get("/r2").Code)
+	}
 
 	r2 := client.get("/r2")
-	assert.Equal(t, http.StatusOK, r1.statusCode)
+	if http.StatusOK != r1.statusCode {
+		t.Fatalf("HTTP status code: %d not equal Status OK", r1.statusCode)
+	}
 	assert.Equal(t, "HIT", r2.cacheStatus)
 	assert.Equal(t, "", r2.HeaderMap.Get("X-Llamas"))
 	assert.Equal(t, "", r2.HeaderMap.Get("Set-Cookie"))
@@ -123,19 +136,27 @@ func TestSpecResponseCacheControlWithAuthorizationHeaders(t *testing.T) {
 	client.cacheHandler.Shared = true
 	upstream.CacheControl = `max-age=10`
 	upstream.Header.Add("Authorization", "fully")
-	assert.Equal(t, http.StatusOK, client.get("/r1").Code)
+	if http.StatusOK != client.get("/r1").Code {
+		t.Fatalf("HTTP status code: %d not equal Status OK", client.get("/r1").Code)
+	}
 
 	r1 := client.get("/r1")
-	assert.Equal(t, http.StatusOK, r1.statusCode)
+	if http.StatusOK != r1.statusCode {
+		t.Fatalf("HTTP status code: %d not equal Status OK", r1.statusCode)
+	}
 	assert.Equal(t, "SKIP", r1.cacheStatus)
 	assert.Equal(t, "fully", r1.HeaderMap.Get("Authorization"))
 	assert.Equal(t, 2, upstream.requests)
 
 	client.cacheHandler.Shared = false
-	assert.Equal(t, http.StatusOK, client.get("/r2").Code)
+	if http.StatusOK != client.get("/r2").Code {
+		t.Fatalf("HTTP status code: %d not equal Status OK", client.get("/r2").Code)
+	}
 
 	r3 := client.get("/r2")
-	assert.Equal(t, http.StatusOK, r3.statusCode)
+	if http.StatusOK != r3.statusCode {
+		t.Fatalf("HTTP status code: %d not equal Status OK", r3.statusCode)
+	}
 	assert.Equal(t, "HIT", r3.cacheStatus)
 	assert.Equal(t, "fully", r3.HeaderMap.Get("Authorization"))
 	assert.Equal(t, 3, upstream.requests)
@@ -165,11 +186,15 @@ func TestSpecRequestCacheControl(t *testing.T) {
 		client, upstream := testSetup()
 		upstream.CacheControl = "max-age=60"
 
-		assert.Equal(t, http.StatusOK, client.get("/").Code)
+		if http.StatusOK != client.get("/").Code {
+			t.Fatalf("HTTP status code: %d not equal Status OK", client.get("/").Code)
+		}
 		upstream.timeTravel(time.Second * time.Duration(c.secondsElapsed))
 
 		r := client.get("/", "Cache-Control: "+c.cacheControl)
-		assert.Equal(t, http.StatusOK, r.statusCode)
+		if http.StatusOK != r.statusCode {
+			t.Fatalf("HTTP status code: %d not equal Status OK", r.statusCode)
+		}
 		assert.Equal(t, c.requests, upstream.requests,
 			fmt.Sprintf("case #%d failed, %+v", idx+1, c))
 	}
@@ -179,8 +204,12 @@ func TestSpecRequestCacheControlWithOnlyIfCached(t *testing.T) {
 	client, upstream := testSetup()
 	upstream.CacheControl = "max-age=10"
 
-	assert.Equal(t, http.StatusOK, client.get("/").Code)
-	assert.Equal(t, http.StatusOK, client.get("/").Code)
+	if http.StatusOK != client.get("/").Code {
+		t.Fatalf("HTTP status code: %d not equal Status OK", client.get("/").Code)
+	}
+	if http.StatusOK != client.get("/").Code {
+		t.Fatalf("HTTP status code: %d not equal Status OK", client.get("/").Code)
+	}
 
 	upstream.timeTravel(time.Second * 20)
 	assert.Equal(t, http.StatusGatewayTimeout,

@@ -141,8 +141,8 @@ func TestMapFS(t *testing.T) {
 
 func TestPopulatedMap(t *testing.T) {
 	files := map[string]*File{
-		"a/1": &File{},
-		"a/2": &File{},
+		"a/1": {},
+		"a/2": {},
 	}
 	fs, err := Map(files)
 	if err != nil {
@@ -163,8 +163,8 @@ func TestPopulatedMap(t *testing.T) {
 func TestBadPopulatedMap(t *testing.T) {
 	// 1 can't be file and directory
 	files := map[string]*File{
-		"a/1":   &File{},
-		"a/1/2": &File{},
+		"a/1":   {},
+		"a/1/2": {},
 	}
 	_, err := Map(files)
 	if err == nil {

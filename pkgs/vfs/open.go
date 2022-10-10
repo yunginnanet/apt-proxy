@@ -112,10 +112,10 @@ func TarBzip2(r io.Reader) (VFS, error) {
 // of the given filename, which must have one of the following
 // extensions:
 //
-//  - .zip
-//  - .tar
-//  - .tar.gz
-//  - .tar.bz2
+//   - .zip
+//   - .tar
+//   - .tar.gz
+//   - .tar.bz2
 func Open(filename string) (VFS, error) {
 	file, err := os.Open(filepath.Clean(filename))
 	if err != nil {

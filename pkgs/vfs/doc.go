@@ -10,13 +10,13 @@
 // any VFS implementation, providing the same functionality than functions in the
 // io/ioutil, os and path/filepath packages:
 //
-//  io/ioutil.ReadFile => ReadFile
-//  io/ioutil.WriteFile => WriteFile
-//  os.IsExist => IsExist
-//  os.IsNotExist => IsNotExist
-//  os.MkdirAll => MkdirAll
-//  os.RemoveAll => RemoveAll
-//  path/filepath.Walk => Walk
+//	io/ioutil.ReadFile => ReadFile
+//	io/ioutil.WriteFile => WriteFile
+//	os.IsExist => IsExist
+//	os.IsNotExist => IsNotExist
+//	os.MkdirAll => MkdirAll
+//	os.RemoveAll => RemoveAll
+//	path/filepath.Walk => Walk
 //
 // All VFS implementations are thread safe, so multiple readers and writers might
 // operate on them at any time.

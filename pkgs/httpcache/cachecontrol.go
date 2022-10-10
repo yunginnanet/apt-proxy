@@ -89,7 +89,7 @@ func (cc CacheControl) Duration(key string) (time.Duration, error) {
 
 func (cc CacheControl) String() string {
 	keys := make([]string, len(cc))
-	for k, _ := range cc {
+	for k := range cc {
 		keys = append(keys, k)
 	}
 	sort.Strings(keys)

@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/soulteary/apt-proxy/pkgs/httpcache"
+	"github.com/soulteary/apt-proxy/pkg/httpcache"
 )
 
 func newRequest(method, url string, h ...string) *http.Request {

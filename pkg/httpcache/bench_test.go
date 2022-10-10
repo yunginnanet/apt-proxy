@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/soulteary/apt-proxy/pkgs/httpcache"
+	"github.com/soulteary/apt-proxy/pkg/httpcache"
 )
 
 func BenchmarkCachingFiles(b *testing.B) {

@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/soulteary/apt-proxy/pkgs/httpcache"
+	"github.com/soulteary/apt-proxy/pkg/httpcache"
 	"github.com/stretchr/testify/assert"
 )
 

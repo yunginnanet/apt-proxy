@@ -240,7 +240,9 @@ func TestSpecCachingStatusCodes(t *testing.T) {
 
 	r1 := client.get("/r1")
 	assert.Equal(t, http.StatusNotFound, r1.statusCode)
-	assert.Equal(t, "MISS", r1.cacheStatus)
+	if strings.Compare("MISS", r1.cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", r1.cacheStatus)
+	}
 	assert.Equal(t, string(upstream.Body), string(r1.body))
 
 	upstream.timeTravel(time.Second * 10)
@@ -265,7 +267,9 @@ func TestSpecConditionalCaching(t *testing.T) {
 	upstream.Etag = `"llamas"`
 
 	r1 := client.get("/")
-	assert.Equal(t, "MISS", r1.cacheStatus)
+	if strings.Compare("MISS", r1.cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", r1.cacheStatus)
+	}
 	assert.Equal(t, string(upstream.Body), string(r1.body))
 
 	r2 := client.get("/", `If-None-Match: "llamas"`)
@@ -290,7 +294,9 @@ func TestSpecRangeRequests(t *testing.T) {
 func TestSpecHeuristicCaching(t *testing.T) {
 	client, upstream := testSetup()
 	upstream.LastModified = upstream.Now.AddDate(-1, 0, 0)
-	assert.Equal(t, "MISS", client.get("/").cacheStatus)
+	if strings.Compare("MISS", client.get("/").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/").cacheStatus)
+	}
 
 	upstream.timeTravel(time.Hour * 48)
 	r2 := client.get("/")
@@ -305,7 +311,9 @@ func TestSpecCacheControlTrumpsExpires(t *testing.T) {
 	client, upstream := testSetup()
 	upstream.LastModified = upstream.Now.AddDate(-1, 0, 0)
 	upstream.CacheControl = "max-age=2"
-	assert.Equal(t, "MISS", client.get("/").cacheStatus)
+	if strings.Compare("MISS", client.get("/").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/").cacheStatus)
+	}
 	if strings.Compare("HIT", client.get("/").cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", client.get("/").cacheStatus)
 	}
@@ -357,8 +365,9 @@ func TestSpecRequestsWithoutHostHeader(t *testing.T) {
 func TestSpecCacheControlMaxStale(t *testing.T) {
 	client, upstream := testSetup()
 	upstream.CacheControl = "max-age=60"
-	assert.Equal(t, "MISS", client.get("/").cacheStatus)
-
+	if strings.Compare("MISS", client.get("/").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/").cacheStatus)
+	}
 	upstream.timeTravel(time.Second * 90)
 	upstream.Body = []byte("brand new content")
 	r2 := client.get("/", "Cache-Control: max-stale=3600")
@@ -369,7 +378,9 @@ func TestSpecCacheControlMaxStale(t *testing.T) {
 
 	upstream.timeTravel(time.Second * 90)
 	r3 := client.get("/")
-	assert.Equal(t, "MISS", r3.cacheStatus)
+	if strings.Compare("MISS", r3.cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", r3.cacheStatus)
+	}
 	assert.Equal(t, time.Duration(0), r3.age)
 }
 
@@ -377,8 +388,9 @@ func TestSpecValidatingStaleResponsesUnchanged(t *testing.T) {
 	client, upstream := testSetup()
 	upstream.CacheControl = "max-age=60"
 	upstream.Etag = "llamas1"
-	assert.Equal(t, "MISS", client.get("/").cacheStatus)
-
+	if strings.Compare("MISS", client.get("/").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/").cacheStatus)
+	}
 	upstream.timeTravel(time.Second * 90)
 	upstream.Header.Add("X-New-Header", "1")
 
@@ -393,14 +405,17 @@ func TestSpecValidatingStaleResponsesUnchanged(t *testing.T) {
 func TestSpecValidatingStaleResponsesWithNewContent(t *testing.T) {
 	client, upstream := testSetup()
 	upstream.CacheControl = "max-age=60"
-	assert.Equal(t, "MISS", client.get("/").cacheStatus)
-
+	if strings.Compare("MISS", client.get("/").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/").cacheStatus)
+	}
 	upstream.timeTravel(time.Second * 90)
 	upstream.Body = []byte("brand new content")
 
 	r2 := client.get("/")
 	assert.Equal(t, http.StatusOK, r2.Code)
-	assert.Equal(t, "MISS", r2.cacheStatus)
+	if strings.Compare("MISS", r2.cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", r2.cacheStatus)
+	}
 	assert.Equal(t, "brand new content", string(r2.body))
 	assert.Equal(t, time.Duration(0), r2.age)
 }
@@ -410,14 +425,18 @@ func TestSpecValidatingStaleResponsesWithNewEtag(t *testing.T) {
 	upstream.CacheControl = "max-age=60"
 	upstream.Etag = "llamas1"
 
-	assert.Equal(t, "MISS", client.get("/").cacheStatus)
+	if strings.Compare("MISS", client.get("/").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/").cacheStatus)
+	}
 
 	upstream.timeTravel(time.Second * 90)
 	upstream.Etag = "llamas2"
 
 	r2 := client.get("/")
 	assert.Equal(t, http.StatusOK, r2.Code)
-	assert.Equal(t, "MISS", r2.cacheStatus)
+	if strings.Compare("MISS", r2.cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", r2.cacheStatus)
+	}
 }
 
 func TestSpecVaryHeader(t *testing.T) {
@@ -426,11 +445,15 @@ func TestSpecVaryHeader(t *testing.T) {
 	upstream.Vary = "Accept-Language"
 	upstream.Etag = "llamas"
 
-	assert.Equal(t, "MISS", client.get("/", "Accept-Language: en").cacheStatus)
+	if strings.Compare("MISS", client.get("/", "Accept-Language: en").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/", "Accept-Language: en").cacheStatus)
+	}
 	if strings.Compare("HIT", client.get("/", "Accept-Language: en").cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", client.get("/", "Accept-Language: en").cacheStatus)
 	}
-	assert.Equal(t, "MISS", client.get("/", "Accept-Language: de").cacheStatus)
+	if strings.Compare("MISS", client.get("/", "Accept-Language: de").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/", "Accept-Language: de").cacheStatus)
+	}
 	if strings.Compare("HIT", client.get("/", "Accept-Language: de").cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", client.get("/", "Accept-Language: de").cacheStatus)
 	}
@@ -442,9 +465,9 @@ func TestSpecHeadersPropagated(t *testing.T) {
 	upstream.Header.Add("X-Llamas", "1")
 	upstream.Header.Add("X-Llamas", "3")
 	upstream.Header.Add("X-Llamas", "2")
-
-	assert.Equal(t, "MISS", client.get("/").cacheStatus)
-
+	if strings.Compare("MISS", client.get("/").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/").cacheStatus)
+	}
 	r2 := client.get("/")
 	if strings.Compare("HIT", r2.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", r2.cacheStatus)
@@ -488,7 +511,9 @@ func TestSpecAgeHeaderGeneratedWhereNoneExists(t *testing.T) {
 func TestSpecWarningForOldContent(t *testing.T) {
 	client, upstream := testSetup()
 	upstream.LastModified = upstream.Now.AddDate(-1, 0, 0)
-	assert.Equal(t, "MISS", client.get("/").cacheStatus)
+	if strings.Compare("MISS", client.get("/").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/").cacheStatus)
+	}
 
 	upstream.timeTravel(time.Hour * 48)
 	r2 := client.get("/")
@@ -501,7 +526,9 @@ func TestSpecWarningForOldContent(t *testing.T) {
 func TestSpecHeadCanBeServedFromCacheOnlyWithExplicitFreshness(t *testing.T) {
 	client, upstream := testSetup()
 	upstream.CacheControl = "max-age=3600"
-	assert.Equal(t, "MISS", client.get("/explicit").cacheStatus)
+	if strings.Compare("MISS", client.get("/explicit").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/explicit").cacheStatus)
+	}
 	if strings.Compare("HIT", client.head("/explicit").cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", client.head("/explicit").cacheStatus)
 	}
@@ -523,19 +550,24 @@ func TestSpecHeadCanBeServedFromCacheOnlyWithExplicitFreshness(t *testing.T) {
 func TestSpecInvalidatingGetWithHeadRequest(t *testing.T) {
 	client, upstream := testSetup()
 	upstream.CacheControl = "max-age=3600"
-	assert.Equal(t, "MISS", client.get("/explicit").cacheStatus)
-
+	if strings.Compare("MISS", client.get("/explicit").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/explicit").cacheStatus)
+	}
 	upstream.Body = []byte("brand new content")
 	if strings.Compare("SKIP", client.head("/explicit", "Cache-Control: max-age=0").cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", client.head("/explicit", "Cache-Control: max-age=0").cacheStatus)
 	}
-	assert.Equal(t, "MISS", client.get("/explicit").cacheStatus)
+	if strings.Compare("MISS", client.get("/explicit").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/explicit").cacheStatus)
+	}
 }
 
 func TestSpecFresheningGetWithHeadRequest(t *testing.T) {
 	client, upstream := testSetup()
 	upstream.CacheControl = "max-age=3600"
-	assert.Equal(t, "MISS", client.get("/explicit").cacheStatus)
+	if strings.Compare("MISS", client.get("/explicit").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/explicit").cacheStatus)
+	}
 
 	upstream.timeTravel(time.Second * 10)
 	assert.Equal(t, 10*time.Second, client.get("/explicit").age)
@@ -558,7 +590,9 @@ func TestSpecContentHeaderInRequestRespected(t *testing.T) {
 	upstream.CacheControl = "max-age=3600"
 
 	r1 := client.get("/llamas/rock")
-	assert.Equal(t, "MISS", r1.cacheStatus)
+	if strings.Compare("MISS", r1.cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", r1.cacheStatus)
+	}
 	assert.Equal(t, string(upstream.Body), string(r1.body))
 
 	r2 := client.get("/another/llamas", "Content-Location: /llamas/rock")

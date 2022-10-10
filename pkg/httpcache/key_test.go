@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/soulteary/apt-proxy/pkg/httpcache"
-	"github.com/stretchr/testify/assert"
 )
 
 func mustParseUrl(u string) *url.URL {
@@ -31,7 +30,9 @@ func TestRequestKey(t *testing.T) {
 	k1 := httpcache.NewKey("GET", mustParseUrl("http://x.org/test"), nil)
 	k2 := httpcache.NewRequestKey(r)
 
-	assert.Equal(t, k1.String(), k2.String())
+	if k1.String() != k2.String() {
+		t.Fatal("request key should be same")
+	}
 }
 
 func TestVaryKey(t *testing.T) {
@@ -51,7 +52,9 @@ func TestRequestKeyWithContentLocation(t *testing.T) {
 	k1 := httpcache.NewKey("GET", mustParseUrl("http://x.org/test2"), nil)
 	k2 := httpcache.NewRequestKey(r)
 
-	assert.Equal(t, k1.String(), k2.String())
+	if k1.String() != k2.String() {
+		t.Fatal("request key should with content location")
+	}
 }
 
 func TestRequestKeyWithIllegalContentLocation(t *testing.T) {
@@ -60,5 +63,7 @@ func TestRequestKeyWithIllegalContentLocation(t *testing.T) {
 	k1 := httpcache.NewKey("GET", mustParseUrl("http://x.org/test1"), nil)
 	k2 := httpcache.NewRequestKey(r)
 
-	assert.Equal(t, k1.String(), k2.String())
+	if k1.String() != k2.String() {
+		t.Fatal("request key should with illegal content location")
+	}
 }

@@ -115,7 +115,9 @@ func TestSpecResponseCacheControlWithPrivateHeaders(t *testing.T) {
 	if strings.Compare("HIT", r1.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", r1.cacheStatus)
 	}
-	assert.Equal(t, "fully", r1.HeaderMap.Get("X-Llamas"))
+	if strings.Compare("fully", r1.HeaderMap.Get("X-Llamas")) != 0 {
+		t.Fatalf("Cache status: %s not equal", r1.HeaderMap.Get("X-Llamas"))
+	}
 	assert.Equal(t, "llamas=true", r1.HeaderMap.Get("Set-Cookie"))
 	assert.Equal(t, 1, upstream.requests)
 
@@ -150,7 +152,9 @@ func TestSpecResponseCacheControlWithAuthorizationHeaders(t *testing.T) {
 		t.Fatalf("HTTP status code: %d not equal Status OK", r1.statusCode)
 	}
 	assert.Equal(t, "SKIP", r1.cacheStatus)
-	assert.Equal(t, "fully", r1.HeaderMap.Get("Authorization"))
+	if strings.Compare("fully", r1.HeaderMap.Get("Authorization")) != 0 {
+		t.Fatalf("Cache status: %s not equal", r1.HeaderMap.Get("Authorization"))
+	}
 	assert.Equal(t, 2, upstream.requests)
 
 	client.cacheHandler.Shared = false
@@ -165,7 +169,9 @@ func TestSpecResponseCacheControlWithAuthorizationHeaders(t *testing.T) {
 	if strings.Compare("HIT", r3.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", r3.cacheStatus)
 	}
-	assert.Equal(t, "fully", r3.HeaderMap.Get("Authorization"))
+	if strings.Compare("fully", r3.HeaderMap.Get("Authorization")) != 0 {
+		t.Fatalf("Cache status: %s not equal", r3.HeaderMap.Get("Authorization"))
+	}
 	assert.Equal(t, 3, upstream.requests)
 }
 

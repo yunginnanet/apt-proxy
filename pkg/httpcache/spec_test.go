@@ -151,7 +151,9 @@ func TestSpecResponseCacheControlWithAuthorizationHeaders(t *testing.T) {
 	if http.StatusOK != r1.statusCode {
 		t.Fatalf("HTTP status code: %d not equal Status OK", r1.statusCode)
 	}
-	assert.Equal(t, "SKIP", r1.cacheStatus)
+	if strings.Compare("SKIP", r1.cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", r1.cacheStatus)
+	}
 	if strings.Compare("fully", r1.HeaderMap.Get("Authorization")) != 0 {
 		t.Fatalf("Cache status: %s not equal", r1.HeaderMap.Get("Authorization"))
 	}
@@ -253,7 +255,9 @@ func TestSpecCachingStatusCodes(t *testing.T) {
 	upstream.StatusCode = http.StatusPaymentRequired
 	r3 := client.get("/r2")
 	assert.Equal(t, http.StatusPaymentRequired, r3.statusCode)
-	assert.Equal(t, "SKIP", r3.cacheStatus)
+	if strings.Compare("SKIP", r3.cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", r3.cacheStatus)
+	}
 }
 
 func TestSpecConditionalCaching(t *testing.T) {
@@ -277,7 +281,9 @@ func TestSpecRangeRequests(t *testing.T) {
 
 	r1 := client.get("/", "Range: bytes=0-3")
 	assert.Equal(t, http.StatusPartialContent, r1.Code)
-	assert.Equal(t, "SKIP", r1.cacheStatus)
+	if strings.Compare("SKIP", r1.cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", r1.cacheStatus)
+	}
 	assert.Equal(t, string(upstream.Body[0:4]), string(r1.body))
 }
 
@@ -317,8 +323,12 @@ func TestSpecNotCachedWithoutValidatorOrExpiration(t *testing.T) {
 	upstream.LastModified = time.Time{}
 	upstream.Etag = ""
 
-	assert.Equal(t, "SKIP", client.get("/").cacheStatus)
-	assert.Equal(t, "SKIP", client.get("/").cacheStatus)
+	if strings.Compare("SKIP", client.get("/").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/").cacheStatus)
+	}
+	if strings.Compare("SKIP", client.get("/").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/").cacheStatus)
+	}
 	assert.Equal(t, 2, upstream.requests)
 }
 
@@ -327,7 +337,9 @@ func TestSpecNoCachingForInvalidExpires(t *testing.T) {
 	upstream.LastModified = time.Time{}
 	upstream.Header.Set("Expires", "-1")
 
-	assert.Equal(t, "SKIP", client.get("/").cacheStatus)
+	if strings.Compare("SKIP", client.get("/").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/").cacheStatus)
+	}
 }
 
 func TestSpecRequestsWithoutHostHeader(t *testing.T) {
@@ -497,9 +509,15 @@ func TestSpecHeadCanBeServedFromCacheOnlyWithExplicitFreshness(t *testing.T) {
 		t.Fatalf("Cache status: %s not equal", client.head("/explicit").cacheStatus)
 	}
 	upstream.CacheControl = ""
-	assert.Equal(t, "SKIP", client.get("/implicit").cacheStatus)
-	assert.Equal(t, "SKIP", client.head("/implicit").cacheStatus)
-	assert.Equal(t, "SKIP", client.head("/implicit").cacheStatus)
+	if strings.Compare("SKIP", client.get("/implicit").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.get("/implicit").cacheStatus)
+	}
+	if strings.Compare("SKIP", client.head("/implicit").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.head("/implicit").cacheStatus)
+	}
+	if strings.Compare("SKIP", client.head("/implicit").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.head("/implicit").cacheStatus)
+	}
 }
 
 func TestSpecInvalidatingGetWithHeadRequest(t *testing.T) {
@@ -508,7 +526,9 @@ func TestSpecInvalidatingGetWithHeadRequest(t *testing.T) {
 	assert.Equal(t, "MISS", client.get("/explicit").cacheStatus)
 
 	upstream.Body = []byte("brand new content")
-	assert.Equal(t, "SKIP", client.head("/explicit", "Cache-Control: max-age=0").cacheStatus)
+	if strings.Compare("SKIP", client.head("/explicit", "Cache-Control: max-age=0").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.head("/explicit", "Cache-Control: max-age=0").cacheStatus)
+	}
 	assert.Equal(t, "MISS", client.get("/explicit").cacheStatus)
 }
 
@@ -521,7 +541,9 @@ func TestSpecFresheningGetWithHeadRequest(t *testing.T) {
 	assert.Equal(t, 10*time.Second, client.get("/explicit").age)
 
 	upstream.Header.Add("X-Llamas", "llamas")
-	assert.Equal(t, "SKIP", client.head("/explicit", "Cache-Control: max-age=0").cacheStatus)
+	if strings.Compare("SKIP", client.head("/explicit", "Cache-Control: max-age=0").cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", client.head("/explicit", "Cache-Control: max-age=0").cacheStatus)
+	}
 
 	refreshed := client.get("/explicit")
 	if strings.Compare("HIT", refreshed.cacheStatus) != 0 {
@@ -552,5 +574,7 @@ func TestSpecMultipleCacheControlHeaders(t *testing.T) {
 	upstream.Header.Add("Cache-Control", "no-cache")
 
 	r1 := client.get("/")
-	assert.Equal(t, "SKIP", r1.cacheStatus)
+	if strings.Compare("SKIP", r1.cacheStatus) != 0 {
+		t.Fatalf("Cache status: %s not equal", r1.cacheStatus)
+	}
 }

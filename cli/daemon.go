@@ -1,8 +1,11 @@
 package cli
 
 import (
+	"context"
 	"log"
 	"net/http"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/soulteary/apt-proxy/pkg/httpcache"
@@ -50,15 +53,35 @@ func initLogger(appFlags AppFlags, ap *server.AptProxy) {
 
 func StartServer(appFlags *AppFlags, ap *server.AptProxy) {
 	log.Printf("proxy listening on %s", appFlags.Listen)
+	// graceful shutdown
+	// https://github.com/soulteary/flare/blob/main/cmd/daemon.go
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
 
-	server := &http.Server{
+	srv := &http.Server{
 		Addr:              appFlags.Listen,
 		Handler:           ap,
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       5 * time.Second,
 	}
 
-	log.Fatal(server.ListenAndServe())
+	go func() {
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("program startup error: %s\n", err)
+		}
+	}()
+	log.Println("Program has been started 🚀")
+
+	<-ctx.Done()
+
+	stop()
+	log.Println("The program is closing, to end immediately press CTRL+C")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancel()
+	if err := srv.Shutdown(ctx); err != nil {
+		log.Fatal("program force close: ", err)
+	}
 }
 
 func Daemon(appFlags *AppFlags) {

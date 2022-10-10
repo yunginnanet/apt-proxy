@@ -239,8 +239,9 @@ func TestSpecRequestCacheControlWithOnlyIfCached(t *testing.T) {
 	}
 
 	upstream.timeTravel(time.Second * 20)
-	assert.Equal(t, http.StatusGatewayTimeout,
-		client.get("/", "Cache-Control: only-if-cached").Code)
+	if http.StatusGatewayTimeout != client.get("/", "Cache-Control: only-if-cached").Code {
+		t.Fatalf("HTTP status code: %d not equal StatusGatewayTimeout", client.get("/", "Cache-Control: only-if-cached").Code)
+	}
 
 	if upstream.requests != 1 {
 		t.Fatalf("Unexpected requests: %d", upstream.requests)
@@ -259,7 +260,9 @@ func TestSpecCachingStatusCodes(t *testing.T) {
 	if strings.Compare("MISS", r1.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", r1.cacheStatus)
 	}
-	assert.Equal(t, string(upstream.Body), string(r1.body))
+	if strings.Compare(string(upstream.Body), string(r1.body)) != 0 {
+		t.Fatalf("body: %s not equal", string(r1.body))
+	}
 
 	upstream.timeTravel(time.Second * 10)
 	r2 := client.get("/r1")
@@ -269,12 +272,17 @@ func TestSpecCachingStatusCodes(t *testing.T) {
 	if strings.Compare("HIT", r2.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", r2.cacheStatus)
 	}
-	assert.Equal(t, string(upstream.Body), string(r2.body))
+	if strings.Compare(string(upstream.Body), string(r2.body)) != 0 {
+		t.Fatalf("body: %s not equal", string(r2.body))
+	}
+
 	assert.Equal(t, time.Second*10, r2.age)
 
 	upstream.StatusCode = http.StatusPaymentRequired
 	r3 := client.get("/r2")
-	assert.Equal(t, http.StatusPaymentRequired, r3.statusCode)
+	if http.StatusPaymentRequired != r3.statusCode {
+		t.Fatalf("HTTP status code: %d not equal StatusPaymentRequired", r3.statusCode)
+	}
 	if strings.Compare("SKIP", r3.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", r3.cacheStatus)
 	}
@@ -288,11 +296,17 @@ func TestSpecConditionalCaching(t *testing.T) {
 	if strings.Compare("MISS", r1.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", r1.cacheStatus)
 	}
-	assert.Equal(t, string(upstream.Body), string(r1.body))
+	if strings.Compare(string(upstream.Body), string(r1.body)) != 0 {
+		t.Fatalf("body: %s not equal", string(r1.body))
+	}
 
 	r2 := client.get("/", `If-None-Match: "llamas"`)
-	assert.Equal(t, http.StatusNotModified, r2.Code)
-	assert.Equal(t, "", string(r2.body))
+	if http.StatusNotModified != r2.Code {
+		t.Fatalf("HTTP status code: %d not equal StatusNotModified", r2.Code)
+	}
+	if string(r2.body) != "" {
+		t.Fatal("body should not be empty")
+	}
 	if strings.Compare("HIT", r2.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", r2.cacheStatus)
 	}
@@ -302,11 +316,15 @@ func TestSpecRangeRequests(t *testing.T) {
 	client, upstream := testSetup()
 
 	r1 := client.get("/", "Range: bytes=0-3")
-	assert.Equal(t, http.StatusPartialContent, r1.Code)
+	if http.StatusPartialContent != r1.Code {
+		t.Fatalf("HTTP status code: %d not equal StatusPartialContent", r1.Code)
+	}
 	if strings.Compare("SKIP", r1.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", r1.cacheStatus)
 	}
-	assert.Equal(t, string(upstream.Body[0:4]), string(r1.body))
+	if strings.Compare(string(upstream.Body[0:4]), string(r1.body)) != 0 {
+		t.Fatalf("body: %s not equal", string(r1.body))
+	}
 }
 
 func TestSpecHeuristicCaching(t *testing.T) {
@@ -382,8 +400,9 @@ func TestSpecRequestsWithoutHostHeader(t *testing.T) {
 	r.Host = ""
 
 	resp := client.do(r)
-	assert.Equal(t, http.StatusBadRequest, resp.Code,
-		"Requests without a Host header should result in a 400")
+	if http.StatusBadRequest != resp.Code {
+		t.Fatal("Requests without a Host header should result in a 400")
+	}
 }
 
 func TestSpecCacheControlMaxStale(t *testing.T) {
@@ -422,7 +441,9 @@ func TestSpecValidatingStaleResponsesUnchanged(t *testing.T) {
 	if http.StatusOK != r2.Code {
 		t.Fatalf("HTTP status code: %d not equal StatusOK", r2.Code)
 	}
-	assert.Equal(t, string(upstream.Body), string(r2.body))
+	if strings.Compare(string(upstream.Body), string(r2.body)) != 0 {
+		t.Fatalf("body: %s not equal", string(r2.body))
+	}
 	if strings.Compare("HIT", r2.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", r2.cacheStatus)
 	}
@@ -444,7 +465,9 @@ func TestSpecValidatingStaleResponsesWithNewContent(t *testing.T) {
 	if strings.Compare("MISS", r2.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", r2.cacheStatus)
 	}
-	assert.Equal(t, "brand new content", string(r2.body))
+	if strings.Compare("brand new content", string(r2.body)) != 0 {
+		t.Fatalf("body: %s not equal", string(r2.body))
+	}
 	assert.Equal(t, time.Duration(0), r2.age)
 }
 

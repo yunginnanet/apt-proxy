@@ -145,15 +145,15 @@ go run apt-proxy.go
 # go test -cover ./...
 
 ?   	github.com/soulteary/apt-proxy	[no test files]
-ok  	github.com/soulteary/apt-proxy/cli	2.477s	coverage: 73.9% of statements
-ok  	github.com/soulteary/apt-proxy/linux	7.329s	coverage: 80.0% of statements
-ok  	github.com/soulteary/apt-proxy/pkgs/httpcache	1.062s	coverage: 82.7% of statements
-?   	github.com/soulteary/apt-proxy/pkgs/httplog	[no test files]
-ok  	github.com/soulteary/apt-proxy/pkgs/stream.v1	0.551s	coverage: 100.0% of statements
-?   	github.com/soulteary/apt-proxy/pkgs/system	[no test files]
-ok  	github.com/soulteary/apt-proxy/pkgs/vfs	0.719s	coverage: 59.3% of statements
+ok  	github.com/soulteary/apt-proxy/cli	1.795s	coverage: 57.6% of statements
+ok  	github.com/soulteary/apt-proxy/linux	5.771s	coverage: 80.0% of statements
+ok  	github.com/soulteary/apt-proxy/pkg/httpcache	1.515s	coverage: 82.6% of statements
+?   	github.com/soulteary/apt-proxy/pkg/httplog	[no test files]
+ok  	github.com/soulteary/apt-proxy/pkg/stream.v1	0.935s	coverage: 100.0% of statements
+?   	github.com/soulteary/apt-proxy/pkg/system	[no test files]
+ok  	github.com/soulteary/apt-proxy/pkg/vfs	1.348s	coverage: 59.1% of statements
 ?   	github.com/soulteary/apt-proxy/server	[no test files]
-ok  	github.com/soulteary/apt-proxy/state	0.617s	coverage: 84.2% of statements
+ok  	github.com/soulteary/apt-proxy/state	0.356s	coverage: 84.2% of statements
 ```
 
 View coverage report:
@@ -186,6 +186,5 @@ This project is under the [Apache License 2.0](https://github.com/soulteary/apt-
 - MIT License
     - [lox/httpcache](https://github.com/lox/httpcache/blob/master/LICENSE)
     - [djherbis/stream](https://github.com/djherbis/stream/blob/master/LICENSE)
-    - [stretchr/testify](https://github.com/stretchr/testify/blob/master/LICENSE)
 - Mozilla Public License 2.0
     - [rainycape/vfs](https://github.com/rainycape/vfs/blob/master/LICENSE)

@@ -275,8 +275,9 @@ func TestSpecCachingStatusCodes(t *testing.T) {
 	if strings.Compare(string(upstream.Body), string(r2.body)) != 0 {
 		t.Fatalf("body: %s not equal", string(r2.body))
 	}
-
-	assert.Equal(t, time.Second*10, r2.age)
+	if time.Second*10 != r2.age {
+		t.Fatalf("age: %d not equal", r2.age)
+	}
 
 	upstream.StatusCode = http.StatusPaymentRequired
 	r3 := client.get("/r2")
@@ -417,14 +418,18 @@ func TestSpecCacheControlMaxStale(t *testing.T) {
 	if strings.Compare("HIT", r2.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", r2.cacheStatus)
 	}
-	assert.Equal(t, time.Second*90, r2.age)
+	if time.Second*90 != r2.age {
+		t.Fatalf("age: %d not equal", r2.age)
+	}
 
 	upstream.timeTravel(time.Second * 90)
 	r3 := client.get("/")
 	if strings.Compare("MISS", r3.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", r3.cacheStatus)
 	}
-	assert.Equal(t, time.Duration(0), r3.age)
+	if time.Duration(0) != r3.age {
+		t.Fatalf("age: %d not equal", r3.age)
+	}
 }
 
 func TestSpecValidatingStaleResponsesUnchanged(t *testing.T) {
@@ -468,7 +473,9 @@ func TestSpecValidatingStaleResponsesWithNewContent(t *testing.T) {
 	if strings.Compare("brand new content", string(r2.body)) != 0 {
 		t.Fatalf("body: %s not equal", string(r2.body))
 	}
-	assert.Equal(t, time.Duration(0), r2.age)
+	if time.Duration(0) != r2.age {
+		t.Fatalf("age: %d not equal", r2.age)
+	}
 }
 
 func TestSpecValidatingStaleResponsesWithNewEtag(t *testing.T) {
@@ -532,10 +539,14 @@ func TestSpecAgeHeaderFromUpstream(t *testing.T) {
 	client, upstream := testSetup()
 	upstream.CacheControl = "max-age=86400"
 	upstream.Header.Set("Age", "3600") //1hr
-	assert.Equal(t, time.Hour, client.get("/").age)
+	if time.Hour != client.get("/").age {
+		t.Fatalf("age: %d not equal", client.get("/").age)
+	}
 
 	upstream.timeTravel(time.Hour * 2)
-	assert.Equal(t, time.Hour*3, client.get("/").age)
+	if time.Hour*3 != client.get("/").age {
+		t.Fatalf("age: %d not equal", client.get("/").age)
+	}
 }
 
 func TestSpecAgeHeaderWithResponseDelay(t *testing.T) {
@@ -543,10 +554,14 @@ func TestSpecAgeHeaderWithResponseDelay(t *testing.T) {
 	upstream.CacheControl = "max-age=86400"
 	upstream.Header.Set("Age", "3600") //1hr
 	upstream.ResponseDuration = time.Second * 2
-	assert.Equal(t, time.Second*3602, client.get("/").age)
+	if time.Second*3602 != client.get("/").age {
+		t.Fatalf("age: %d not equal", client.get("/").age)
+	}
 
 	upstream.timeTravel(time.Second * 60)
-	assert.Equal(t, time.Second*3662, client.get("/").age)
+	if time.Second*3662 != client.get("/").age {
+		t.Fatalf("age: %d not equal", client.get("/").age)
+	}
 	if upstream.requests != 1 {
 		t.Fatalf("Unexpected requests: %d", upstream.requests)
 	}
@@ -556,10 +571,14 @@ func TestSpecAgeHeaderGeneratedWhereNoneExists(t *testing.T) {
 	client, upstream := testSetup()
 	upstream.CacheControl = "max-age=86400"
 	upstream.ResponseDuration = time.Second * 2
-	assert.Equal(t, time.Second*2, client.get("/").age)
+	if time.Second*2 != client.get("/").age {
+		t.Fatalf("age: %d not equal", client.get("/").age)
+	}
 
 	upstream.timeTravel(time.Second * 60)
-	assert.Equal(t, time.Second*62, client.get("/").age)
+	if time.Second*62 != client.get("/").age {
+		t.Fatalf("age: %d not equal", client.get("/").age)
+	}
 	if upstream.requests != 1 {
 		t.Fatalf("Unexpected requests: %d", upstream.requests)
 	}
@@ -627,7 +646,9 @@ func TestSpecFresheningGetWithHeadRequest(t *testing.T) {
 	}
 
 	upstream.timeTravel(time.Second * 10)
-	assert.Equal(t, 10*time.Second, client.get("/explicit").age)
+	if time.Second*10 != client.get("/explicit").age {
+		t.Fatalf("age: %d not equal", client.get("/explicit").age)
+	}
 
 	upstream.Header.Add("X-Llamas", "llamas")
 	if strings.Compare("SKIP", client.head("/explicit", "Cache-Control: max-age=0").cacheStatus) != 0 {
@@ -638,7 +659,9 @@ func TestSpecFresheningGetWithHeadRequest(t *testing.T) {
 	if strings.Compare("HIT", refreshed.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", refreshed.cacheStatus)
 	}
-	assert.Equal(t, time.Duration(0), refreshed.age)
+	if time.Duration(0) != refreshed.age {
+		t.Fatalf("refreshed age: %d not equal", refreshed.age)
+	}
 	if strings.Compare("llamas", refreshed.header.Get("X-Llamas")) != 0 {
 		t.Fatalf("Cache status: %s not equal", refreshed.header.Get("X-Llamas"))
 	}

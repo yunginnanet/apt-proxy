@@ -20,7 +20,9 @@ func TestKeysDiffer(t *testing.T) {
 	k1 := httpcache.NewKey("GET", mustParseUrl("http://x.org/test"), nil)
 	k2 := httpcache.NewKey("GET", mustParseUrl("http://y.org/test"), nil)
 
-	assert.NotEqual(t, k1.String(), k2.String())
+	if k1.String() == k2.String() {
+		t.Fatal("key should be same")
+	}
 }
 
 func TestRequestKey(t *testing.T) {
@@ -38,7 +40,9 @@ func TestVaryKey(t *testing.T) {
 	k1 := httpcache.NewRequestKey(r)
 	k2 := httpcache.NewRequestKey(r).Vary("Llamas-1, Llamas-2", r)
 
-	assert.NotEqual(t, k1.String(), k2.String())
+	if k1.String() == k2.String() {
+		t.Fatal("vary key should be same")
+	}
 }
 
 func TestRequestKeyWithContentLocation(t *testing.T) {

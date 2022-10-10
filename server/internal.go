@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/soulteary/apt-proxy/pkgs/system"
+	"github.com/soulteary/apt-proxy/pkg/system"
 )
 
 const (

@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/soulteary/apt-proxy/pkgs/httpcache"
-	"github.com/soulteary/apt-proxy/pkgs/httplog"
+	"github.com/soulteary/apt-proxy/pkg/httpcache"
+	"github.com/soulteary/apt-proxy/pkg/httplog"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

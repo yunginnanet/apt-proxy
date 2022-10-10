@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/soulteary/apt-proxy/pkgs/vfs"
+	"github.com/soulteary/apt-proxy/pkg/vfs"
 )
 
 const (

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"strconv"
@@ -32,7 +31,7 @@ func newResponse(status int, body []byte, h ...string) *http.Response {
 		ProtoMajor:    1,
 		ProtoMinor:    1,
 		ContentLength: int64(len(body)),
-		Body:          ioutil.NopCloser(bytes.NewReader(body)),
+		Body:          io.NopCloser(bytes.NewReader(body)),
 		Header:        parseHeaders(h),
 		Close:         true,
 	}
@@ -61,7 +60,7 @@ func (c *client) do(r *http.Request) *clientResponse {
 	var age int
 	var err error
 
-	if ageHeader := rec.HeaderMap.Get("Age"); ageHeader != "" {
+	if ageHeader := rec.Header().Get("Age"); ageHeader != "" {
 		age, err = strconv.Atoi(ageHeader)
 		if err != nil {
 			panic("Can't parse age header")
@@ -73,11 +72,11 @@ func (c *client) do(r *http.Request) *clientResponse {
 
 	return &clientResponse{
 		ResponseRecorder: rec,
-		cacheStatus:      rec.HeaderMap.Get(httpcache.CacheHeader),
+		cacheStatus:      rec.Header().Get(httpcache.CacheHeader),
 		statusCode:       rec.Code,
 		age:              time.Second * time.Duration(age),
 		body:             rec.Body.Bytes(),
-		header:           rec.HeaderMap,
+		header:           rec.Header(),
 	}
 }
 
@@ -89,13 +88,13 @@ func (c *client) head(path string, headers ...string) *clientResponse {
 	return c.do(newRequest("HEAD", "http://example.org"+path, headers...))
 }
 
-func (c *client) put(path string, headers ...string) *clientResponse {
-	return c.do(newRequest("PUT", "http://example.org"+path, headers...))
-}
+// func (c *client) put(path string, headers ...string) *clientResponse {
+// 	return c.do(newRequest("PUT", "http://example.org"+path, headers...))
+// }
 
-func (c *client) post(path string, headers ...string) *clientResponse {
-	return c.do(newRequest("POST", "http://example.org"+path, headers...))
-}
+// func (c *client) post(path string, headers ...string) *clientResponse {
+// 	return c.do(newRequest("POST", "http://example.org"+path, headers...))
+// }
 
 type clientResponse struct {
 	*httptest.ResponseRecorder
@@ -124,9 +123,9 @@ func (u *upstreamServer) timeTravel(d time.Duration) {
 	u.Now = u.Now.Add(d)
 }
 
-func (u *upstreamServer) assert(f func(r *http.Request)) {
-	u.asserts = append(u.asserts, f)
-}
+// func (u *upstreamServer) assert(f func(r *http.Request)) {
+// 	u.asserts = append(u.asserts, f)
+// }
 
 func (u *upstreamServer) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	u.requests = u.requests + 1
@@ -175,16 +174,16 @@ func (u *upstreamServer) RoundTrip(req *http.Request) (*http.Response, error) {
 	rec.Flush()
 
 	resp := newResponse(rec.Code, rec.Body.Bytes())
-	resp.Header = rec.HeaderMap
+	resp.Header = rec.Header()
 	return resp, nil
 }
 
-func cc(cc string) string {
-	return fmt.Sprintf("Cache-Control: %s", cc)
-}
+// func cc(cc string) string {
+// 	return fmt.Sprintf("Cache-Control: %s", cc)
+// }
 
 func readAll(r io.Reader) []byte {
-	b, err := ioutil.ReadAll(r)
+	b, err := io.ReadAll(r)
 	if err != nil {
 		panic(err)
 	}

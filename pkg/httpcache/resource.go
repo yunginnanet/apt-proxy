@@ -156,7 +156,7 @@ func (r *Resource) Age() (time.Duration, error) {
 		return Clock().Sub(date) + age, nil
 	}
 
-	return time.Duration(0), errors.New("Unable to calculate age")
+	return time.Duration(0), errors.New("unable to calculate age")
 }
 
 func (r *Resource) MaxAge(shared bool) (time.Duration, error) {

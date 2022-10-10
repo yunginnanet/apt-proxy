@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"math"
 	"net/http"
@@ -265,7 +264,7 @@ func (h *Handler) passUpstream(w http.ResponseWriter, r *cacheRequest) {
 		rw.Header().Set(CacheHeader, "SKIP")
 		return
 	}
-	b, err := ioutil.ReadAll(rdr)
+	b, err := io.ReadAll(rdr)
 	rdr.Close()
 	if err != nil {
 		debugf("error reading stream: %v", err)
@@ -300,6 +299,9 @@ func correctedAge(h http.Header, reqTime, respTime time.Time) (time.Duration, er
 
 	respDelay := respTime.Sub(reqTime)
 	ageSeconds, err := intHeader("Age", h)
+	if err != nil {
+		return time.Duration(0), err
+	}
 	age := time.Second * time.Duration(ageSeconds)
 	correctedAge := age + respDelay
 
@@ -480,7 +482,7 @@ func newCacheRequest(r *http.Request) (*cacheRequest, error) {
 	}
 
 	if r.Proto == "HTTP/1.1" && r.Host == "" {
-		return nil, errors.New("Host header can't be empty")
+		return nil, errors.New("host header can't be empty")
 	}
 
 	return &cacheRequest{
@@ -492,11 +494,7 @@ func newCacheRequest(r *http.Request) (*cacheRequest, error) {
 }
 
 func (r *cacheRequest) isStateChanging() bool {
-	if !(r.Method == "POST" || r.Method == "PUT" || r.Method == "DELETE") {
-		return true
-	}
-
-	return false
+	return !(r.Method == "POST" || r.Method == "PUT" || r.Method == "DELETE")
 }
 
 func (r *cacheRequest) isCacheable() bool {
@@ -565,7 +563,7 @@ func (rw *responseStreamer) Close() error {
 func (rw *responseStreamer) Resource() *Resource {
 	r, err := rw.Stream.NextReader()
 	if err == nil {
-		b, err := ioutil.ReadAll(r)
+		b, err := io.ReadAll(r)
 		r.Close()
 		if err == nil {
 			return NewResourceBytes(rw.StatusCode, b, rw.Header())

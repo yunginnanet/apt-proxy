@@ -1,10 +1,10 @@
 package httpcache_test
 
 import (
+	"reflect"
 	"testing"
 
 	. "github.com/soulteary/apt-proxy/pkg/httpcache"
-	"github.com/stretchr/testify/require"
 )
 
 func TestParsingCacheControl(t *testing.T) {
@@ -40,9 +40,12 @@ func TestParsingCacheControl(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-
-		require.Equal(t, cc, expect.ccStruct)
-		require.NotEmpty(t, cc.String())
+		if !reflect.DeepEqual(cc, expect.ccStruct) {
+			t.Fatalf("cc should be equal")
+		}
+		if cc.String() == "" {
+			t.Fatalf("cc string should not be empty")
+		}
 	}
 }
 

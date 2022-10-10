@@ -2,11 +2,11 @@ package httpcache_test
 
 import (
 	"net/http"
+	"reflect"
 	"strings"
 	"testing"
 
 	"github.com/soulteary/apt-proxy/pkg/httpcache"
-	"github.com/stretchr/testify/require"
 )
 
 func TestSaveResource(t *testing.T) {
@@ -26,9 +26,17 @@ func TestSaveResource(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	require.NotNil(t, resOut)
-	require.Equal(t, res.Header(), resOut.Header())
-	require.Equal(t, body, readAllString(resOut))
+	if resOut == nil {
+		t.Fatalf("resOut should not be null")
+	}
+
+	if !reflect.DeepEqual(res.Header(), resOut.Header()) {
+		t.Fatalf("header should be equal")
+	}
+
+	if body != readAllString(resOut) {
+		t.Fatalf("body should be equal")
+	}
 }
 
 func TestSaveResourceWithIncorrectContentLength(t *testing.T) {

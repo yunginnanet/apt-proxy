@@ -1,18 +1,16 @@
 package httpcache_test
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/soulteary/apt-proxy/pkg/httpcache"
 	"github.com/soulteary/apt-proxy/pkg/httplog"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func testSetup() (*client, *upstreamServer) {
@@ -88,12 +86,14 @@ func TestSpecResponseCacheControl(t *testing.T) {
 			t.Fatalf("HTTP status code: %d not equal Status OK", r.statusCode)
 		}
 
-		require.Equal(t, c.requests, upstream.requests,
-			fmt.Sprintf("case #%d failed, %+v", idx+1, c))
+		if c.requests != upstream.requests {
+			t.Fatalf("case #%d failed, %+v", idx+1, c)
+		}
 
 		if c.cacheStatus != "" {
-			require.Equal(t, c.cacheStatus, r.cacheStatus,
-				fmt.Sprintf("case #%d failed, %+v", idx+1, c))
+			if c.cacheStatus != r.cacheStatus {
+				t.Fatalf("case #%d failed, %+v", idx+1, c)
+			}
 		}
 	}
 }
@@ -340,8 +340,12 @@ func TestSpecHeuristicCaching(t *testing.T) {
 	if strings.Compare("HIT", r2.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", r2.cacheStatus)
 	}
-	assert.Equal(t, []string{"113 - \"Heuristic Expiration\""}, r2.Header()["Warning"])
-	assert.Equal(t, 1, upstream.requests, "The second request shouldn't validate")
+	if !reflect.DeepEqual([]string{"113 - \"Heuristic Expiration\""}, r2.Header()["Warning"]) {
+		t.Fatal("headers are not equal")
+	}
+	if upstream.requests != 1 {
+		t.Fatal("The second request shouldn't validate")
+	}
 }
 
 func TestSpecCacheControlTrumpsExpires(t *testing.T) {
@@ -532,7 +536,10 @@ func TestSpecHeadersPropagated(t *testing.T) {
 	if strings.Compare("HIT", r2.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", r2.cacheStatus)
 	}
-	assert.Equal(t, []string{"1", "3", "2"}, r2.Header()["X-Llamas"])
+
+	if !reflect.DeepEqual([]string{"1", "3", "2"}, r2.Header()["X-Llamas"]) {
+		t.Fatal("headers are not equal")
+	}
 }
 
 func TestSpecAgeHeaderFromUpstream(t *testing.T) {
@@ -596,7 +603,9 @@ func TestSpecWarningForOldContent(t *testing.T) {
 	if strings.Compare("HIT", r2.cacheStatus) != 0 {
 		t.Fatalf("Cache status: %s not equal", r2.cacheStatus)
 	}
-	assert.Equal(t, []string{"113 - \"Heuristic Expiration\""}, r2.Header()["Warning"])
+	if !reflect.DeepEqual([]string{"113 - \"Heuristic Expiration\""}, r2.Header()["Warning"]) {
+		t.Fatal("headers are not equal")
+	}
 }
 
 func TestSpecHeadCanBeServedFromCacheOnlyWithExplicitFreshness(t *testing.T) {

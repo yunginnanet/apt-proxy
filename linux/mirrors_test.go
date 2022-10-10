@@ -40,6 +40,12 @@ func TestGetPredefinedConfiguration(t *testing.T) {
 	if !pattern.MatchString("http://archive.ubuntu.com/ubuntu/InRelease") {
 		t.Fatal("Failed to verify domain name rules")
 	}
+	if !pattern.MatchString("http://ab.archive.ubuntu.com/ubuntu/InRelease") {
+		t.Fatal("Failed to verify domain name rules")
+	}
+	if pattern.MatchString("http://abc.archive.ubuntu.com/ubuntu/InRelease") {
+		t.Fatal("Failed to verify domain name rules")
+	}
 
 	res, pattern = getPredefinedConfiguration(TYPE_LINUX_DISTROS_DEBIAN)
 	if res != DEBIAN_BENCHMAKR_URL {

@@ -117,9 +117,9 @@ func RewriteRequestByMode(r *http.Request, rewriters *URLRewriters, mode int) {
 		r.Header.Add("Content-Location", uri)
 		m := rewriter.pattern.FindAllStringSubmatch(uri, -1)
 		// Fix the problem of double escaping of symbols
-		unescapedQuery, err := url.PathUnescape(m[0][2])
+		unescapedQuery, err := url.PathUnescape(m[0][3])
 		if err != nil {
-			unescapedQuery = m[0][2]
+			unescapedQuery = m[0][3]
 		}
 		r.URL.Host = rewriter.mirror.Host
 		r.URL.Path = rewriter.mirror.Path + unescapedQuery

@@ -24,12 +24,6 @@ type Rule struct {
 	Rewrite      bool
 }
 
-const (
-	BENCHMARK_MAX_TIMEOUT    = 15 // 15 seconds, detect resource timeout
-	BENCHMARK_MAX_TRIES      = 3  // times, maximum number of attempts
-	BENCHMARK_DETECT_TIMEOUT = 3  // 3 seconds, for select fast mirror
-)
-
 // DEBIAN
 const (
 	DEBIAN_BENCHMAKR_URL = "dists/bullseye/main/binary-amd64/Release"

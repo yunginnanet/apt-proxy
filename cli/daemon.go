@@ -8,9 +8,9 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/soulteary/apt-proxy/internal/server"
 	"github.com/soulteary/apt-proxy/pkg/httpcache"
 	"github.com/soulteary/apt-proxy/pkg/httplog"
-	"github.com/soulteary/apt-proxy/server"
 )
 
 type AppFlags struct {
@@ -96,5 +96,5 @@ func Daemon(appFlags *AppFlags) {
 
 	initLogger(*appFlags, ap)
 
-	StartServer(&*appFlags, ap)
+	StartServer(appFlags, ap)
 }

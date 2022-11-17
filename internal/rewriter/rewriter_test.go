@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	Benchmark "github.com/soulteary/apt-proxy/internal/benchmark"
 	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
 	"github.com/soulteary/apt-proxy/state"
 )
@@ -42,7 +43,7 @@ func TestGetRewriterForUbuntu(t *testing.T) {
 
 func TestCreateNewRewritersForUbuntu(t *testing.T) {
 	ap := *CreateNewRewriters(Mirrors.TYPE_LINUX_DISTROS_UBUNTU)
-	time.Sleep((Mirrors.BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
+	time.Sleep((Benchmark.BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
 
 	if len(ap.ubuntu.mirror.Path) == 0 {
 		t.Fatal("No mirrors found")
@@ -55,7 +56,7 @@ func TestCreateNewRewritersForUbuntu(t *testing.T) {
 
 func TestCreateNewRewritersForDebian(t *testing.T) {
 	ap := *CreateNewRewriters(Mirrors.TYPE_LINUX_DISTROS_DEBIAN)
-	time.Sleep((Mirrors.BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
+	time.Sleep((Benchmark.BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
 
 	if len(ap.debian.mirror.Path) == 0 {
 		t.Fatal("No mirrors found")
@@ -68,7 +69,7 @@ func TestCreateNewRewritersForDebian(t *testing.T) {
 
 func TestCreateNewRewritersForAll(t *testing.T) {
 	ap := *CreateNewRewriters(Mirrors.TYPE_LINUX_ALL_DISTROS)
-	time.Sleep((Mirrors.BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
+	time.Sleep((Benchmark.BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
 
 	if len(ap.debian.mirror.Path) == 0 || len(ap.ubuntu.mirror.Host) == 0 {
 		t.Fatal("No mirrors found")

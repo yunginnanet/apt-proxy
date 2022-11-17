@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"regexp"
 
+	Benchmark "github.com/soulteary/apt-proxy/internal/benchmark"
 	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
 	"github.com/soulteary/apt-proxy/state"
 )
@@ -46,7 +47,7 @@ func getRewriterForDebian() *URLRewriter {
 	}
 
 	mirrors := Mirrors.GetGeoMirrorUrlsByMode(Mirrors.TYPE_LINUX_DISTROS_DEBIAN)
-	fastest, err := Mirrors.GetTheFastestMirror(mirrors, benchmarkUrl)
+	fastest, err := Benchmark.GetTheFastestMirror(mirrors, benchmarkUrl)
 	if err != nil {
 		log.Println("Error finding fastest mirror", err)
 	}
@@ -72,7 +73,7 @@ func getRewriterForUbuntu() *URLRewriter {
 	}
 
 	mirrors := Mirrors.GetGeoMirrorUrlsByMode(Mirrors.TYPE_LINUX_DISTROS_UBUNTU)
-	fastest, err := Mirrors.GetTheFastestMirror(mirrors, benchmarkUrl)
+	fastest, err := Benchmark.GetTheFastestMirror(mirrors, benchmarkUrl)
 	if err != nil {
 		log.Println("Error finding fastest mirror", err)
 	}

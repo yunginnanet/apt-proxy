@@ -112,7 +112,7 @@ func (l *ResponseLogger) writeLog(req *http.Request, respWr *responseWriter) {
 		http.StatusText(respWr.status),
 		respWr.size,
 		cacheStatus,
-		time.Now().Sub(respWr.t).String(),
+		time.Since(respWr.t).String(),
 	)
 }
 

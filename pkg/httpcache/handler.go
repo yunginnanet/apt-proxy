@@ -552,7 +552,10 @@ func (rw *responseStreamer) WriteHeader(status int) {
 }
 
 func (rw *responseStreamer) Write(b []byte) (int, error) {
-	rw.Stream.Write(b)
+	i, err := rw.Stream.Write(b)
+	if err != nil {
+		return i, err
+	}
 	return rw.ResponseWriter.Write(b)
 }
 func (rw *responseStreamer) Close() error {

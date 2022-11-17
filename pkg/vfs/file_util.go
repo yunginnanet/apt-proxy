@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
+	"log"
 	"runtime"
 	"time"
 )
@@ -36,7 +36,10 @@ func NewWFile(f *File, read bool, write bool) (WFile, error) {
 }
 
 func closeFile(f *file) {
-	f.Close()
+	err := f.Close()
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 func fileData(f *File) ([]byte, error) {
@@ -97,11 +100,11 @@ func (f *file) Seek(offset int64, whence int) (int64, error) {
 		return 0, errFileClosed
 	}
 	switch whence {
-	case os.SEEK_SET:
+	case io.SeekStart:
 		f.offset = int(offset)
-	case os.SEEK_CUR:
+	case io.SeekCurrent:
 		f.offset += int(offset)
-	case os.SEEK_END:
+	case io.SeekEnd:
 		f.offset = len(f.data) + int(offset)
 	default:
 		panic(fmt.Errorf("Seek: invalid whence %d", whence))

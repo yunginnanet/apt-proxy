@@ -54,7 +54,7 @@ func testVFS(t *testing.T, fs VFS) {
 	if _, err := fb.Write([]byte("BB")); err != nil {
 		t.Errorf("error writing to b: %s", err)
 	}
-	if _, err := fb.Seek(0, os.SEEK_SET); err != nil {
+	if _, err := fb.Seek(0, io.SeekStart); err != nil {
 		t.Errorf("error seeking b: %s", err)
 	}
 	if _, err := fb.Read(make([]byte, 2)); err == nil {

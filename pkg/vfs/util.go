@@ -3,7 +3,7 @@ package vfs
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	pathpkg "path"
 	"strings"
@@ -131,7 +131,7 @@ func ReadFile(fs VFS, path string) ([]byte, error) {
 		return nil, err
 	}
 	defer f.Close()
-	return ioutil.ReadAll(f)
+	return io.ReadAll(f)
 }
 
 // WriteFile writes a file at the given path and fs with the given data and

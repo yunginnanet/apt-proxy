@@ -2,7 +2,7 @@ package server
 
 import (
 	"io"
-	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -13,13 +13,13 @@ import (
 
 const (
 	INTERNAL_PAGE_HOME string = "/"
-	INTERNAL_PAGE_PING        = "/_/ping/"
+	INTERNAL_PAGE_PING string = "/_/ping/"
 )
 
 const (
 	TYPE_NOT_FOUND int = 0
-	TYPE_HOME          = 1
-	TYPE_PING          = 2
+	TYPE_HOME      int = 1
+	TYPE_PING      int = 2
 )
 
 func isInternalUrls(url string) bool {
@@ -58,7 +58,7 @@ func renderInternalUrls(url string, rw *http.ResponseWriter) {
 
 		filesNumberLabel := LABEL_NO_VALID_VALUE
 		if _, err := os.Stat(CACHE_META_DIR); !os.IsNotExist(err) {
-			files, err := ioutil.ReadDir(CACHE_META_DIR)
+			files, err := os.ReadDir(CACHE_META_DIR)
 			if err == nil {
 				filesNumberLabel = strconv.Itoa(len(files))
 			}
@@ -74,14 +74,20 @@ func renderInternalUrls(url string, rw *http.ResponseWriter) {
 		memoryUsage, goroutine := system.GetMemoryUsageAndGoroutine()
 		memoryUsageLabel = system.ByteCountDecimal(memoryUsage)
 
-		io.WriteString(*rw, getBaseTemplate(
+		_, err = io.WriteString(*rw, getBaseTemplate(
 			cacheSizeLabel,
 			filesNumberLabel,
 			diskAvailableLabel,
 			memoryUsageLabel,
 			goroutine,
 		))
+		if err != nil {
+			log.Println("Failed to render page")
+		}
 	} else if types == TYPE_PING {
-		io.WriteString(*rw, "pong")
+		_, err := io.WriteString(*rw, "pong")
+		if err != nil {
+			log.Println("Response ping failed")
+		}
 	}
 }

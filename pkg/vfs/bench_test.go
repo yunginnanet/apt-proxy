@@ -3,7 +3,7 @@ package vfs
 import (
 	"bytes"
 	"compress/gzip"
-	"io/ioutil"
+	"io"
 	"os"
 	"testing"
 )
@@ -17,7 +17,7 @@ func BenchmarkLoadGoSrc(b *testing.B) {
 		b.Fatal(err)
 	}
 	defer zr.Close()
-	data, err := ioutil.ReadAll(zr)
+	data, err := io.ReadAll(zr)
 	if err != nil {
 		b.Fatal(err)
 	}

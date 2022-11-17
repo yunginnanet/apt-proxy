@@ -8,7 +8,6 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -24,7 +23,7 @@ import (
 func Zip(r io.Reader, size int64) (VFS, error) {
 	rat, _ := r.(io.ReaderAt)
 	if rat == nil || size <= 0 {
-		data, err := ioutil.ReadAll(r)
+		data, err := io.ReadAll(r)
 		if err != nil {
 			return nil, err
 		}
@@ -44,7 +43,7 @@ func Zip(r io.Reader, size int64) (VFS, error) {
 		if err != nil {
 			return nil, err
 		}
-		data, err := ioutil.ReadAll(f)
+		data, err := io.ReadAll(f)
 		errClose := f.Close()
 		if errClose != nil {
 			return nil, errClose
@@ -77,7 +76,7 @@ func Tar(r io.Reader) (VFS, error) {
 		if hdr.FileInfo().IsDir() {
 			continue
 		}
-		data, err := ioutil.ReadAll(tr)
+		data, err := io.ReadAll(tr)
 		if err != nil {
 			return nil, err
 		}

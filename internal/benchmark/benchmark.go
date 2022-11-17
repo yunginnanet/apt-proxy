@@ -14,6 +14,11 @@ const (
 	BENCHMARK_DETECT_TIMEOUT = 3  // 3 seconds, for select fast mirror
 )
 
+type Result struct {
+	URL      string
+	Duration time.Duration
+}
+
 func Benchmark(base string, query string, times int) (time.Duration, error) {
 	var sum int64
 
@@ -41,20 +46,15 @@ func Benchmark(base string, query string, times int) (time.Duration, error) {
 	return time.Duration(sum / int64(times)), nil
 }
 
-type benchmarkResult struct {
-	URL      string
-	Duration time.Duration
-}
-
 func GetTheFastestMirror(mirrors []string, testUrl string) (string, error) {
-	ch := make(chan benchmarkResult)
+	ch := make(chan Result)
 	log.Printf("Start benchmarking mirrors")
 	// kick off all benchmarks in parallel
 	for _, url := range mirrors {
 		go func(u string) {
 			duration, err := Benchmark(u, testUrl, BENCHMARK_MAX_TRIES)
 			if err == nil {
-				ch <- benchmarkResult{u, duration}
+				ch <- Result{u, duration}
 			}
 		}(url)
 	}
@@ -65,7 +65,7 @@ func GetTheFastestMirror(mirrors []string, testUrl string) (string, error) {
 	}
 
 	// wait for the fastest results to come back
-	results, err := readResults(ch, maxTries)
+	results, err := ReadResults(ch, maxTries)
 	log.Printf("Finished benchmarking mirrors")
 	if len(results) == 0 {
 		return "", errors.New("No results found: " + err.Error())
@@ -76,7 +76,7 @@ func GetTheFastestMirror(mirrors []string, testUrl string) (string, error) {
 	return results[0].URL, nil
 }
 
-func readResults(ch <-chan benchmarkResult, size int) (br []benchmarkResult, err error) {
+func ReadResults(ch <-chan Result, size int) (br []Result, err error) {
 	for {
 		select {
 		case r := <-ch:

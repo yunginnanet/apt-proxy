@@ -1,14 +1,15 @@
 package benchmarks_test
 
 import (
-	"log"
+	"errors"
 	"testing"
+	"time"
 
 	Benchmark "github.com/soulteary/apt-proxy/internal/benchmark"
 	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
 )
 
-func TestResourceBenchmark(t *testing.T) {
+func TestBenchmark(t *testing.T) {
 	const resourcePath = ""
 	_, err := Benchmark.Benchmark(Mirrors.UBUNTU_GEO_MIRROR_API, resourcePath, Benchmark.BENCHMARK_MAX_TRIES)
 	if err != nil {
@@ -16,12 +17,33 @@ func TestResourceBenchmark(t *testing.T) {
 	}
 }
 
-func TestMirrorsBenchmark(t *testing.T) {
+func TestGetTheFastestMirror(t *testing.T) {
 	mirrors := Mirrors.GetGeoMirrorUrlsByMode(Mirrors.TYPE_LINUX_DISTROS_UBUNTU)
-	mirror, err := Benchmark.GetTheFastestMirror(mirrors, Mirrors.UBUNTU_BENCHMAKR_URL)
+	_, err := Benchmark.GetTheFastestMirror(mirrors, Mirrors.UBUNTU_BENCHMAKR_URL)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	log.Printf("Fastest mirror is %s", mirror)
+	// test empty list
+	var emptyList []string
+	_, err = Benchmark.GetTheFastestMirror(emptyList, "")
+	if err == nil {
+		t.Fatal("not cache an empty error")
+	}
+}
+
+func TestReadResults(t *testing.T) {
+	ch := make(chan Benchmark.Result)
+	for i := 0; i < 5; i++ {
+		go func(t int) {
+			ch <- Benchmark.Result{"code", time.Duration(t)}
+		}(i)
+	}
+	results, err := Benchmark.ReadResults(ch, 2)
+
+	if len(results) == 0 {
+		t.Fatal(errors.New("No results found: " + err.Error()))
+	} else if err != nil {
+		t.Fatalf("Error benchmarking mirrors: %s", err.Error())
+	}
 }

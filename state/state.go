@@ -6,6 +6,7 @@ import (
 
 var UBUNTU_MIRROR *url.URL
 var DEBIAN_MIRROR *url.URL
+var CENTOS_MIRROR *url.URL
 var PROXY_MODE = 0
 
 func SetProxyMode(mode int) {
@@ -70,4 +71,32 @@ func GetDebianMirror() *url.URL {
 
 func ResetDebianMirror() {
 	DEBIAN_MIRROR = nil
+}
+
+func SetCentOSMirror(input string) {
+	if input == "" {
+		CENTOS_MIRROR = nil
+		return
+	}
+
+	mirror := input
+	alias := getCentOSMirrorByAliases(input)
+	if alias != "" {
+		mirror = alias
+	}
+
+	url, err := url.Parse(mirror)
+	if err != nil {
+		CENTOS_MIRROR = nil
+		return
+	}
+	CENTOS_MIRROR = url
+}
+
+func GetCentOSMirror() *url.URL {
+	return CENTOS_MIRROR
+}
+
+func ResetCentOSMirror() {
+	CENTOS_MIRROR = nil
 }

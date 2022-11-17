@@ -1,26 +1,27 @@
-package linux
+package rewriter
 
 import (
 	"strings"
 	"testing"
 	"time"
 
+	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
 	"github.com/soulteary/apt-proxy/state"
 )
 
 func TestGetRewriteRulesByMode(t *testing.T) {
-	rules := GetRewriteRulesByMode(TYPE_LINUX_DISTROS_UBUNTU)
-	if rules[0].Pattern != UBUNTU_DEFAULT_CACHE_RULES[0].Pattern {
+	rules := GetRewriteRulesByMode(Mirrors.TYPE_LINUX_DISTROS_UBUNTU)
+	if rules[0].Pattern != Mirrors.UBUNTU_DEFAULT_CACHE_RULES[0].Pattern {
 		t.Fatal("Pattern Not Match")
 	}
 
-	rules = GetRewriteRulesByMode(TYPE_LINUX_DISTROS_DEBIAN)
-	if rules[0].Pattern != DEBIAN_DEFAULT_CACHE_RULES[0].Pattern {
+	rules = GetRewriteRulesByMode(Mirrors.TYPE_LINUX_DISTROS_DEBIAN)
+	if rules[0].Pattern != Mirrors.DEBIAN_DEFAULT_CACHE_RULES[0].Pattern {
 		t.Fatal("Pattern Not Match")
 	}
 
-	rules = GetRewriteRulesByMode(TYPE_LINUX_ALL_DISTROS)
-	if len(rules) != (len(DEBIAN_DEFAULT_CACHE_RULES) + len(UBUNTU_DEFAULT_CACHE_RULES)) {
+	rules = GetRewriteRulesByMode(Mirrors.TYPE_LINUX_ALL_DISTROS)
+	if len(rules) != (len(Mirrors.DEBIAN_DEFAULT_CACHE_RULES) + len(Mirrors.UBUNTU_DEFAULT_CACHE_RULES)) {
 		t.Fatal("Pattern Length Not Match")
 	}
 }
@@ -40,8 +41,8 @@ func TestGetRewriterForUbuntu(t *testing.T) {
 }
 
 func TestCreateNewRewritersForUbuntu(t *testing.T) {
-	ap := *CreateNewRewriters(TYPE_LINUX_DISTROS_UBUNTU)
-	time.Sleep((BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
+	ap := *CreateNewRewriters(Mirrors.TYPE_LINUX_DISTROS_UBUNTU)
+	time.Sleep((Mirrors.BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
 
 	if len(ap.ubuntu.mirror.Path) == 0 {
 		t.Fatal("No mirrors found")
@@ -53,8 +54,8 @@ func TestCreateNewRewritersForUbuntu(t *testing.T) {
 }
 
 func TestCreateNewRewritersForDebian(t *testing.T) {
-	ap := *CreateNewRewriters(TYPE_LINUX_DISTROS_DEBIAN)
-	time.Sleep((BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
+	ap := *CreateNewRewriters(Mirrors.TYPE_LINUX_DISTROS_DEBIAN)
+	time.Sleep((Mirrors.BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
 
 	if len(ap.debian.mirror.Path) == 0 {
 		t.Fatal("No mirrors found")
@@ -66,8 +67,8 @@ func TestCreateNewRewritersForDebian(t *testing.T) {
 }
 
 func TestCreateNewRewritersForAll(t *testing.T) {
-	ap := *CreateNewRewriters(TYPE_LINUX_ALL_DISTROS)
-	time.Sleep((BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
+	ap := *CreateNewRewriters(Mirrors.TYPE_LINUX_ALL_DISTROS)
+	time.Sleep((Mirrors.BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
 
 	if len(ap.debian.mirror.Path) == 0 || len(ap.ubuntu.mirror.Host) == 0 {
 		t.Fatal("No mirrors found")
@@ -81,7 +82,7 @@ func TestCreateNewRewritersForAll(t *testing.T) {
 func TestCreateNewRewritersWithSpecifyMirror(t *testing.T) {
 	state.SetUbuntuMirror("https://mirrors.tuna.tsinghua.edu.cn/ubuntu/")
 
-	ap := *CreateNewRewriters(TYPE_LINUX_DISTROS_UBUNTU)
+	ap := *CreateNewRewriters(Mirrors.TYPE_LINUX_DISTROS_UBUNTU)
 	if ap.ubuntu.mirror.Host != "mirrors.tuna.tsinghua.edu.cn" {
 		t.Fatal("Mirror host incorrect")
 	}
@@ -94,14 +95,14 @@ func TestCreateNewRewritersWithSpecifyMirror(t *testing.T) {
 }
 
 func TestMatchingRule(t *testing.T) {
-	_, match := MatchingRule("http://archive.ubuntu.com/ubuntu/InRelease", UBUNTU_DEFAULT_CACHE_RULES)
+	_, match := MatchingRule("http://archive.ubuntu.com/ubuntu/InRelease", Mirrors.UBUNTU_DEFAULT_CACHE_RULES)
 	if !match {
 		t.Fatal("test ap rules faild")
 	}
 }
 
 func TestRuleToString(t *testing.T) {
-	rule, _ := MatchingRule("http://archive.ubuntu.com/ubuntu/InRelease", UBUNTU_DEFAULT_CACHE_RULES)
+	rule, _ := MatchingRule("http://archive.ubuntu.com/ubuntu/InRelease", Mirrors.UBUNTU_DEFAULT_CACHE_RULES)
 	if rule.String() != "Release(\\.gpg)?$ Cache-Control=max-age=3600 Rewrite=true" {
 		t.Fatal("test rules toString faild")
 	}

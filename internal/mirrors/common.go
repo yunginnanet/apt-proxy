@@ -1,6 +1,9 @@
-package linux
+package mirrors
 
-import "regexp"
+import (
+	"fmt"
+	"regexp"
+)
 
 const (
 	LINUX_ALL_DISTROS    string = "all"
@@ -109,4 +112,9 @@ var UBUNTU_DEFAULT_CACHE_RULES = []Rule{
 	{Pattern: regexp.MustCompile(`Translation-(en|fr)\.(gz|bz2|bzip2|lzma)$`), CacheControl: `max-age=3600`, Rewrite: true, OS: TYPE_LINUX_DISTROS_UBUNTU},
 	// Add file file hash
 	{Pattern: regexp.MustCompile(`/by-hash/`), CacheControl: `max-age=3600`, Rewrite: true, OS: TYPE_LINUX_DISTROS_UBUNTU},
+}
+
+func (r *Rule) String() string {
+	return fmt.Sprintf("%s Cache-Control=%s Rewrite=%#v",
+		r.Pattern.String(), r.CacheControl, r.Rewrite)
 }

@@ -1,4 +1,4 @@
-package linux
+package mirrors
 
 import (
 	"log"
@@ -14,8 +14,8 @@ func TestResourceBenchmark(t *testing.T) {
 }
 
 func TestMirrorsBenchmark(t *testing.T) {
-	mirrors := getGeoMirrorUrlsByMode(TYPE_LINUX_DISTROS_UBUNTU)
-	mirror, err := getTheFastestMirror(mirrors, UBUNTU_BENCHMAKR_URL)
+	mirrors := GetGeoMirrorUrlsByMode(TYPE_LINUX_DISTROS_UBUNTU)
+	mirror, err := GetTheFastestMirror(mirrors, UBUNTU_BENCHMAKR_URL)
 	if err != nil {
 		t.Fatal(err)
 	}

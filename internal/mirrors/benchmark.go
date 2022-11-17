@@ -1,4 +1,4 @@
-package linux
+package mirrors
 
 import (
 	"errors"
@@ -40,7 +40,7 @@ type benchmarkResult struct {
 	Duration time.Duration
 }
 
-func getTheFastestMirror(mirrors []string, testUrl string) (string, error) {
+func GetTheFastestMirror(mirrors []string, testUrl string) (string, error) {
 	ch := make(chan benchmarkResult)
 	log.Printf("Start benchmarking mirrors")
 	// kick off all benchmarks in parallel

@@ -3,7 +3,7 @@ package cli
 import (
 	"flag"
 
-	"github.com/soulteary/apt-proxy/linux"
+	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
 	"github.com/soulteary/apt-proxy/state"
 )
 
@@ -13,22 +13,22 @@ const (
 	DEFAULT_CACHE_DIR     = "./.aptcache"
 	DEFAULT_UBUNTU_MIRROR = "" // "https://mirrors.tuna.tsinghua.edu.cn/ubuntu/"
 	DEFAULT_DEBIAN_MIRROR = "" // "https://mirrors.tuna.tsinghua.edu.cn/debian/"
-	DEFAULT_MODE_NAME     = linux.LINUX_ALL_DISTROS
+	DEFAULT_MODE_NAME     = Mirrors.LINUX_ALL_DISTROS
 	DEFAULT_DEBUG         = false
 )
 
 var Version string
 
 func getProxyMode(mode string) int {
-	if mode == linux.LINUX_DISTROS_UBUNTU {
-		return linux.TYPE_LINUX_DISTROS_UBUNTU
+	if mode == Mirrors.LINUX_DISTROS_UBUNTU {
+		return Mirrors.TYPE_LINUX_DISTROS_UBUNTU
 	}
 
-	if mode == linux.LINUX_DISTROS_DEBIAN {
-		return linux.TYPE_LINUX_DISTROS_DEBIAN
+	if mode == Mirrors.LINUX_DISTROS_DEBIAN {
+		return Mirrors.TYPE_LINUX_DISTROS_DEBIAN
 	}
 
-	return linux.TYPE_LINUX_ALL_DISTROS
+	return Mirrors.TYPE_LINUX_ALL_DISTROS
 }
 
 func ParseFlags() (appFlags AppFlags) {

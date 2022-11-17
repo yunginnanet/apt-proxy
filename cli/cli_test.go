@@ -4,19 +4,19 @@ import (
 	"os"
 	"testing"
 
-	"github.com/soulteary/apt-proxy/linux"
+	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
 )
 
 func TestGetProxyMode(t *testing.T) {
-	if getProxyMode("not-support-os") != linux.TYPE_LINUX_ALL_DISTROS {
+	if getProxyMode("not-support-os") != Mirrors.TYPE_LINUX_ALL_DISTROS {
 		t.Fatal("Incorrect return default value")
 	}
 
-	if getProxyMode(linux.LINUX_DISTROS_DEBIAN) != linux.TYPE_LINUX_DISTROS_DEBIAN {
+	if getProxyMode(Mirrors.LINUX_DISTROS_DEBIAN) != Mirrors.TYPE_LINUX_DISTROS_DEBIAN {
 		t.Fatal("Incorrect return value")
 	}
 
-	if getProxyMode(linux.LINUX_DISTROS_UBUNTU) != linux.TYPE_LINUX_DISTROS_UBUNTU {
+	if getProxyMode(Mirrors.LINUX_DISTROS_UBUNTU) != Mirrors.TYPE_LINUX_DISTROS_UBUNTU {
 		t.Fatal("Incorrect return value")
 	}
 }

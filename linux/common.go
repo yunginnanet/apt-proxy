@@ -4,14 +4,14 @@ import "regexp"
 
 const (
 	LINUX_ALL_DISTROS    string = "all"
-	LINUX_DISTROS_UBUNTU        = "ubuntu"
-	LINUX_DISTROS_DEBIAN        = "debian"
+	LINUX_DISTROS_UBUNTU string = "ubuntu"
+	LINUX_DISTROS_DEBIAN string = "debian"
 )
 
 const (
 	TYPE_LINUX_ALL_DISTROS    int = 0
-	TYPE_LINUX_DISTROS_UBUNTU     = 1
-	TYPE_LINUX_DISTROS_DEBIAN     = 2
+	TYPE_LINUX_DISTROS_UBUNTU int = 1
+	TYPE_LINUX_DISTROS_DEBIAN int = 2
 )
 
 type Rule struct {

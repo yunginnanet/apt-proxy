@@ -2,7 +2,7 @@ package linux
 
 import (
 	"errors"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"time"
@@ -24,7 +24,7 @@ func benchmark(base string, query string, times int) (time.Duration, error) {
 		}
 
 		defer response.Body.Close()
-		_, err = ioutil.ReadAll(response.Body)
+		_, err = io.ReadAll(response.Body)
 		if err != nil {
 			return timeout, err
 		}
@@ -79,7 +79,7 @@ func readResults(ch <-chan benchmarkResult, size int) (br []benchmarkResult, err
 				return br, nil
 			}
 		case <-time.After(BENCHMARK_DETECT_TIMEOUT * time.Second):
-			return br, errors.New("Timed out waiting for results")
+			return br, errors.New("timed out waiting for results")
 		}
 	}
 }

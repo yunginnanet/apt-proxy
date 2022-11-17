@@ -1,38 +1,38 @@
-package state
+package mirrors
 
 import "testing"
 
 func TestGetUbuntuMirrorByAliases(t *testing.T) {
-	alias := getUbuntuMirrorByAliases("cn:tsinghua")
+	alias := GetUbuntuMirrorByAliases("cn:tsinghua")
 	if alias != BUILDIN_CUSTOM_UBUNTU_MIRRORS[0].url {
 		t.Fatal("Test Get Mirror By Custom Name Failed")
 	}
 
-	alias = getUbuntuMirrorByAliases("cn:not-found")
+	alias = GetUbuntuMirrorByAliases("cn:not-found")
 	if alias != "" {
 		t.Fatal("Test Get Mirror By Custom Name Failed")
 	}
 }
 
 func TestGetDebianMirrorByAliases(t *testing.T) {
-	alias := getDebianMirrorByAliases("cn:tsinghua")
+	alias := GetDebianMirrorByAliases("cn:tsinghua")
 	if alias != BUILDIN_CUSTOM_DEBIAN_MIRRORS[0].url {
 		t.Fatal("Test Get Mirror By Custom Name Failed")
 	}
 
-	alias = getDebianMirrorByAliases("cn:not-found")
+	alias = GetDebianMirrorByAliases("cn:not-found")
 	if alias != "" {
 		t.Fatal("Test Get Mirror By Custom Name Failed")
 	}
 }
 
 func TestGetCentOSMirrorByAliases(t *testing.T) {
-	alias := getDebianMirrorByAliases("cn:tsinghua")
+	alias := GetDebianMirrorByAliases("cn:tsinghua")
 	if alias != BUILDIN_CUSTOM_DEBIAN_MIRRORS[0].url {
 		t.Fatal("Test Get Mirror By Custom Name Failed")
 	}
 
-	alias = getDebianMirrorByAliases("cn:not-found")
+	alias = GetDebianMirrorByAliases("cn:not-found")
 	if alias != "" {
 		t.Fatal("Test Get Mirror By Custom Name Failed")
 	}

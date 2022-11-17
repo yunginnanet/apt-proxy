@@ -125,7 +125,10 @@ func (fs *memoryFileSystem) OpenFile(path string, flag int, mode os.FileMode) (W
 		}
 	} else {
 		f = &File{ModTime: time.Now()}
-		d.Add(base, f)
+		err = d.Add(base, f)
+		if err != nil {
+			return nil, os.ErrExist
+		}
 	}
 	return NewWFile(f.(*File), flag&os.O_RDWR != 0, true)
 }
@@ -189,15 +192,18 @@ func (fs *memoryFileSystem) Mkdir(path string, perm os.FileMode) error {
 	if _, p, _ := d.Find(base); p >= 0 {
 		return os.ErrExist
 	}
-	d.Add(base, &Dir{
+	err = d.Add(base, &Dir{
 		Mode:    os.ModeDir | perm,
 		ModTime: time.Now(),
 	})
+	if err != nil {
+		return os.ErrExist
+	}
 	return nil
 }
 
 func (fs *memoryFileSystem) Remove(path string) error {
-	entry, dir, pos, err := fs.entry(path)
+	entry, dir, _, err := fs.entry(path)
 	if err != nil {
 		return err
 	}
@@ -206,7 +212,7 @@ func (fs *memoryFileSystem) Remove(path string) error {
 	}
 	// Lock again, the position might have changed
 	dir.Lock()
-	_, pos, err = dir.Find(pathpkg.Base(path))
+	_, pos, err := dir.Find(pathpkg.Base(path))
 	if err == nil {
 		dir.EntryNames = append(dir.EntryNames[:pos], dir.EntryNames[pos+1:]...)
 		dir.Entries = append(dir.Entries[:pos], dir.Entries[pos+1:]...)

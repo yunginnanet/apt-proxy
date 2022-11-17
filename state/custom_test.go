@@ -25,3 +25,15 @@ func TestGetDebianMirrorByAliases(t *testing.T) {
 		t.Fatal("Test Get Mirror By Custom Name Failed")
 	}
 }
+
+func TestGetCentOSMirrorByAliases(t *testing.T) {
+	alias := getDebianMirrorByAliases("cn:tsinghua")
+	if alias != BUILDIN_CUSTOM_DEBIAN_MIRRORS[0].url {
+		t.Fatal("Test Get Mirror By Custom Name Failed")
+	}
+
+	alias = getDebianMirrorByAliases("cn:not-found")
+	if alias != "" {
+		t.Fatal("Test Get Mirror By Custom Name Failed")
+	}
+}

@@ -6,13 +6,13 @@
   <a href="README.md">ENGLISH</a> | <a href="README_CN.md"  target="_blank">中文文档</a>
 </p>
 
-<img src="screenshot/logo.png" width="64"/>
+<img src="example/assets/logo.png" width="64"/>
 
 > Lightweight **APT CHACHE PROXY** with only 2MB+ size!
 
-<img src="screenshot/dockerhub.png" width="600"/>
+<img src="example/assets/dockerhub.png" width="600"/>
 
-<img src="screenshot/ui.png" width="600"/>
+<img src="example/assets/ui.png" width="600"/>
 
 APT Proxy is a Lightweight and Reliable APT packages (Ubuntu / Debian) cache tool, supports a large number of common system and Docker usage.
 

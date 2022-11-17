@@ -8,7 +8,7 @@ import (
 
 	Benchmark "github.com/soulteary/apt-proxy/internal/benchmark"
 	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
-	"github.com/soulteary/apt-proxy/state"
+	State "github.com/soulteary/apt-proxy/internal/state"
 )
 
 type URLRewriters struct {
@@ -36,7 +36,7 @@ func GetRewriteRulesByMode(mode int) (rules []Mirrors.Rule) {
 
 func getRewriterForDebian() *URLRewriter {
 	u := &URLRewriter{}
-	debianMirror := state.GetDebianMirror()
+	debianMirror := State.GetDebianMirror()
 	benchmarkUrl, pattern := Mirrors.GetPredefinedConfiguration(Mirrors.TYPE_LINUX_DISTROS_DEBIAN)
 	u.pattern = pattern
 
@@ -62,7 +62,7 @@ func getRewriterForDebian() *URLRewriter {
 
 func getRewriterForUbuntu() *URLRewriter {
 	u := &URLRewriter{}
-	ubuntuMirror := state.GetUbuntuMirror()
+	ubuntuMirror := State.GetUbuntuMirror()
 	benchmarkUrl, pattern := Mirrors.GetPredefinedConfiguration(Mirrors.TYPE_LINUX_DISTROS_UBUNTU)
 	u.pattern = pattern
 

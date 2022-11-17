@@ -4,7 +4,7 @@ import (
 	"flag"
 
 	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
-	"github.com/soulteary/apt-proxy/state"
+	State "github.com/soulteary/apt-proxy/internal/state"
 )
 
 const (
@@ -52,9 +52,9 @@ func ParseFlags() (appFlags AppFlags) {
 	appFlags.Listen = host + ":" + port
 	appFlags.Version = Version
 
-	state.SetProxyMode(mode)
-	state.SetDebianMirror(appFlags.Debian)
-	state.SetUbuntuMirror(appFlags.Ubuntu)
+	State.SetProxyMode(mode)
+	State.SetDebianMirror(appFlags.Debian)
+	State.SetUbuntuMirror(appFlags.Ubuntu)
 
 	return appFlags
 }

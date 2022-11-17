@@ -7,7 +7,7 @@ import (
 
 	Benchmark "github.com/soulteary/apt-proxy/internal/benchmark"
 	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
-	"github.com/soulteary/apt-proxy/state"
+	State "github.com/soulteary/apt-proxy/internal/state"
 )
 
 func TestGetRewriteRulesByMode(t *testing.T) {
@@ -81,7 +81,7 @@ func TestCreateNewRewritersForAll(t *testing.T) {
 }
 
 func TestCreateNewRewritersWithSpecifyMirror(t *testing.T) {
-	state.SetUbuntuMirror("https://mirrors.tuna.tsinghua.edu.cn/ubuntu/")
+	State.SetUbuntuMirror("https://mirrors.tuna.tsinghua.edu.cn/ubuntu/")
 
 	ap := *CreateNewRewriters(Mirrors.TYPE_LINUX_DISTROS_UBUNTU)
 	if ap.ubuntu.mirror.Host != "mirrors.tuna.tsinghua.edu.cn" {
@@ -92,7 +92,7 @@ func TestCreateNewRewritersWithSpecifyMirror(t *testing.T) {
 		t.Fatal("mirror path incorrect")
 	}
 
-	state.ResetUbuntuMirror()
+	State.ResetUbuntuMirror()
 }
 
 func TestMatchingRule(t *testing.T) {

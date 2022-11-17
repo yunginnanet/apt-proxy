@@ -8,7 +8,7 @@ import (
 
 	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
 	Rewriter "github.com/soulteary/apt-proxy/internal/rewriter"
-	"github.com/soulteary/apt-proxy/state"
+	State "github.com/soulteary/apt-proxy/internal/state"
 )
 
 var rewriter *Rewriter.URLRewriters
@@ -25,7 +25,7 @@ type AptProxy struct {
 }
 
 func CreateAptProxyRouter() *AptProxy {
-	mode := state.GetProxyMode()
+	mode := State.GetProxyMode()
 	rewriter = Rewriter.CreateNewRewriters(mode)
 
 	return &AptProxy{

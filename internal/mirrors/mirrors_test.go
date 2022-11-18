@@ -36,7 +36,7 @@ func TestGetMirrorUrlsByGeo(t *testing.T) {
 
 func TestGetPredefinedConfiguration(t *testing.T) {
 	res, pattern := GetPredefinedConfiguration(Define.TYPE_LINUX_DISTROS_UBUNTU)
-	if res != UBUNTU_BENCHMAKR_URL {
+	if res != Define.UBUNTU_BENCHMAKR_URL {
 		t.Fatal("Failed to get resource link")
 	}
 	if !pattern.MatchString("http://archive.ubuntu.com/ubuntu/InRelease") {
@@ -50,7 +50,7 @@ func TestGetPredefinedConfiguration(t *testing.T) {
 	}
 
 	res, pattern = GetPredefinedConfiguration(Define.TYPE_LINUX_DISTROS_DEBIAN)
-	if res != DEBIAN_BENCHMAKR_URL {
+	if res != Define.DEBIAN_BENCHMAKR_URL {
 		t.Fatal("Failed to get resource link")
 	}
 	if !pattern.MatchString("http://deb.debian.org/debian/InRelease") {

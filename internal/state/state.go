@@ -3,6 +3,7 @@ package state
 import (
 	"net/url"
 
+	Define "github.com/soulteary/apt-proxy/internal/define"
 	"github.com/soulteary/apt-proxy/internal/mirrors"
 )
 
@@ -26,7 +27,7 @@ func SetUbuntuMirror(input string) {
 	}
 
 	mirror := input
-	alias := mirrors.GetUbuntuMirrorByAliases(input)
+	alias := mirrors.GetMirrorURLByAliases(Define.TYPE_LINUX_DISTROS_UBUNTU, input)
 	if alias != "" {
 		mirror = alias
 	}
@@ -54,7 +55,7 @@ func SetDebianMirror(input string) {
 	}
 
 	mirror := input
-	alias := mirrors.GetDebianMirrorByAliases(input)
+	alias := mirrors.GetMirrorURLByAliases(Define.TYPE_LINUX_DISTROS_DEBIAN, input)
 	if alias != "" {
 		mirror = alias
 	}
@@ -82,7 +83,7 @@ func SetCentOSMirror(input string) {
 	}
 
 	mirror := input
-	alias := mirrors.GetCentOSMirrorByAliases(input)
+	alias := mirrors.GetMirrorURLByAliases(Define.TYPE_LINUX_DISTROS_CENTOS, input)
 	if alias != "" {
 		mirror = alias
 	}

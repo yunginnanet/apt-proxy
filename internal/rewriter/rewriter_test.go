@@ -6,22 +6,23 @@ import (
 	"time"
 
 	Benchmark "github.com/soulteary/apt-proxy/internal/benchmark"
+	Define "github.com/soulteary/apt-proxy/internal/define"
 	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
 	State "github.com/soulteary/apt-proxy/internal/state"
 )
 
 func TestGetRewriteRulesByMode(t *testing.T) {
-	rules := GetRewriteRulesByMode(Mirrors.TYPE_LINUX_DISTROS_UBUNTU)
+	rules := GetRewriteRulesByMode(Define.TYPE_LINUX_DISTROS_UBUNTU)
 	if rules[0].Pattern != Mirrors.UBUNTU_DEFAULT_CACHE_RULES[0].Pattern {
 		t.Fatal("Pattern Not Match")
 	}
 
-	rules = GetRewriteRulesByMode(Mirrors.TYPE_LINUX_DISTROS_DEBIAN)
+	rules = GetRewriteRulesByMode(Define.TYPE_LINUX_DISTROS_DEBIAN)
 	if rules[0].Pattern != Mirrors.DEBIAN_DEFAULT_CACHE_RULES[0].Pattern {
 		t.Fatal("Pattern Not Match")
 	}
 
-	rules = GetRewriteRulesByMode(Mirrors.TYPE_LINUX_ALL_DISTROS)
+	rules = GetRewriteRulesByMode(Define.TYPE_LINUX_ALL_DISTROS)
 	if len(rules) != (len(Mirrors.DEBIAN_DEFAULT_CACHE_RULES) + len(Mirrors.UBUNTU_DEFAULT_CACHE_RULES)) {
 		t.Fatal("Pattern Length Not Match")
 	}
@@ -42,7 +43,7 @@ func TestGetRewriterForUbuntu(t *testing.T) {
 }
 
 func TestCreateNewRewritersForUbuntu(t *testing.T) {
-	ap := *CreateNewRewriters(Mirrors.TYPE_LINUX_DISTROS_UBUNTU)
+	ap := *CreateNewRewriters(Define.TYPE_LINUX_DISTROS_UBUNTU)
 	time.Sleep((Benchmark.BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
 
 	if len(ap.ubuntu.mirror.Path) == 0 {
@@ -55,7 +56,7 @@ func TestCreateNewRewritersForUbuntu(t *testing.T) {
 }
 
 func TestCreateNewRewritersForDebian(t *testing.T) {
-	ap := *CreateNewRewriters(Mirrors.TYPE_LINUX_DISTROS_DEBIAN)
+	ap := *CreateNewRewriters(Define.TYPE_LINUX_DISTROS_DEBIAN)
 	time.Sleep((Benchmark.BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
 
 	if len(ap.debian.mirror.Path) == 0 {
@@ -68,7 +69,7 @@ func TestCreateNewRewritersForDebian(t *testing.T) {
 }
 
 func TestCreateNewRewritersForAll(t *testing.T) {
-	ap := *CreateNewRewriters(Mirrors.TYPE_LINUX_ALL_DISTROS)
+	ap := *CreateNewRewriters(Define.TYPE_LINUX_ALL_DISTROS)
 	time.Sleep((Benchmark.BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
 
 	if len(ap.debian.mirror.Path) == 0 || len(ap.ubuntu.mirror.Host) == 0 {
@@ -83,7 +84,7 @@ func TestCreateNewRewritersForAll(t *testing.T) {
 func TestCreateNewRewritersWithSpecifyMirror(t *testing.T) {
 	State.SetUbuntuMirror("https://mirrors.tuna.tsinghua.edu.cn/ubuntu/")
 
-	ap := *CreateNewRewriters(Mirrors.TYPE_LINUX_DISTROS_UBUNTU)
+	ap := *CreateNewRewriters(Define.TYPE_LINUX_DISTROS_UBUNTU)
 	if ap.ubuntu.mirror.Host != "mirrors.tuna.tsinghua.edu.cn" {
 		t.Fatal("Mirror host incorrect")
 	}

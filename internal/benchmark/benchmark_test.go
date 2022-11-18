@@ -6,6 +6,7 @@ import (
 	"time"
 
 	Benchmark "github.com/soulteary/apt-proxy/internal/benchmark"
+	Define "github.com/soulteary/apt-proxy/internal/define"
 	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
 )
 
@@ -18,7 +19,7 @@ func TestBenchmark(t *testing.T) {
 }
 
 func TestGetTheFastestMirror(t *testing.T) {
-	mirrors := Mirrors.GetGeoMirrorUrlsByMode(Mirrors.TYPE_LINUX_DISTROS_UBUNTU)
+	mirrors := Mirrors.GetGeoMirrorUrlsByMode(Define.TYPE_LINUX_DISTROS_UBUNTU)
 	_, err := Benchmark.GetTheFastestMirror(mirrors, Mirrors.UBUNTU_BENCHMAKR_URL)
 	if err != nil {
 		t.Fatal(err)

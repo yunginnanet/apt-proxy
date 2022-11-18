@@ -22,7 +22,7 @@ type URLRewriter struct {
 	pattern *regexp.Regexp
 }
 
-func GetRewriteRulesByMode(mode int) (rules []Mirrors.Rule) {
+func GetRewriteRulesByMode(mode int) (rules []Define.Rule) {
 	if mode == Define.TYPE_LINUX_DISTROS_UBUNTU {
 		return Mirrors.UBUNTU_DEFAULT_CACHE_RULES
 	}
@@ -128,7 +128,7 @@ func RewriteRequestByMode(r *http.Request, rewriters *URLRewriters, mode int) {
 	}
 }
 
-func MatchingRule(subject string, rules []Mirrors.Rule) (*Mirrors.Rule, bool) {
+func MatchingRule(subject string, rules []Define.Rule) (*Define.Rule, bool) {
 	for _, rule := range rules {
 		if rule.Pattern.MatchString(subject) {
 			return &rule, true

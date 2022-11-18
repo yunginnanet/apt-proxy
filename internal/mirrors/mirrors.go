@@ -8,25 +8,24 @@ import (
 	Define "github.com/soulteary/apt-proxy/internal/define"
 )
 
-
 func GetMirrorURLByAliases(osType int, alias string) string {
 	switch osType {
 	case Define.TYPE_LINUX_DISTROS_UBUNTU:
-		for _, mirror := range BUILDIN_CUSTOM_UBUNTU_MIRRORS {
-			if mirror.alias == alias {
-				return mirror.url
+		for _, mirror := range Define.BUILDIN_UBUNTU_MIRRORS {
+			if mirror.Alias == alias {
+				return mirror.URL
 			}
 		}
 	case Define.TYPE_LINUX_DISTROS_DEBIAN:
-		for _, mirror := range BUILDIN_CUSTOM_DEBIAN_MIRRORS {
-			if mirror.alias == alias {
-				return mirror.url
+		for _, mirror := range Define.BUILDIN_DEBIAN_MIRRORS {
+			if mirror.Alias == alias {
+				return mirror.URL
 			}
 		}
 	case Define.TYPE_LINUX_DISTROS_CENTOS:
-		for _, mirror := range BUILDIN_CUSTOM_CENTOS_MIRRORS {
-			if mirror.alias == alias {
-				return mirror.url
+		for _, mirror := range Define.BUILDIN_CENTOS_MIRRORS {
+			if mirror.Alias == alias {
+				return mirror.URL
 			}
 		}
 	}

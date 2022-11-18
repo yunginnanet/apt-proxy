@@ -6,7 +6,7 @@ import (
 	"net/http/httputil"
 	"time"
 
-	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
+	Define "github.com/soulteary/apt-proxy/internal/define"
 	Rewriter "github.com/soulteary/apt-proxy/internal/rewriter"
 	State "github.com/soulteary/apt-proxy/internal/state"
 )
@@ -21,7 +21,7 @@ var defaultTransport http.RoundTripper = &http.Transport{
 
 type AptProxy struct {
 	Handler http.Handler
-	Rules   []Mirrors.Rule
+	Rules   []Define.Rule
 }
 
 func CreateAptProxyRouter() *AptProxy {
@@ -38,7 +38,7 @@ func CreateAptProxyRouter() *AptProxy {
 }
 
 func (ap *AptProxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	var rule *Mirrors.Rule
+	var rule *Define.Rule
 	if isInternalUrls(r.URL.Path) {
 		rule = nil
 		renderInternalUrls(r.URL.Path, &rw)
@@ -60,7 +60,7 @@ func (ap *AptProxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 type responseWriter struct {
 	http.ResponseWriter
-	rule *Mirrors.Rule
+	rule *Define.Rule
 }
 
 func (rw *responseWriter) WriteHeader(status int) {

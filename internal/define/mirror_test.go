@@ -62,3 +62,24 @@ package define_test
 // 		}
 // 	}
 // }
+
+// func TestPrintCentosPingScript(t *testing.T) {
+// 	for _, url := range Define.ALPINE_OFFICAL_MIRRORS {
+// 		if !(strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://")) {
+// 			fmt.Println(`echo "` + url + `"`)
+// 			http := "curl --connect-timeout 2 -I http://" + url + Define.ALPINE_BENCHMAKR_URL
+// 			fmt.Println(http)
+// 			https := "curl --connect-timeout 2 -I https://" + url + Define.ALPINE_BENCHMAKR_URL
+// 			fmt.Println(https)
+// 		}
+// 	}
+// 	for _, url := range Define.CENTOS_CUSTOM_MIRRORS {
+// 		if !(strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://")) {
+// 			fmt.Println(`echo "` + url + `"`)
+// 			http := "curl --connect-timeout 2 -I http://" + url + Define.ALPINE_BENCHMAKR_URL
+// 			fmt.Println(http)
+// 			https := "curl --connect-timeout 2 -I https://" + url + Define.ALPINE_BENCHMAKR_URL
+// 			fmt.Println(https)
+// 		}
+// 	}
+// }

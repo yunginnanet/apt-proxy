@@ -7,13 +7,18 @@ var ALPINE_HOST_PATTERN = regexp.MustCompile(`https?://.+/alpine/(.+)$`)
 const ALPINE_BENCHMAKR_URL = "MIRRORS.txt"
 
 // https://mirrors.alpinelinux.org/ 2022.11.19
-var BUILDIN_ALPINE_MIRRORS = []UrlWithAlias{
-	{URL: "mirrors.tuna.tsinghua.edu.cn/alpine/", Alias: "cn:tsinghua", Http: true, Https: true, Official: true, Bandwidth: 10000},
-	{URL: "mirrors.ustc.edu.cn/alpine/", Alias: "cn:ustc", Http: true, Https: true, Official: true, Bandwidth: 700},
-	{URL: "mirrors.nju.edu.cn/alpine/", Alias: "cn:nju", Http: true, Https: true, Official: true, Bandwidth: 10000},
-	{URL: "mirror.lzu.edu.cn/alpine/", Alias: "cn:lzu", Http: true, Https: true, Official: true, Bandwidth: 100},
-	{URL: "mirrors.sjtug.sjtu.edu.cn/alpine/", Alias: "cn:sjtug", Http: true, Https: true, Official: true, Bandwidth: 500},
-	{URL: "mirrors.aliyun.com/alpine/", Alias: "cn:aliyun", Http: true, Https: true, Official: true, Bandwidth: 10000},
-	{URL: "mirrors.bfsu.edu.cn/centos/", Alias: "cn:bfsu", Http: true, Https: true, Official: true, Bandwidth: 1000},
-	{URL: "mirrors.neusoft.edu.cn/centos/", Alias: "cn:neusoft", Http: true, Https: true, Official: true, Bandwidth: 1000},
+// Sites that contain protocol headers, restrict access to resources using that protocol
+var ALPINE_OFFICAL_MIRRORS = []string{
+	"mirrors.tuna.tsinghua.edu.cn/alpine/",
+	"mirrors.ustc.edu.cn/alpine/",
+	"mirrors.nju.edu.cn/alpine/",
+	// offline "mirror.lzu.edu.cn/alpine/",
+	"mirrors.sjtug.sjtu.edu.cn/alpine/",
+	"mirrors.aliyun.com/alpine/",
+	// not vaild "mirrors.bfsu.edu.cn/alpine",
+	// offline "mirrors.neusoft.edu.cn/alpine/",
 }
+
+var ALPINE_CUSTOM_MIRRORS = []string{}
+
+var BUILDIN_ALPINE_MIRRORS = GenerateBuildInList(ALPINE_OFFICAL_MIRRORS, ALPINE_CUSTOM_MIRRORS)

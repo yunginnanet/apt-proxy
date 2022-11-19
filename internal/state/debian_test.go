@@ -25,4 +25,16 @@ func TestGetAndSetDebianMirror(t *testing.T) {
 	if mirror != nil {
 		t.Fatal("Test Clear Debian Mirror Faild")
 	}
+
+	State.SetDebianMirror("cn:tsinghua")
+	mirror = State.GetDebianMirror()
+	if !strings.Contains(strings.ToLower(mirror.Path), "debian") {
+		t.Fatal("Test Set/Get Debian Mirror Value Faild")
+	}
+
+	State.SetDebianMirror("!#$%(not://abc")
+	mirror = State.GetDebianMirror()
+	if mirror != nil {
+		t.Fatal("Test Set/Get Debian Mirror Value Faild")
+	}
 }

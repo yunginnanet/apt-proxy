@@ -25,4 +25,16 @@ func TestGetAndSetUbuntuMirror(t *testing.T) {
 	if mirror != nil {
 		t.Fatal("Test Clear Ubuntu Mirror Faild")
 	}
+
+	State.SetUbuntuMirror("cn:tsinghua")
+	mirror = State.GetUbuntuMirror()
+	if !strings.Contains(strings.ToLower(mirror.Path), "ubuntu") {
+		t.Fatal("Test Set/Get Ubuntu Mirror Value Faild")
+	}
+
+	State.SetUbuntuMirror("!#$%(not://abc")
+	mirror = State.GetUbuntuMirror()
+	if mirror != nil {
+		t.Fatal("Test Set/Get Ubuntu Mirror Value Faild")
+	}
 }

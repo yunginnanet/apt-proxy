@@ -77,6 +77,12 @@ func GetMirrorURLByAliases(osType int, alias string) string {
 				return mirror.URL
 			}
 		}
+	case Define.TYPE_LINUX_DISTROS_ALPINE:
+		for _, mirror := range Define.BUILDIN_ALPINE_MIRRORS {
+			if mirror.Alias == alias {
+				return mirror.URL
+			}
+		}
 	}
 	return ""
 }

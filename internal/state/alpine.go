@@ -11,7 +11,7 @@ var ALPINE_MIRROR *url.URL
 
 func SetAlpineMirror(input string) {
 	if input == "" {
-		CENTOS_MIRROR = nil
+		ALPINE_MIRROR = nil
 		return
 	}
 
@@ -26,13 +26,13 @@ func SetAlpineMirror(input string) {
 		ALPINE_MIRROR = nil
 		return
 	}
-	CENTOS_MIRROR = url
+	ALPINE_MIRROR = url
 }
 
 func GetAlpineMirror() *url.URL {
-	return CENTOS_MIRROR
+	return ALPINE_MIRROR
 }
 
 func ResetAlpineMirror() {
-	CENTOS_MIRROR = nil
+	ALPINE_MIRROR = nil
 }

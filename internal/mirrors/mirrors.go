@@ -8,9 +8,6 @@ import (
 	Define "github.com/soulteary/apt-proxy/internal/define"
 )
 
-// TODO:  1. Redefine the official definition list and the three-party list
-// TODO:  2. Automatically generate lists with Alias
-// TODO:  3. Automatically generate rewriter rules
 func GenerateMirrorListByPredefined(osType int) (mirrors []string) {
 	var src []Define.UrlWithAlias
 	switch osType {
@@ -131,6 +128,8 @@ func GetPredefinedConfiguration(proxyMode int) (string, *regexp.Regexp) {
 		return Define.DEBIAN_BENCHMAKR_URL, Define.DEBIAN_HOST_PATTERN
 	case Define.TYPE_LINUX_DISTROS_CENTOS:
 		return Define.CENTOS_BENCHMAKR_URL, Define.CENTOS_HOST_PATTERN
+	case Define.TYPE_LINUX_DISTROS_ALPINE:
+		return Define.ALPINE_BENCHMAKR_URL, Define.ALPINE_HOST_PATTERN
 	}
 	return "", nil
 }

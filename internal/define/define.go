@@ -11,6 +11,7 @@ const (
 	LINUX_DISTROS_UBUNTU string = "ubuntu"
 	LINUX_DISTROS_DEBIAN string = "debian"
 	LINUX_DISTROS_CENTOS string = "centos"
+	LINUX_DISTROS_ALPINE string = "alpine"
 )
 
 const (
@@ -18,6 +19,7 @@ const (
 	TYPE_LINUX_DISTROS_UBUNTU int = 1
 	TYPE_LINUX_DISTROS_DEBIAN int = 2
 	TYPE_LINUX_DISTROS_CENTOS int = 3
+	TYPE_LINUX_DISTROS_ALPINE int = 4
 )
 
 type Rule struct {

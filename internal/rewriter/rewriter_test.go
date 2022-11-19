@@ -7,23 +7,22 @@ import (
 
 	Benchmark "github.com/soulteary/apt-proxy/internal/benchmark"
 	Define "github.com/soulteary/apt-proxy/internal/define"
-	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
 	State "github.com/soulteary/apt-proxy/internal/state"
 )
 
 func TestGetRewriteRulesByMode(t *testing.T) {
 	rules := GetRewriteRulesByMode(Define.TYPE_LINUX_DISTROS_UBUNTU)
-	if rules[0].Pattern != Mirrors.UBUNTU_DEFAULT_CACHE_RULES[0].Pattern {
+	if rules[0].Pattern != Define.UBUNTU_DEFAULT_CACHE_RULES[0].Pattern {
 		t.Fatal("Pattern Not Match")
 	}
 
 	rules = GetRewriteRulesByMode(Define.TYPE_LINUX_DISTROS_DEBIAN)
-	if rules[0].Pattern != Mirrors.DEBIAN_DEFAULT_CACHE_RULES[0].Pattern {
+	if rules[0].Pattern != Define.DEBIAN_DEFAULT_CACHE_RULES[0].Pattern {
 		t.Fatal("Pattern Not Match")
 	}
 
 	rules = GetRewriteRulesByMode(Define.TYPE_LINUX_ALL_DISTROS)
-	if len(rules) != (len(Mirrors.DEBIAN_DEFAULT_CACHE_RULES) + len(Mirrors.UBUNTU_DEFAULT_CACHE_RULES)) {
+	if len(rules) != (len(Define.DEBIAN_DEFAULT_CACHE_RULES) + len(Define.UBUNTU_DEFAULT_CACHE_RULES)) {
 		t.Fatal("Pattern Length Not Match")
 	}
 }
@@ -97,14 +96,18 @@ func TestCreateNewRewritersWithSpecifyMirror(t *testing.T) {
 }
 
 func TestMatchingRule(t *testing.T) {
-	_, match := MatchingRule("http://archive.ubuntu.com/ubuntu/InRelease", Mirrors.UBUNTU_DEFAULT_CACHE_RULES)
+	_, match := MatchingRule("http://archive.ubuntu.com/ubuntu/InRelease", Define.UBUNTU_DEFAULT_CACHE_RULES)
+	if !match {
+		t.Fatal("test ap rules faild")
+	}
+	_, match = MatchingRule("http://cn.archive.ubuntu.com/ubuntu/InRelease", Define.UBUNTU_DEFAULT_CACHE_RULES)
 	if !match {
 		t.Fatal("test ap rules faild")
 	}
 }
 
 func TestRuleToString(t *testing.T) {
-	rule, _ := MatchingRule("http://archive.ubuntu.com/ubuntu/InRelease", Mirrors.UBUNTU_DEFAULT_CACHE_RULES)
+	rule, _ := MatchingRule("http://archive.ubuntu.com/ubuntu/InRelease", Define.UBUNTU_DEFAULT_CACHE_RULES)
 	if rule.String() != "Release(\\.gpg)?$ Cache-Control=max-age=3600 Rewrite=true" {
 		t.Fatal("test rules toString faild")
 	}

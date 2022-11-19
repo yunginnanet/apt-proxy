@@ -1,8 +1,6 @@
 package mirrors
 
 import (
-	"bufio"
-	"net/http"
 	"regexp"
 
 	Define "github.com/soulteary/apt-proxy/internal/define"
@@ -11,13 +9,21 @@ import (
 func GenerateMirrorListByPredefined(osType int) (mirrors []string) {
 	var src []Define.UrlWithAlias
 	switch osType {
+	case Define.TYPE_LINUX_ALL_DISTROS:
+		src = append(src, Define.BUILDIN_UBUNTU_MIRRORS...)
+		src = append(src, Define.BUILDIN_DEBIAN_MIRRORS...)
+		src = append(src, Define.BUILDIN_CENTOS_MIRRORS...)
+		src = append(src, Define.BUILDIN_ALPINE_MIRRORS...)
 	case Define.TYPE_LINUX_DISTROS_UBUNTU:
 		src = Define.BUILDIN_UBUNTU_MIRRORS
 	case Define.TYPE_LINUX_DISTROS_DEBIAN:
 		src = Define.BUILDIN_DEBIAN_MIRRORS
 	case Define.TYPE_LINUX_DISTROS_CENTOS:
 		src = Define.BUILDIN_CENTOS_MIRRORS
+	case Define.TYPE_LINUX_DISTROS_ALPINE:
+		src = Define.BUILDIN_ALPINE_MIRRORS
 	}
+
 	for _, mirror := range src {
 		mirrors = append(mirrors, mirror.URL)
 	}
@@ -25,36 +31,30 @@ func GenerateMirrorListByPredefined(osType int) (mirrors []string) {
 }
 
 var BUILDIN_UBUNTU_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_UBUNTU)
-var BUILDIN_CENTOS_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_CENTOS)
 var BUILDIN_DEBIAN_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_DEBIAN)
+var BUILDIN_CENTOS_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_CENTOS)
 
-var DEBIAN_DEFAULT_CACHE_RULES = []Define.Rule{
-	{Pattern: regexp.MustCompile(`deb$`), CacheControl: `max-age=100000`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_DEBIAN},
-	{Pattern: regexp.MustCompile(`udeb$`), CacheControl: `max-age=100000`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_DEBIAN},
-	{Pattern: regexp.MustCompile(`DiffIndex$`), CacheControl: `max-age=3600`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_DEBIAN},
-	{Pattern: regexp.MustCompile(`PackagesIndex$`), CacheControl: `max-age=3600`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_DEBIAN},
-	{Pattern: regexp.MustCompile(`Packages\.(bz2|gz|lzma)$`), CacheControl: `max-age=3600`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_DEBIAN},
-	{Pattern: regexp.MustCompile(`SourcesIndex$`), CacheControl: `max-age=3600`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_DEBIAN},
-	{Pattern: regexp.MustCompile(`Sources\.(bz2|gz|lzma)$`), CacheControl: `max-age=3600`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_DEBIAN},
-	{Pattern: regexp.MustCompile(`Release(\.gpg)?$`), CacheControl: `max-age=3600`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_DEBIAN},
-	{Pattern: regexp.MustCompile(`Translation-(en|fr)\.(gz|bz2|bzip2|lzma)$`), CacheControl: `max-age=3600`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_DEBIAN},
-	// Add file file hash
-	{Pattern: regexp.MustCompile(`/by-hash/`), CacheControl: `max-age=3600`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_DEBIAN},
-}
+func GetGeoMirrorUrlsByMode(mode int) (mirrors []string) {
+	if mode == Define.TYPE_LINUX_DISTROS_UBUNTU {
+		ubuntuMirrorsOnline, err := GetUbuntuMirrorUrlsByGeo()
+		if err != nil {
+			return BUILDIN_UBUNTU_MIRRORS
+		}
+		return ubuntuMirrorsOnline
+	}
 
-// Ubuntu
-var UBUNTU_DEFAULT_CACHE_RULES = []Define.Rule{
-	{Pattern: regexp.MustCompile(`deb$`), CacheControl: `max-age=100000`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_UBUNTU},
-	{Pattern: regexp.MustCompile(`udeb$`), CacheControl: `max-age=100000`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_UBUNTU},
-	{Pattern: regexp.MustCompile(`DiffIndex$`), CacheControl: `max-age=3600`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_UBUNTU},
-	{Pattern: regexp.MustCompile(`PackagesIndex$`), CacheControl: `max-age=3600`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_UBUNTU},
-	{Pattern: regexp.MustCompile(`Packages\.(bz2|gz|lzma)$`), CacheControl: `max-age=3600`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_UBUNTU},
-	{Pattern: regexp.MustCompile(`SourcesIndex$`), CacheControl: `max-age=3600`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_UBUNTU},
-	{Pattern: regexp.MustCompile(`Sources\.(bz2|gz|lzma)$`), CacheControl: `max-age=3600`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_UBUNTU},
-	{Pattern: regexp.MustCompile(`Release(\.gpg)?$`), CacheControl: `max-age=3600`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_UBUNTU},
-	{Pattern: regexp.MustCompile(`Translation-(en|fr)\.(gz|bz2|bzip2|lzma)$`), CacheControl: `max-age=3600`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_UBUNTU},
-	// Add file file hash
-	{Pattern: regexp.MustCompile(`/by-hash/`), CacheControl: `max-age=3600`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_UBUNTU},
+	if mode == Define.TYPE_LINUX_DISTROS_DEBIAN {
+		return BUILDIN_DEBIAN_MIRRORS
+	}
+
+	if mode == Define.TYPE_LINUX_DISTROS_CENTOS {
+		return BUILDIN_CENTOS_MIRRORS
+	}
+
+	mirrors = append(mirrors, BUILDIN_UBUNTU_MIRRORS...)
+	mirrors = append(mirrors, BUILDIN_DEBIAN_MIRRORS...)
+	mirrors = append(mirrors, BUILDIN_CENTOS_MIRRORS...)
+	return mirrors
 }
 
 func GetMirrorURLByAliases(osType int, alias string) string {
@@ -79,45 +79,6 @@ func GetMirrorURLByAliases(osType int, alias string) string {
 		}
 	}
 	return ""
-}
-
-func GetGeoMirrorUrlsByMode(mode int) (mirrors []string) {
-	if mode == Define.TYPE_LINUX_DISTROS_UBUNTU {
-		ubuntuMirrorsOnline, err := getUbuntuMirrorUrlsByGeo()
-		if err != nil {
-			return BUILDIN_UBUNTU_MIRRORS
-		}
-		return ubuntuMirrorsOnline
-	}
-
-	if mode == Define.TYPE_LINUX_DISTROS_DEBIAN {
-		return BUILDIN_DEBIAN_MIRRORS
-	}
-
-	if mode == Define.TYPE_LINUX_DISTROS_CENTOS {
-		return BUILDIN_CENTOS_MIRRORS
-	}
-
-	mirrors = append(mirrors, BUILDIN_UBUNTU_MIRRORS...)
-	mirrors = append(mirrors, BUILDIN_DEBIAN_MIRRORS...)
-	mirrors = append(mirrors, BUILDIN_CENTOS_MIRRORS...)
-	return mirrors
-}
-
-func getUbuntuMirrorUrlsByGeo() (mirrors []string, err error) {
-	response, err := http.Get(Define.UBUNTU_GEO_MIRROR_API)
-	if err != nil {
-		return mirrors, err
-	}
-
-	defer response.Body.Close()
-	scanner := bufio.NewScanner(response.Body)
-
-	for scanner.Scan() {
-		mirrors = append(mirrors, scanner.Text())
-	}
-
-	return mirrors, scanner.Err()
 }
 
 func GetPredefinedConfiguration(proxyMode int) (string, *regexp.Regexp) {

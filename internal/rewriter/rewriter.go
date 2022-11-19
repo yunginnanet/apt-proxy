@@ -24,14 +24,14 @@ type URLRewriter struct {
 
 func GetRewriteRulesByMode(mode int) (rules []Define.Rule) {
 	if mode == Define.TYPE_LINUX_DISTROS_UBUNTU {
-		return Mirrors.UBUNTU_DEFAULT_CACHE_RULES
+		return Define.UBUNTU_DEFAULT_CACHE_RULES
 	}
 	if mode == Define.TYPE_LINUX_DISTROS_DEBIAN {
-		return Mirrors.DEBIAN_DEFAULT_CACHE_RULES
+		return Define.DEBIAN_DEFAULT_CACHE_RULES
 	}
 
-	rules = append(rules, Mirrors.UBUNTU_DEFAULT_CACHE_RULES...)
-	rules = append(rules, Mirrors.DEBIAN_DEFAULT_CACHE_RULES...)
+	rules = append(rules, Define.UBUNTU_DEFAULT_CACHE_RULES...)
+	rules = append(rules, Define.DEBIAN_DEFAULT_CACHE_RULES...)
 	return rules
 }
 

@@ -1,6 +1,8 @@
 package server
 
 import (
+	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -41,8 +43,14 @@ func (ap *AptProxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	var rule *Define.Rule
 	if IsInternalUrls(r.URL.Path) {
 		rule = nil
-		RenderInternalUrls(r.URL.Path, &rw)
+		tpl, status := RenderInternalUrls(r.URL.Path)
+
+		rw.WriteHeader(status)
 		rw.Header().Set("Content-Type", "text/html; charset=utf-8")
+		_, err := io.WriteString(rw, tpl)
+		if err != nil {
+			fmt.Println("render internal urls error")
+		}
 	} else {
 		rule, match := Rewriter.MatchingRule(r.URL.Path, ap.Rules)
 		if match {

@@ -208,7 +208,7 @@ const SERVER_DEFAULT_TEMPLATE = `<!DOCTYPE html>
 
 </html>`
 
-func getBaseTemplate(cacheSize string, filesNumber string, availableSize string,
+func GetBaseTemplate(cacheSize string, filesNumber string, availableSize string,
 	memoryUsage string, goroutines string) string {
 
 	tpl := strings.Replace(SERVER_DEFAULT_TEMPLATE, "$APT_PROXY_CACHE_SIZE", cacheSize, 1)

@@ -1,8 +1,6 @@
 package server
 
 import (
-	"io"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
@@ -23,10 +21,8 @@ const (
 )
 
 func IsInternalUrls(url string) bool {
-	if strings.Contains(url, "ubuntu") || strings.Contains(url, "debian") {
-		return false
-	}
-	return url == INTERNAL_PAGE_HOME || url == INTERNAL_PAGE_PING
+	u := strings.ToLower(url)
+	return !(strings.Contains(u, "/ubuntu") || strings.Contains(u, "/debian") || strings.Contains(u, "/centos") || strings.Contains(u, "/alpine"))
 }
 
 func GetInternalResType(url string) int {
@@ -41,19 +37,22 @@ func GetInternalResType(url string) int {
 	return TYPE_NOT_FOUND
 }
 
-const LABEL_NO_VALID_VALUE = "N/A"
+// TODO: use configuration
 const CACHE_META_DIR = "./.aptcache/header/v1"
+const LABEL_NO_VALID_VALUE = "N/A"
 
-func RenderInternalUrls(url string, rw *http.ResponseWriter) {
-	types := GetInternalResType(url)
-	if types == TYPE_NOT_FOUND {
-		return
-	} else if types == TYPE_HOME {
-
+func RenderInternalUrls(url string) (string, int) {
+	switch GetInternalResType(url) {
+	case TYPE_NOT_FOUND:
+		return "Not Found", http.StatusNotFound
+	case TYPE_HOME:
 		cacheSizeLabel := LABEL_NO_VALID_VALUE
+		// TODO: use configuration
 		cacheSize, err := system.DirSize("./.aptcache")
 		if err == nil {
 			cacheSizeLabel = system.ByteCountDecimal(cacheSize)
+		} else {
+			return "Get Cache Size Failed", http.StatusBadGateway
 		}
 
 		filesNumberLabel := LABEL_NO_VALID_VALUE
@@ -61,33 +60,28 @@ func RenderInternalUrls(url string, rw *http.ResponseWriter) {
 			files, err := os.ReadDir(CACHE_META_DIR)
 			if err == nil {
 				filesNumberLabel = strconv.Itoa(len(files))
+			} else {
+				return "Get Cache Meta Dir Failed", http.StatusBadGateway
 			}
+		} else {
+			return "Get Cache Meta Failed", http.StatusBadGateway
 		}
 
 		diskAvailableLabel := LABEL_NO_VALID_VALUE
 		available, err := system.DiskAvailable()
 		if err == nil {
 			diskAvailableLabel = system.ByteCountDecimal(available)
+		} else {
+			return "Get Disk Available Failed", http.StatusBadGateway
 		}
 
 		memoryUsageLabel := LABEL_NO_VALID_VALUE
 		memoryUsage, goroutine := system.GetMemoryUsageAndGoroutine()
 		memoryUsageLabel = system.ByteCountDecimal(memoryUsage)
 
-		_, err = io.WriteString(*rw, getBaseTemplate(
-			cacheSizeLabel,
-			filesNumberLabel,
-			diskAvailableLabel,
-			memoryUsageLabel,
-			goroutine,
-		))
-		if err != nil {
-			log.Println("Failed to render page")
-		}
-	} else if types == TYPE_PING {
-		_, err := io.WriteString(*rw, "pong")
-		if err != nil {
-			log.Println("Response ping failed")
-		}
+		return GetBaseTemplate(cacheSizeLabel, filesNumberLabel, diskAvailableLabel, memoryUsageLabel, goroutine), 200
+	case TYPE_PING:
+		return "pong", http.StatusOK
 	}
+	return "unknown type resource", http.StatusNotFound
 }

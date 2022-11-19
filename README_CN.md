@@ -148,17 +148,18 @@ go run apt-proxy.go
 ```bash
 # go test -cover ./...
 ?   	github.com/soulteary/apt-proxy	[no test files]
-ok  	github.com/soulteary/apt-proxy/cli	(cached)	coverage: 57.6% of statements
-ok  	github.com/soulteary/apt-proxy/internal/benchmark	(cached)	coverage: 91.9% of statements
-ok  	github.com/soulteary/apt-proxy/internal/mirrors	(cached)	coverage: 79.4% of statements
-ok  	github.com/soulteary/apt-proxy/internal/rewriter	(cached)	coverage: 71.2% of statements
-?   	github.com/soulteary/apt-proxy/internal/server	[no test files]
-ok  	github.com/soulteary/apt-proxy/internal/state	(cached)	coverage: 79.5% of statements
-ok  	github.com/soulteary/apt-proxy/pkg/httpcache	(cached)	coverage: 82.5% of statements
+ok  	github.com/soulteary/apt-proxy/cli	1.673s	coverage: 57.6% of statements
+ok  	github.com/soulteary/apt-proxy/internal/benchmark	4.996s	coverage: 91.9% of statements
+ok  	github.com/soulteary/apt-proxy/internal/define	0.143s	coverage: 94.1% of statements
+ok  	github.com/soulteary/apt-proxy/internal/mirrors	1.502s	coverage: 72.6% of statements
+ok  	github.com/soulteary/apt-proxy/internal/rewriter	5.725s	coverage: 69.0% of statements
+ok  	github.com/soulteary/apt-proxy/internal/server	0.491s	coverage: 50.9% of statements
+ok  	github.com/soulteary/apt-proxy/internal/state	0.415s	coverage: 100.0% of statements
+ok  	github.com/soulteary/apt-proxy/pkg/httpcache	0.891s	coverage: 82.5% of statements
 ?   	github.com/soulteary/apt-proxy/pkg/httplog	[no test files]
-ok  	github.com/soulteary/apt-proxy/pkg/stream.v1	(cached)	coverage: 100.0% of statements
+ok  	github.com/soulteary/apt-proxy/pkg/stream.v1	0.596s	coverage: 100.0% of statements
 ?   	github.com/soulteary/apt-proxy/pkg/system	[no test files]
-ok  	github.com/soulteary/apt-proxy/pkg/vfs	(cached)	coverage: 58.9% of statements
+ok  	github.com/soulteary/apt-proxy/pkg/vfs	0.322s	coverage: 58.9% of statements
 ```
 
 查看覆盖率报告：

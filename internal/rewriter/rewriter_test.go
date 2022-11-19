@@ -12,18 +12,23 @@ import (
 
 func TestGetRewriteRulesByMode(t *testing.T) {
 	rules := GetRewriteRulesByMode(Define.TYPE_LINUX_DISTROS_UBUNTU)
-	if rules[0].Pattern != Define.UBUNTU_DEFAULT_CACHE_RULES[0].Pattern {
+	if rules[0].OS != Define.TYPE_LINUX_DISTROS_UBUNTU {
 		t.Fatal("Pattern Not Match")
 	}
 
 	rules = GetRewriteRulesByMode(Define.TYPE_LINUX_DISTROS_DEBIAN)
-	if rules[0].Pattern != Define.DEBIAN_DEFAULT_CACHE_RULES[0].Pattern {
+	if rules[0].OS != Define.TYPE_LINUX_DISTROS_DEBIAN {
+		t.Fatal("Pattern Not Match")
+	}
+
+	rules = GetRewriteRulesByMode(Define.TYPE_LINUX_DISTROS_CENTOS)
+	if rules[0].OS != Define.TYPE_LINUX_DISTROS_CENTOS {
 		t.Fatal("Pattern Not Match")
 	}
 
 	rules = GetRewriteRulesByMode(Define.TYPE_LINUX_ALL_DISTROS)
-	if len(rules) != (len(Define.DEBIAN_DEFAULT_CACHE_RULES) + len(Define.UBUNTU_DEFAULT_CACHE_RULES)) {
-		t.Fatal("Pattern Length Not Match")
+	if rules[0].OS != Define.TYPE_LINUX_DISTROS_UBUNTU {
+		t.Fatal("Pattern Not Match")
 	}
 }
 

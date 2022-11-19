@@ -14,7 +14,7 @@
 
 <img src="example/assets/ui.png" width="600"/>
 
-APT Proxy is a Lightweight and Reliable APT & YUM packages (Ubuntu / Debian / CentOS) cache tool, supports a large number of common system and Docker usage.
+APT Proxy is a Lightweight and Reliable APT & YUM & APK packages (**Ubuntu / Debian / CentOS / ALPINE**) cache tool, supports a large number of common system and Docker usage.
 
 You can safely use it instead of [apt-cacher-ng](https://www.unix-ag.uni-kl.de/~bloch/acng/).
 
@@ -58,10 +58,20 @@ Although CentOS uses Yum instead of APT, APT-Proxy also supports its acceleratio
 ```bash
 sed -ie s/mirrorlist.*$//  /etc/yum.repos.d/CentOS-Base.repo
 sed -ie s/#baseurl/baseurl/   /etc/yum.repos.d/CentOS-Base.repo
-sed -ie s#http://mirror.centos.org#http://host.docker.internal:3142# /etc/yum.repos.d/CentOS-Base.repo
+sed -ie s#http://mirror.centos.org#http://your-domain-or-ip-address:3142# /etc/yum.repos.d/CentOS-Base.repo
 ```
 
 After adjusting the software source, execute `yum update` to verify whether the configuration takes effect.
+
+### Alpine
+
+Similarly, in addition to providing acceleration for CentOS, it can also provide cache acceleration for Alpine:
+
+```bash
+cat /etc/apk/repositories | sed -e s#https://.*.alpinelinux.org#http://your-domain-or-ip-address:3142# | tee /etc/apk/repositories
+```
+
+After adjusting the software source, execute `apk update` to verify whether the configuration takes effect.
 
 ### Specified Mirror
 
@@ -94,8 +104,9 @@ Shorthand list:
 - cn:ustc
 - cn:163
 - cn:aliyun
-- cn:huawei
+- cn:huaweicloud
 - cn:tencent
+...
 
 ### Speed UP Docker Container
 
@@ -131,8 +142,12 @@ View configuration items:
 ./apt-proxy -h
 
 Usage of apt-proxy:
+  -alpine string
+    	the alpine mirror for fetching packages
   -cachedir string
     	the dir to store cache data in (default "./.aptcache")
+  -centos string
+    	the centos mirror for fetching packages
   -debian string
     	the debian mirror for fetching packages
   -debug
@@ -140,7 +155,7 @@ Usage of apt-proxy:
   -host string
     	the host to bind to (default "0.0.0.0")
   -mode all
-    	select the mode of system to cache: all / `ubuntu` / `debian` (default "all")
+    	select the mode of system to cache: all / `ubuntu` / `debian` / `centos` / `alpine` (default "all")
   -port string
     	the port to bind to (default "3142")
   -ubuntu string
@@ -160,18 +175,18 @@ go run apt-proxy.go
 ```bash
 # go test -cover ./...
 ?   	github.com/soulteary/apt-proxy	[no test files]
-ok  	github.com/soulteary/apt-proxy/cli	1.673s	coverage: 57.6% of statements
-ok  	github.com/soulteary/apt-proxy/internal/benchmark	4.996s	coverage: 91.9% of statements
-ok  	github.com/soulteary/apt-proxy/internal/define	0.143s	coverage: 94.1% of statements
-ok  	github.com/soulteary/apt-proxy/internal/mirrors	1.502s	coverage: 72.6% of statements
-ok  	github.com/soulteary/apt-proxy/internal/rewriter	5.725s	coverage: 69.0% of statements
-ok  	github.com/soulteary/apt-proxy/internal/server	0.491s	coverage: 50.9% of statements
-ok  	github.com/soulteary/apt-proxy/internal/state	0.415s	coverage: 100.0% of statements
-ok  	github.com/soulteary/apt-proxy/pkg/httpcache	0.891s	coverage: 82.5% of statements
+ok  	github.com/soulteary/apt-proxy/cli	2.647s	coverage: 62.7% of statements
+ok  	github.com/soulteary/apt-proxy/internal/benchmark	5.786s	coverage: 91.9% of statements
+ok  	github.com/soulteary/apt-proxy/internal/define	0.258s	coverage: 94.1% of statements
+ok  	github.com/soulteary/apt-proxy/internal/mirrors	1.852s	coverage: 72.6% of statements
+ok  	github.com/soulteary/apt-proxy/internal/rewriter	6.155s	coverage: 69.8% of statements
+ok  	github.com/soulteary/apt-proxy/internal/server	0.649s	coverage: 34.1% of statements
+ok  	github.com/soulteary/apt-proxy/internal/state	0.348s	coverage: 100.0% of statements
+ok  	github.com/soulteary/apt-proxy/pkg/httpcache	2.162s	coverage: 82.5% of statements
 ?   	github.com/soulteary/apt-proxy/pkg/httplog	[no test files]
-ok  	github.com/soulteary/apt-proxy/pkg/stream.v1	0.596s	coverage: 100.0% of statements
+ok  	github.com/soulteary/apt-proxy/pkg/stream.v1	0.651s	coverage: 100.0% of statements
 ?   	github.com/soulteary/apt-proxy/pkg/system	[no test files]
-ok  	github.com/soulteary/apt-proxy/pkg/vfs	0.322s	coverage: 58.9% of statements
+ok  	github.com/soulteary/apt-proxy/pkg/vfs	0.374s	coverage: 58.9% of statements
 ```
 
 View coverage report:

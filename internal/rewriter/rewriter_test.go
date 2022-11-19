@@ -26,6 +26,11 @@ func TestGetRewriteRulesByMode(t *testing.T) {
 		t.Fatal("Pattern Not Match")
 	}
 
+	rules = GetRewriteRulesByMode(Define.TYPE_LINUX_DISTROS_ALPINE)
+	if rules[0].OS != Define.TYPE_LINUX_DISTROS_ALPINE {
+		t.Fatal("Pattern Not Match")
+	}
+
 	rules = GetRewriteRulesByMode(Define.TYPE_LINUX_ALL_DISTROS)
 	if rules[0].OS != Define.TYPE_LINUX_DISTROS_UBUNTU {
 		t.Fatal("Pattern Not Match")

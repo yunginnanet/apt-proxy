@@ -52,14 +52,56 @@ func (ap *AptProxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 			fmt.Println("render internal urls error")
 		}
 	} else {
-		rule, match := Rewriter.MatchingRule(r.URL.Path, ap.Rules)
-		if match {
-			r.Header.Del("Cache-Control")
-			if rule.Rewrite {
-				before := r.URL.String()
-				Rewriter.RewriteRequestByMode(r, rewriter, rule.OS)
-				log.Printf("rewrote %q to %q", before, r.URL.String())
-				r.Host = r.URL.Host
+
+		if Define.UBUNTU_HOST_PATTERN.MatchString(r.URL.Path) {
+			rule, match := Rewriter.MatchingRule(r.URL.Path, Define.UBUNTU_DEFAULT_CACHE_RULES)
+			if match {
+				r.Header.Del("Cache-Control")
+				if rule.Rewrite {
+					before := r.URL.String()
+					Rewriter.RewriteRequestByMode(r, rewriter, rule.OS)
+					log.Printf("rewrote %q to %q", before, r.URL.String())
+					r.Host = r.URL.Host
+				}
+			}
+		}
+
+		if Define.DEBIAN_HOST_PATTERN.MatchString(r.URL.Path) {
+			rule, match := Rewriter.MatchingRule(r.URL.Path, Define.DEBIAN_DEFAULT_CACHE_RULES)
+			if match {
+				r.Header.Del("Cache-Control")
+				if rule.Rewrite {
+					before := r.URL.String()
+					Rewriter.RewriteRequestByMode(r, rewriter, rule.OS)
+					log.Printf("rewrote %q to %q", before, r.URL.String())
+					r.Host = r.URL.Host
+				}
+			}
+		}
+
+		if Define.CENTOS_HOST_PATTERN.MatchString(r.URL.Path) {
+			rule, match := Rewriter.MatchingRule(r.URL.Path, Define.CENTOS_DEFAULT_CACHE_RULES)
+			if match {
+				r.Header.Del("Cache-Control")
+				if rule.Rewrite {
+					before := r.URL.String()
+					Rewriter.RewriteRequestByMode(r, rewriter, rule.OS)
+					log.Printf("rewrote %q to %q", before, r.URL.String())
+					r.Host = r.URL.Host
+				}
+			}
+		}
+
+		if Define.ALPINE_HOST_PATTERN.MatchString(r.URL.Path) {
+			rule, match := Rewriter.MatchingRule(r.URL.Path, Define.ALPINE_DEFAULT_CACHE_RULES)
+			if match {
+				r.Header.Del("Cache-Control")
+				if rule.Rewrite {
+					before := r.URL.String()
+					Rewriter.RewriteRequestByMode(r, rewriter, rule.OS)
+					log.Printf("rewrote %q to %q", before, r.URL.String())
+					r.Host = r.URL.Host
+				}
 			}
 		}
 	}

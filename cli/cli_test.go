@@ -12,11 +12,19 @@ func TestGetProxyMode(t *testing.T) {
 		t.Fatal("Incorrect return default value")
 	}
 
+	if getProxyMode(Define.LINUX_DISTROS_UBUNTU) != Define.TYPE_LINUX_DISTROS_UBUNTU {
+		t.Fatal("Incorrect return value")
+	}
+
 	if getProxyMode(Define.LINUX_DISTROS_DEBIAN) != Define.TYPE_LINUX_DISTROS_DEBIAN {
 		t.Fatal("Incorrect return value")
 	}
 
-	if getProxyMode(Define.LINUX_DISTROS_UBUNTU) != Define.TYPE_LINUX_DISTROS_UBUNTU {
+	if getProxyMode(Define.LINUX_DISTROS_CENTOS) != Define.TYPE_LINUX_DISTROS_CENTOS {
+		t.Fatal("Incorrect return value")
+	}
+
+	if getProxyMode(Define.LINUX_DISTROS_ALPINE) != Define.TYPE_LINUX_DISTROS_ALPINE {
 		t.Fatal("Incorrect return value")
 	}
 }

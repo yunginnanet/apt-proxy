@@ -23,6 +23,8 @@ type AppFlags struct {
 	// mirror
 	Ubuntu string
 	Debian string
+	CentOS string
+	Alpine string
 }
 
 func initStore(appFlags AppFlags) (cache httpcache.Cache, err error) {

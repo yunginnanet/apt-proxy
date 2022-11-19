@@ -6,20 +6,25 @@ var CENTOS_HOST_PATTERN = regexp.MustCompile(`https?://.+/centos/(.+)$`)
 
 const CENTOS_BENCHMAKR_URL = "TIME"
 
-// https://www.centos.org/download/mirrors/
-var BUILDIN_CENTOS_MIRRORS = []UrlWithAlias{
-	{URL: "https://mirrors.tuna.tsinghua.edu.cn/centos/", Alias: "cn:tsinghua", Http: true, Https: true, Official: true},
-	{URL: "http://mirrors.aliyun.com/centos/", Alias: "cn:aliyun", Http: true, Https: true, Official: true},
-	{URL: "https://mirrors.bfsu.edu.cn/centos/", Alias: "cn:bfsu", Http: true, Https: true, Official: true},
-	{URL: "https://mirrors.cqu.edu.cn/CentOS/", Alias: "cn:cqu", Http: true, Https: true, Official: true},
-	{URL: "https://mirror.nju.edu.cn/centos/", Alias: "cn:nju", Http: true, Https: true, Official: true},
-	{URL: "http://mirror.lzu.edu.cn/centos/", Alias: "cn:lzu", Http: true, Https: true, Official: true},
-	{URL: "https://mirrors.njupt.edu.cn/centos/", Alias: "cn:njupt", Http: true, Https: true, Official: true},
-	{URL: "http://mirrors.163.com/centos/", Alias: "cn:163", Http: true, Https: true, Official: true},
-	{URL: "https://mirrors.bupt.edu.cn/centos/", Alias: "cn:bupt", Http: true, Https: true, Official: true},
-	{URL: "https://ftp.sjtu.edu.cn/centos/", Alias: "cn:sjtu", Http: true, Https: true, Official: true},
-	{URL: "https://mirrors.ustc.edu.cn/centos/", Alias: "cn:ustc", Http: true, Https: true, Official: true},
-	// TODO: valid?
-	// {URL: "http://mirrors.neusoft.edu.cn/centos/", Alias: "cn:neusoft"},
-	{URL: "https://mirrors.huaweicloud.com/centos/", Alias: "cn:huaweicloud", Http: true, Https: true, Official: false},
+// https://www.centos.org/download/mirrors/ 2022.11.19
+// Sites that contain protocol headers, restrict access to resources using that protocol
+var CENTOS_OFFICAL_MIRRORS = []string{
+	"mirrors.bfsu.edu.cn/centos/",
+	"mirrors.cqu.edu.cn/CentOS/",
+	"http://mirrors.neusoft.edu.cn/centos/",
+	"mirrors.nju.edu.cn/centos/",
+	"mirrors.huaweicloud.com/centos/",
+	"mirror.lzu.edu.cn/centos/",
+	"http://mirrors.njupt.edu.cn/centos/",
+	"mirrors.163.com/centos/",
+	"mirrors.bupt.edu.cn/centos/",
+	"ftp.sjtu.edu.cn/centos/",
+	"mirrors.tuna.tsinghua.edu.cn/centos/",
+	"mirrors.ustc.edu.cn/centos/",
 }
+
+var CENTOS_CUSTOM_MIRRORS = []string{
+	"http://mirrors.aliyun.com/centos/",
+}
+
+var BUILDIN_CENTOS_MIRRORS = GenerateBuildInList(CENTOS_OFFICAL_MIRRORS, CENTOS_CUSTOM_MIRRORS)

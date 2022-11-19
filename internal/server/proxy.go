@@ -39,9 +39,9 @@ func CreateAptProxyRouter() *AptProxy {
 
 func (ap *AptProxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	var rule *Define.Rule
-	if isInternalUrls(r.URL.Path) {
+	if IsInternalUrls(r.URL.Path) {
 		rule = nil
-		renderInternalUrls(r.URL.Path, &rw)
+		RenderInternalUrls(r.URL.Path, &rw)
 		rw.Header().Set("Content-Type", "text/html; charset=utf-8")
 	} else {
 		rule, match := Rewriter.MatchingRule(r.URL.Path, ap.Rules)

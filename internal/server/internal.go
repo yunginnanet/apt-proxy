@@ -22,14 +22,14 @@ const (
 	TYPE_PING      int = 2
 )
 
-func isInternalUrls(url string) bool {
+func IsInternalUrls(url string) bool {
 	if strings.Contains(url, "ubuntu") || strings.Contains(url, "debian") {
 		return false
 	}
 	return url == INTERNAL_PAGE_HOME || url == INTERNAL_PAGE_PING
 }
 
-func getInternalResType(url string) int {
+func GetInternalResType(url string) int {
 	if url == INTERNAL_PAGE_HOME {
 		return TYPE_HOME
 	}
@@ -44,8 +44,8 @@ func getInternalResType(url string) int {
 const LABEL_NO_VALID_VALUE = "N/A"
 const CACHE_META_DIR = "./.aptcache/header/v1"
 
-func renderInternalUrls(url string, rw *http.ResponseWriter) {
-	types := getInternalResType(url)
+func RenderInternalUrls(url string, rw *http.ResponseWriter) {
+	types := GetInternalResType(url)
 	if types == TYPE_NOT_FOUND {
 		return
 	} else if types == TYPE_HOME {

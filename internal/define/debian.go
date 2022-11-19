@@ -11,18 +11,25 @@ var DEBIAN_HOST_PATTERN = regexp.MustCompile(
 )
 
 // https://www.debian.org/mirror/list 2022.11.19
-var BUILDIN_DEBIAN_MIRRORS = []UrlWithAlias{
-	{URL: "https://mirrors.tuna.tsinghua.edu.cn/debian/", Alias: "cn:tsinghua", Http: true, Https: true, Official: true},
-	{URL: "http://mirrors.ustc.edu.cn/debian/", Alias: "cn:ustc", Http: true, Https: true, Official: true},
-	{URL: "https://mirrors.163.com/debian/", Alias: "cn:163", Http: true, Https: true, Official: true},
-	{URL: "https://repo.huaweicloud.com/debian/", Alias: "cn:huawei", Http: true, Https: true, Official: true},
-	{URL: "https://mirrors.cloud.tencent.com/debian/", Alias: "cn:tencent"},
-	{URL: "http://ftp.cn.debian.org/debian/", Alias: "cn:debian", Http: true, Https: true, Official: true},
-	{URL: "http://mirror.bjtu.edu.cn/debian/", Alias: "cn:bjtu", Http: true, Https: true, Official: true},
-	{URL: "http://mirrors.bfsu.edu.cn/debian/", Alias: "cn:bfsu", Http: true, Https: true, Official: true},
-	{URL: "http://mirrors.neusoft.edu.cn/debian/", Alias: "cn:neusoft", Http: true, Https: true, Official: true},
-	{URL: "http://mirrors.hit.edu.cn/debian/", Alias: "cn:hit", Http: true, Https: true, Official: false},
-	{URL: "https://mirrors.aliyun.com/debian/", Alias: "cn:aliyun", Http: true, Https: true, Official: false},
-	{URL: "http://mirror.lzu.edu.cn/debian/", Alias: "cn:lzu", Http: true, Https: true, Official: false},
-	{URL: "http://mirror.nju.edu.cn/debian/", Alias: "cn:nju", Http: true, Https: true, Official: false},
+// Sites that contain protocol headers, restrict access to resources using that protocol
+var DEBIAN_OFFICAL_MIRRORS = []string{
+	"http://ftp.cn.debian.org/debian/",
+	"mirror.bjtu.edu.cn/debian/",
+	"mirrors.163.com/debian/",
+	"mirrors.bfsu.edu.cn/debian/",
+	"mirrors.huaweicloud.com/debian/",
+	"http://mirrors.neusoft.edu.cn/debian/",
+	"mirrors.tuna.tsinghua.edu.cn/debian/",
+	"mirrors.ustc.edu.cn/debian/",
 }
+
+var DEBIAN_CUSTOM_MIRRORS = []string{
+	"repo.huaweicloud.com/debian/",
+	"mirrors.cloud.tencent.com/debian/",
+	"mirrors.hit.edu.cn/debian/",
+	"mirrors.aliyun.com/debian/",
+	"mirror.lzu.edu.cn/debian/",
+	"mirror.nju.edu.cn/debian/",
+}
+
+var BUILDIN_DEBIAN_MIRRORS = GenerateBuildInList(DEBIAN_OFFICAL_MIRRORS, DEBIAN_CUSTOM_MIRRORS)

@@ -19,6 +19,23 @@ import (
 // 	}
 // }
 
+// func TestPrintDebianPingScript(t *testing.T) {
+// 	for _, url := range Define.DEBIAN_OFFICAL_MIRRORS {
+// 		fmt.Println(`echo "` + url + `"`)
+// 		http := "curl --connect-timeout 2 -I http://" + url + Define.DEBIAN_BENCHMAKR_URL
+// 		fmt.Println(http)
+// 		https := "curl --connect-timeout 2 -I https://" + url + Define.DEBIAN_BENCHMAKR_URL
+// 		fmt.Println(https)
+// 	}
+// 	for _, url := range Define.DEBIAN_CUSTOM_MIRRORS {
+// 		fmt.Println(`echo "` + url + `"`)
+// 		http := "curl --connect-timeout 2 -I http://" + url + Define.DEBIAN_BENCHMAKR_URL
+// 		fmt.Println(http)
+// 		https := "curl --connect-timeout 2 -I https://" + url + Define.DEBIAN_BENCHMAKR_URL
+// 		fmt.Println(https)
+// 	}
+// }
+
 func TestRuleToString(t *testing.T) {
 	r := Define.Rule{
 		Pattern:      regexp.MustCompile(`a$`),

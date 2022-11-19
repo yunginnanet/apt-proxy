@@ -43,8 +43,6 @@ const LABEL_NO_VALID_VALUE = "N/A"
 
 func RenderInternalUrls(url string) (string, int) {
 	switch GetInternalResType(url) {
-	case TYPE_NOT_FOUND:
-		return "Not Found", http.StatusNotFound
 	case TYPE_HOME:
 		cacheSizeLabel := LABEL_NO_VALID_VALUE
 		// TODO: use configuration
@@ -83,5 +81,5 @@ func RenderInternalUrls(url string) (string, int) {
 	case TYPE_PING:
 		return "pong", http.StatusOK
 	}
-	return "unknown type resource", http.StatusNotFound
+	return "Not Found", http.StatusNotFound
 }

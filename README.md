@@ -10,9 +10,7 @@
 
 > Lightweight **APT CHACHE PROXY** with only 2MB+ size!
 
-<img src="example/assets/dockerhub.png" width="600"/>
-
-<img src="example/assets/ui.png" width="600"/>
+<img src="example/assets/preview.png" width="600"/>
 
 APT Proxy is a Lightweight and Reliable APT & YUM & APK packages (**Ubuntu / Debian / CentOS / ALPINE**) cache tool, supports a large number of common system and Docker usage.
 
@@ -127,6 +125,8 @@ http_proxy=http://host.docker.internal:3142 apt-get -o Debug::pkgProblemResolver
 ```
 
 ## Docker
+
+<img src="example/assets/dockerhub.png" width="600"/>
 
 Just one command:
 

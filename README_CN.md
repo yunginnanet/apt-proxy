@@ -10,9 +10,7 @@
 
 > 仅 2MB 大小的、轻量的 **APT 软件包加速工具！**
 
-<img src="example/assets/dockerhub.png" width="600"/>
-
-<img src="example/assets/ui.png" width="600"/>
+<img src="example/assets/preview.png" width="600"/>
 
 APT Proxy 是一款轻量的、可靠的 APT / YUM / APK 包（**Ubuntu / Debian / CentOS / ALPINE **）缓存工具，能够在各种不同的操作系统环境中运行。
 
@@ -127,6 +125,8 @@ http_proxy=http://host.docker.internal:3142 apt-get -o Debug::pkgProblemResolver
 ```
 
 ## 容器方式运行
+
+<img src="example/assets/dockerhub.png" width="600"/>
 
 非常简单，一条命令：
 

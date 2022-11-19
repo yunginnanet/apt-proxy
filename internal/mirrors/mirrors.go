@@ -27,9 +27,9 @@ func GenerateMirrorListByPredefined(osType int) (mirrors []string) {
 	return mirrors
 }
 
-var BUILDIN_OFFICAL_UBUNTU_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_UBUNTU)
-var BUILDIN_OFFICAL_CENTOS_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_CENTOS)
-var BUILDIN_OFFICAL_DEBIAN_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_DEBIAN)
+var BUILDIN_UBUNTU_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_UBUNTU)
+var BUILDIN_CENTOS_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_CENTOS)
+var BUILDIN_DEBIAN_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_DEBIAN)
 
 var DEBIAN_DEFAULT_CACHE_RULES = []Define.Rule{
 	{Pattern: regexp.MustCompile(`deb$`), CacheControl: `max-age=100000`, Rewrite: true, OS: Define.TYPE_LINUX_DISTROS_DEBIAN},
@@ -88,22 +88,22 @@ func GetGeoMirrorUrlsByMode(mode int) (mirrors []string) {
 	if mode == Define.TYPE_LINUX_DISTROS_UBUNTU {
 		ubuntuMirrorsOnline, err := getUbuntuMirrorUrlsByGeo()
 		if err != nil {
-			return BUILDIN_OFFICAL_UBUNTU_MIRRORS
+			return BUILDIN_UBUNTU_MIRRORS
 		}
 		return ubuntuMirrorsOnline
 	}
 
 	if mode == Define.TYPE_LINUX_DISTROS_DEBIAN {
-		return BUILDIN_OFFICAL_DEBIAN_MIRRORS
+		return BUILDIN_DEBIAN_MIRRORS
 	}
 
 	if mode == Define.TYPE_LINUX_DISTROS_CENTOS {
-		return BUILDIN_OFFICAL_CENTOS_MIRRORS
+		return BUILDIN_CENTOS_MIRRORS
 	}
 
-	mirrors = append(mirrors, BUILDIN_OFFICAL_UBUNTU_MIRRORS...)
-	mirrors = append(mirrors, BUILDIN_OFFICAL_DEBIAN_MIRRORS...)
-	mirrors = append(mirrors, BUILDIN_OFFICAL_CENTOS_MIRRORS...)
+	mirrors = append(mirrors, BUILDIN_UBUNTU_MIRRORS...)
+	mirrors = append(mirrors, BUILDIN_DEBIAN_MIRRORS...)
+	mirrors = append(mirrors, BUILDIN_CENTOS_MIRRORS...)
 	return mirrors
 }
 

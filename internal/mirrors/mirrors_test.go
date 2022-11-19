@@ -24,7 +24,7 @@ func TestGetMirrorUrlsByGeo(t *testing.T) {
 	}
 
 	mirrors = GetGeoMirrorUrlsByMode(Define.TYPE_LINUX_DISTROS_DEBIAN)
-	if len(mirrors) != len(BUILDIN_OFFICAL_DEBIAN_MIRRORS) {
+	if len(mirrors) != len(BUILDIN_DEBIAN_MIRRORS) {
 		t.Fatal("Get mirrors error")
 	}
 

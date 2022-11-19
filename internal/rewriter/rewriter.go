@@ -31,9 +31,13 @@ func GetRewriteRulesByMode(mode int) (rules []Define.Rule) {
 	if mode == Define.TYPE_LINUX_DISTROS_DEBIAN {
 		return Define.DEBIAN_DEFAULT_CACHE_RULES
 	}
+	if mode == Define.TYPE_LINUX_DISTROS_CENTOS {
+		return Define.CENTOS_DEFAULT_CACHE_RULES
+	}
 
 	rules = append(rules, Define.UBUNTU_DEFAULT_CACHE_RULES...)
 	rules = append(rules, Define.DEBIAN_DEFAULT_CACHE_RULES...)
+	rules = append(rules, Define.CENTOS_DEFAULT_CACHE_RULES...)
 	return rules
 }
 
@@ -173,22 +177,29 @@ func CreateNewRewriters(mode int) *URLRewriters {
 
 func RewriteRequestByMode(r *http.Request, rewriters *URLRewriters, mode int) {
 	uri := r.URL.String()
+
 	var rewriter *URLRewriter
-	if mode == Define.TYPE_LINUX_DISTROS_UBUNTU {
+	switch mode {
+	case Define.TYPE_LINUX_DISTROS_UBUNTU:
 		rewriter = rewriters.ubuntu
-	} else {
-		// mode == TYPE_LINUX_DISTROS_DEBIAN
+	case Define.TYPE_LINUX_DISTROS_DEBIAN:
 		rewriter = rewriters.debian
+	case Define.TYPE_LINUX_DISTROS_CENTOS:
+		rewriter = rewriters.centos
+	case Define.TYPE_LINUX_DISTROS_ALPINE:
+		rewriter = rewriters.alpine
 	}
 
 	if rewriter.mirror != nil && rewriter.pattern.MatchString(uri) {
 		r.Header.Add("Content-Location", uri)
 		m := rewriter.pattern.FindAllStringSubmatch(uri, -1)
 		// Fix the problem of double escaping of symbols
-		unescapedQuery, err := url.PathUnescape(m[0][3])
+		queryRaw := m[0][len(m[0])-1]
+		unescapedQuery, err := url.PathUnescape(queryRaw)
 		if err != nil {
-			unescapedQuery = m[0][3]
+			unescapedQuery = queryRaw
 		}
+		r.URL.Scheme = rewriter.mirror.Scheme
 		r.URL.Host = rewriter.mirror.Host
 		r.URL.Path = rewriter.mirror.Path + unescapedQuery
 	}

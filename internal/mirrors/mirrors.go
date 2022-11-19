@@ -33,6 +33,7 @@ func GenerateMirrorListByPredefined(osType int) (mirrors []string) {
 var BUILDIN_UBUNTU_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_UBUNTU)
 var BUILDIN_DEBIAN_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_DEBIAN)
 var BUILDIN_CENTOS_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_CENTOS)
+var BUILDIN_ALPINE_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_ALPINE)
 
 func GetGeoMirrorUrlsByMode(mode int) (mirrors []string) {
 	if mode == Define.TYPE_LINUX_DISTROS_UBUNTU {
@@ -51,10 +52,25 @@ func GetGeoMirrorUrlsByMode(mode int) (mirrors []string) {
 		return BUILDIN_CENTOS_MIRRORS
 	}
 
+	if mode == Define.TYPE_LINUX_DISTROS_ALPINE {
+		return BUILDIN_ALPINE_MIRRORS
+	}
+
 	mirrors = append(mirrors, BUILDIN_UBUNTU_MIRRORS...)
 	mirrors = append(mirrors, BUILDIN_DEBIAN_MIRRORS...)
 	mirrors = append(mirrors, BUILDIN_CENTOS_MIRRORS...)
+	mirrors = append(mirrors, BUILDIN_ALPINE_MIRRORS...)
 	return mirrors
+}
+
+func GetFullMirrorURL(mirror Define.UrlWithAlias) string {
+	if mirror.Http {
+		return "http://" + mirror.URL
+	}
+	if mirror.Https {
+		return "https://" + mirror.URL
+	}
+	return "https://" + mirror.URL
 }
 
 func GetMirrorURLByAliases(osType int, alias string) string {
@@ -62,25 +78,25 @@ func GetMirrorURLByAliases(osType int, alias string) string {
 	case Define.TYPE_LINUX_DISTROS_UBUNTU:
 		for _, mirror := range Define.BUILDIN_UBUNTU_MIRRORS {
 			if mirror.Alias == alias {
-				return mirror.URL
+				return GetFullMirrorURL(mirror)
 			}
 		}
 	case Define.TYPE_LINUX_DISTROS_DEBIAN:
 		for _, mirror := range Define.BUILDIN_DEBIAN_MIRRORS {
 			if mirror.Alias == alias {
-				return mirror.URL
+				return GetFullMirrorURL(mirror)
 			}
 		}
 	case Define.TYPE_LINUX_DISTROS_CENTOS:
 		for _, mirror := range Define.BUILDIN_CENTOS_MIRRORS {
 			if mirror.Alias == alias {
-				return mirror.URL
+				return GetFullMirrorURL(mirror)
 			}
 		}
 	case Define.TYPE_LINUX_DISTROS_ALPINE:
 		for _, mirror := range Define.BUILDIN_ALPINE_MIRRORS {
 			if mirror.Alias == alias {
-				return mirror.URL
+				return GetFullMirrorURL(mirror)
 			}
 		}
 	}

@@ -49,8 +49,8 @@ func RenderInternalUrls(url string) (string, int) {
 		cacheSize, err := system.DirSize("./.aptcache")
 		if err == nil {
 			cacheSizeLabel = system.ByteCountDecimal(cacheSize)
-		} else {
-			return "Get Cache Size Failed", http.StatusBadGateway
+			// } else {
+			// return "Get Cache Size Failed", http.StatusBadGateway
 		}
 
 		filesNumberLabel := LABEL_NO_VALID_VALUE
@@ -58,19 +58,19 @@ func RenderInternalUrls(url string) (string, int) {
 			files, err := os.ReadDir(CACHE_META_DIR)
 			if err == nil {
 				filesNumberLabel = strconv.Itoa(len(files))
-			} else {
-				return "Get Cache Meta Dir Failed", http.StatusBadGateway
+				// } else {
+				// return "Get Cache Meta Dir Failed", http.StatusBadGateway
 			}
-		} else {
-			return "Get Cache Meta Failed", http.StatusBadGateway
+			// } else {
+			// return "Get Cache Meta Failed", http.StatusBadGateway
 		}
 
 		diskAvailableLabel := LABEL_NO_VALID_VALUE
 		available, err := system.DiskAvailable()
 		if err == nil {
 			diskAvailableLabel = system.ByteCountDecimal(available)
-		} else {
-			return "Get Disk Available Failed", http.StatusBadGateway
+			// } else {
+			// return "Get Disk Available Failed", http.StatusBadGateway
 		}
 
 		memoryUsageLabel := LABEL_NO_VALID_VALUE

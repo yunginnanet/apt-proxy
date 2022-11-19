@@ -2,7 +2,7 @@ package define
 
 import "regexp"
 
-var CENTOS_HOST_PATTERN = regexp.MustCompile(`https?://.+/centos/(.+)$`)
+var CENTOS_HOST_PATTERN = regexp.MustCompile(`/centos/(.+)$`)
 
 const CENTOS_BENCHMAKR_URL = "TIME"
 
@@ -24,7 +24,16 @@ var CENTOS_OFFICAL_MIRRORS = []string{
 }
 
 var CENTOS_CUSTOM_MIRRORS = []string{
-	"http://mirrors.aliyun.com/centos/",
+	"mirrors.aliyun.com/centos/",
 }
 
 var BUILDIN_CENTOS_MIRRORS = GenerateBuildInList(CENTOS_OFFICAL_MIRRORS, CENTOS_CUSTOM_MIRRORS)
+
+var CENTOS_DEFAULT_CACHE_RULES = []Rule{
+	{Pattern: regexp.MustCompile(`repomd.xml$`), CacheControl: `max-age=3600`, Rewrite: true, OS: TYPE_LINUX_DISTROS_CENTOS},
+	{Pattern: regexp.MustCompile(`filelist.gz$`), CacheControl: `max-age=3600`, Rewrite: true, OS: TYPE_LINUX_DISTROS_CENTOS},
+	{Pattern: regexp.MustCompile(`dir_sizes$`), CacheControl: `max-age=3600`, Rewrite: true, OS: TYPE_LINUX_DISTROS_CENTOS},
+	{Pattern: regexp.MustCompile(`TIME$`), CacheControl: `max-age=3600`, Rewrite: true, OS: TYPE_LINUX_DISTROS_CENTOS},
+	{Pattern: regexp.MustCompile(`timestamp.txt$`), CacheControl: `max-age=3600`, Rewrite: true, OS: TYPE_LINUX_DISTROS_CENTOS},
+	{Pattern: regexp.MustCompile(`.*`), CacheControl: `max-age=100000`, Rewrite: true, OS: TYPE_LINUX_DISTROS_CENTOS},
+}

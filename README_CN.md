@@ -14,7 +14,7 @@
 
 <img src="example/assets/ui.png" width="600"/>
 
-APT Proxy 是一款轻量的、可靠的 APT 包（Ubuntu / Debian）缓存工具，能够在各种不同的操作系统环境中运行。
+APT Proxy 是一款轻量的、可靠的 APT / YUM 包（Ubuntu / Debian / CentOS ）缓存工具，能够在各种不同的操作系统环境中运行。
 
 你可以将它作为古老的 [apt-cacher-ng](https://www.unix-ag.uni-kl.de/~bloch/acng/) 安全可靠的替代品。
 
@@ -50,6 +50,18 @@ http_proxy=http://your-domain-or-ip-address:3142 apt-get -o pkgProblemResolver=t
 ```
 
 当我们需要批量重复执行上面的命令，安装大量软件、或者大体积软件的时候，更新和安装的执行速度将会有**巨大的提升**。
+
+### CentOS
+
+虽然 CentOS 使用的是 Yum 而非 APT，但是 APT-Proxy 同样支持为其加速：
+
+```bash
+sed -ie s/mirrorlist.*$//  /etc/yum.repos.d/CentOS-Base.repo
+sed -ie s/#baseurl/baseurl/   /etc/yum.repos.d/CentOS-Base.repo
+sed -ie s#http://mirror.centos.org#http://host.docker.internal:3142# /etc/yum.repos.d/CentOS-Base.repo
+```
+
+在调整软件源之后，执行 `yum update` 可以验证配置是否生效。
 
 ### 选择软件源
 

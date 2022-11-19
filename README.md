@@ -14,7 +14,7 @@
 
 <img src="example/assets/ui.png" width="600"/>
 
-APT Proxy is a Lightweight and Reliable APT packages (Ubuntu / Debian) cache tool, supports a large number of common system and Docker usage.
+APT Proxy is a Lightweight and Reliable APT & YUM packages (Ubuntu / Debian / CentOS) cache tool, supports a large number of common system and Docker usage.
 
 You can safely use it instead of [apt-cacher-ng](https://www.unix-ag.uni-kl.de/~bloch/acng/).
 
@@ -50,6 +50,18 @@ http_proxy=http://your-domain-or-ip-address:3142 apt-get -o pkgProblemResolver=t
 ```
 
 When we need to execute the above commands repeatedly in batches, the speed of update and installation **will be greatly improved**.
+
+### CentOS
+
+Although CentOS uses Yum instead of APT, APT-Proxy also supports its acceleration:
+
+```bash
+sed -ie s/mirrorlist.*$//  /etc/yum.repos.d/CentOS-Base.repo
+sed -ie s/#baseurl/baseurl/   /etc/yum.repos.d/CentOS-Base.repo
+sed -ie s#http://mirror.centos.org#http://host.docker.internal:3142# /etc/yum.repos.d/CentOS-Base.repo
+```
+
+After adjusting the software source, execute `yum update` to verify whether the configuration takes effect.
 
 ### Specified Mirror
 

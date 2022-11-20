@@ -6,9 +6,7 @@ const (
 	DEBIAN_BENCHMAKR_URL = "dists/bullseye/main/binary-amd64/Release"
 )
 
-var DEBIAN_HOST_PATTERN = regexp.MustCompile(
-	`https?://(deb|security|snapshot).debian.org/debian/(.+)$`,
-)
+var DEBIAN_HOST_PATTERN = regexp.MustCompile(`/debian/(.+)$`)
 
 // https://www.debian.org/mirror/list 2022.11.19
 // Sites that contain protocol headers, restrict access to resources using that protocol
@@ -37,6 +35,7 @@ var BUILDIN_DEBIAN_MIRRORS = GenerateBuildInList(DEBIAN_OFFICAL_MIRRORS, DEBIAN_
 var DEBIAN_DEFAULT_CACHE_RULES = []Rule{
 	{Pattern: regexp.MustCompile(`deb$`), CacheControl: `max-age=100000`, Rewrite: true, OS: TYPE_LINUX_DISTROS_DEBIAN},
 	{Pattern: regexp.MustCompile(`udeb$`), CacheControl: `max-age=100000`, Rewrite: true, OS: TYPE_LINUX_DISTROS_DEBIAN},
+	{Pattern: regexp.MustCompile(`InRelease$`), CacheControl: `max-age=3600`, Rewrite: true, OS: TYPE_LINUX_DISTROS_DEBIAN},
 	{Pattern: regexp.MustCompile(`DiffIndex$`), CacheControl: `max-age=3600`, Rewrite: true, OS: TYPE_LINUX_DISTROS_DEBIAN},
 	{Pattern: regexp.MustCompile(`PackagesIndex$`), CacheControl: `max-age=3600`, Rewrite: true, OS: TYPE_LINUX_DISTROS_DEBIAN},
 	{Pattern: regexp.MustCompile(`Packages\.(bz2|gz|lzma)$`), CacheControl: `max-age=3600`, Rewrite: true, OS: TYPE_LINUX_DISTROS_DEBIAN},

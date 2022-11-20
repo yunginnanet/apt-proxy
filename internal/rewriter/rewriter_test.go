@@ -1,6 +1,7 @@
 package rewriter
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -118,7 +119,8 @@ func TestMatchingRule(t *testing.T) {
 
 func TestRuleToString(t *testing.T) {
 	rule, _ := MatchingRule("http://archive.ubuntu.com/ubuntu/InRelease", Define.UBUNTU_DEFAULT_CACHE_RULES)
-	if rule.String() != "Release(\\.gpg)?$ Cache-Control=max-age=3600 Rewrite=true" {
+	fmt.Println(rule.String())
+	if rule.String() != "InRelease$ Cache-Control=max-age=3600 Rewrite=true" {
 		t.Fatal("test rules toString faild")
 	}
 }

@@ -65,13 +65,10 @@ func TestGetPredefinedConfiguration(t *testing.T) {
 	if res != Define.UBUNTU_BENCHMAKR_URL {
 		t.Fatal("Failed to get resource link")
 	}
-	if !pattern.MatchString("http://archive.ubuntu.com/ubuntu/InRelease") {
+	if !pattern.MatchString("/ubuntu/InRelease") {
 		t.Fatal("Failed to verify domain name rules")
 	}
-	if !pattern.MatchString("http://ab.archive.ubuntu.com/ubuntu/InRelease") {
-		t.Fatal("Failed to verify domain name rules")
-	}
-	if pattern.MatchString("http://abc.archive.ubuntu.com/ubuntu/InRelease") {
+	if !pattern.MatchString("/ubuntu/InRelease") {
 		t.Fatal("Failed to verify domain name rules")
 	}
 
@@ -79,7 +76,23 @@ func TestGetPredefinedConfiguration(t *testing.T) {
 	if res != Define.DEBIAN_BENCHMAKR_URL {
 		t.Fatal("Failed to get resource link")
 	}
-	if !pattern.MatchString("http://deb.debian.org/debian/InRelease") {
+	if !pattern.MatchString("/debian/InRelease") {
+		t.Fatal("Failed to verify domain name rules")
+	}
+
+	res, pattern = GetPredefinedConfiguration(Define.TYPE_LINUX_DISTROS_CENTOS)
+	if res != Define.CENTOS_BENCHMAKR_URL {
+		t.Fatal("Failed to get resource link")
+	}
+	if !pattern.MatchString("/centos/test/repomd.xml") {
+		t.Fatal("Failed to verify domain name rules")
+	}
+
+	res, pattern = GetPredefinedConfiguration(Define.TYPE_LINUX_DISTROS_ALPINE)
+	if res != Define.ALPINE_BENCHMAKR_URL {
+		t.Fatal("Failed to get resource link")
+	}
+	if !pattern.MatchString("/alpine/test/APKINDEX.tar.gz") {
 		t.Fatal("Failed to verify domain name rules")
 	}
 }

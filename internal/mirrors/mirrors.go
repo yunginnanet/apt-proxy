@@ -2,6 +2,7 @@ package mirrors
 
 import (
 	"regexp"
+	"strings"
 
 	Define "github.com/soulteary/apt-proxy/internal/define"
 )
@@ -65,9 +66,15 @@ func GetGeoMirrorUrlsByMode(mode int) (mirrors []string) {
 
 func GetFullMirrorURL(mirror Define.UrlWithAlias) string {
 	if mirror.Http {
+		if strings.HasSuffix(mirror.URL, "http://") {
+			return mirror.URL
+		}
 		return "http://" + mirror.URL
 	}
 	if mirror.Https {
+		if strings.HasSuffix(mirror.URL, "https://") {
+			return mirror.URL
+		}
 		return "https://" + mirror.URL
 	}
 	return "https://" + mirror.URL

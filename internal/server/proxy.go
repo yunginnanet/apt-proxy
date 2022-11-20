@@ -52,7 +52,6 @@ func (ap *AptProxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 			fmt.Println("render internal urls error")
 		}
 	} else {
-
 		if Define.UBUNTU_HOST_PATTERN.MatchString(r.URL.Path) {
 			rule, match := Rewriter.MatchingRule(r.URL.Path, Define.UBUNTU_DEFAULT_CACHE_RULES)
 			if match {

@@ -49,14 +49,20 @@ http_proxy=http://your-domain-or-ip-address:3142 apt-get -o pkgProblemResolver=t
 
 When we need to execute the above commands repeatedly in batches, the speed of update and installation **will be greatly improved**.
 
-### CentOS
+### CentOS 7 / 8
 
-Although CentOS uses Yum instead of APT, APT-Proxy also supports its acceleration:
+Although CentOS uses Yum instead of APT, APT-Proxy also supports its acceleration (CentOS 7):
 
 ```bash
-sed -ie s/mirrorlist.*$//  /etc/yum.repos.d/CentOS-Base.repo
-sed -ie s/#baseurl/baseurl/   /etc/yum.repos.d/CentOS-Base.repo
-sed -ie s#http://mirror.centos.org#http://your-domain-or-ip-address:3142# /etc/yum.repos.d/CentOS-Base.repo
+cat /etc/yum.repos.d/CentOS-Base.repo | sed -e s/mirrorlist.*$// | sed -e s/#baseurl/baseurl/ | sed -e s#http://mirror.centos.org#http://your-domain-or-ip-address:3142# | tee /etc/yum.repos.d/CentOS-Base.repo
+```
+
+In CentOS 8, we need to adjust the software source like this:
+
+```bash
+sed -i -e "s#mirror.centos.org#http://your-domain-or-ip-address:3142#g" /etc/yum.repos.d/CentOS-*
+sed -i -e "s/#baseurl/baseurl/" /etc/yum.repos.d/CentOS-*
+sed -i -e "s#\$releasever/#8-stream/#" /etc/yum.repos.d/CentOS-*
 ```
 
 After adjusting the software source, execute `yum update` to verify whether the configuration takes effect.

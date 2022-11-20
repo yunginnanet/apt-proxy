@@ -49,14 +49,20 @@ http_proxy=http://your-domain-or-ip-address:3142 apt-get -o pkgProblemResolver=t
 
 当我们需要批量重复执行上面的命令，安装大量软件、或者大体积软件的时候，更新和安装的执行速度将会有**巨大的提升**。
 
-### CentOS
+### CentOS 7 / 8
 
-虽然 CentOS 使用的是 Yum 而非 APT，但是 APT-Proxy 同样支持为其加速：
+虽然 CentOS 使用的是 Yum 而非 APT，但是 APT-Proxy 同样支持为其加速 (CentOS 7)：
 
 ```bash
-sed -ie s/mirrorlist.*$//  /etc/yum.repos.d/CentOS-Base.repo
-sed -ie s/#baseurl/baseurl/   /etc/yum.repos.d/CentOS-Base.repo
-sed -ie s#http://mirror.centos.org#http://your-domain-or-ip-address:3142# /etc/yum.repos.d/CentOS-Base.repo
+cat /etc/yum.repos.d/CentOS-Base.repo | sed -e s/mirrorlist.*$// | sed -e s/#baseurl/baseurl/ | sed -e s#http://mirror.centos.org#http://your-domain-or-ip-address:3142# | tee /etc/yum.repos.d/CentOS-Base.repo
+```
+
+在 CentOS 8 中，我们需要这样调整软件源：
+
+```bash
+sed -i -e"s#mirror.centos.org#http://your-domain-or-ip-address:3142#g" /etc/yum.repos.d/CentOS-*
+sed -i -e"s/#baseurl/baseurl/" /etc/yum.repos.d/CentOS-*
+sed -i -e"s#\$releasever/#8-stream/#" /etc/yum.repos.d/CentOS-*
 ```
 
 在调整软件源之后，执行 `yum update` 可以验证配置是否生效。

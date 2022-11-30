@@ -8,7 +8,7 @@ const CENTOS_BENCHMAKR_URL = "TIME"
 
 // https://www.centos.org/download/mirrors/ 2022.11.19
 // Sites that contain protocol headers, restrict access to resources using that protocol
-var CENTOS_OFFICAL_MIRRORS = []string{
+var CENTOS_OFFICIAL_MIRRORS = []string{
 	"mirrors.bfsu.edu.cn/centos/",
 	"mirrors.cqu.edu.cn/CentOS/",
 	"http://mirrors.neusoft.edu.cn/centos/",
@@ -27,7 +27,7 @@ var CENTOS_CUSTOM_MIRRORS = []string{
 	"mirrors.aliyun.com/centos/",
 }
 
-var BUILDIN_CENTOS_MIRRORS = GenerateBuildInList(CENTOS_OFFICAL_MIRRORS, CENTOS_CUSTOM_MIRRORS)
+var BUILDIN_CENTOS_MIRRORS = GenerateBuildInList(CENTOS_OFFICIAL_MIRRORS, CENTOS_CUSTOM_MIRRORS)
 
 var CENTOS_DEFAULT_CACHE_RULES = []Rule{
 	{Pattern: regexp.MustCompile(`repomd.xml$`), CacheControl: `max-age=3600`, Rewrite: true, OS: TYPE_LINUX_DISTROS_CENTOS},

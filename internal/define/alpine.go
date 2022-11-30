@@ -8,7 +8,7 @@ const ALPINE_BENCHMAKR_URL = "MIRRORS.txt"
 
 // https://mirrors.alpinelinux.org/ 2022.11.19
 // Sites that contain protocol headers, restrict access to resources using that protocol
-var ALPINE_OFFICAL_MIRRORS = []string{
+var ALPINE_OFFICIAL_MIRRORS = []string{
 	"mirrors.tuna.tsinghua.edu.cn/alpine/",
 	"mirrors.ustc.edu.cn/alpine/",
 	"mirrors.nju.edu.cn/alpine/",
@@ -21,7 +21,7 @@ var ALPINE_OFFICAL_MIRRORS = []string{
 
 var ALPINE_CUSTOM_MIRRORS = []string{}
 
-var BUILDIN_ALPINE_MIRRORS = GenerateBuildInList(ALPINE_OFFICAL_MIRRORS, ALPINE_CUSTOM_MIRRORS)
+var BUILDIN_ALPINE_MIRRORS = GenerateBuildInList(ALPINE_OFFICIAL_MIRRORS, ALPINE_CUSTOM_MIRRORS)
 
 var ALPINE_DEFAULT_CACHE_RULES = []Rule{
 	{Pattern: regexp.MustCompile(`APKINDEX.tar.gz$`), CacheControl: `max-age=3600`, Rewrite: true, OS: TYPE_LINUX_DISTROS_ALPINE},

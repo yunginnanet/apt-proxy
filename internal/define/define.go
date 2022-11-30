@@ -50,9 +50,9 @@ func GenerateAliasFromURL(url string) string {
 	return "cn:" + group[len(group)-1]
 }
 
-func GenerateBuildInMirorItem(url string, offical bool) UrlWithAlias {
+func GenerateBuildInMirorItem(url string, official bool) UrlWithAlias {
 	var mirror UrlWithAlias
-	mirror.Official = offical
+	mirror.Official = official
 	mirror.Alias = GenerateAliasFromURL(url)
 
 	if strings.HasPrefix(url, "http://") {

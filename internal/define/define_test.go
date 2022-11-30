@@ -48,10 +48,10 @@ func TestGenerateBuildInMirorItem(t *testing.T) {
 }
 
 func TestGenerateBuildInList(t *testing.T) {
-	mirrors := Define.GenerateBuildInList(Define.UBUNTU_OFFICAL_MIRRORS, Define.UBUNTU_CUSTOM_MIRRORS)
+	mirrors := Define.GenerateBuildInList(Define.UBUNTU_OFFICIAL_MIRRORS, Define.UBUNTU_CUSTOM_MIRRORS)
 
 	count := 0
-	for _, url := range Define.UBUNTU_OFFICAL_MIRRORS {
+	for _, url := range Define.UBUNTU_OFFICIAL_MIRRORS {
 		if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
 			count += 1
 		} else {

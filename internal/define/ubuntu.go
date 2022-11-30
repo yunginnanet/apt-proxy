@@ -13,7 +13,7 @@ var UBUNTU_HOST_PATTERN = regexp.MustCompile(`/ubuntu/(.+)$`)
 
 // http://mirrors.ubuntu.com/mirrors.txt 2022.11.19
 // Sites that contain protocol headers, restrict access to resources using that protocol
-var UBUNTU_OFFICAL_MIRRORS = []string{
+var UBUNTU_OFFICIAL_MIRRORS = []string{
 	"mirrors.cn99.com/ubuntu/",
 	"mirrors.tuna.tsinghua.edu.cn/ubuntu/",
 	"mirrors.cnnic.cn/ubuntu/",
@@ -46,7 +46,7 @@ var UBUNTU_CUSTOM_MIRRORS = []string{
 	"mirrors.163.com/ubuntu/",
 }
 
-var BUILDIN_UBUNTU_MIRRORS = GenerateBuildInList(UBUNTU_OFFICAL_MIRRORS, UBUNTU_CUSTOM_MIRRORS)
+var BUILDIN_UBUNTU_MIRRORS = GenerateBuildInList(UBUNTU_OFFICIAL_MIRRORS, UBUNTU_CUSTOM_MIRRORS)
 
 var UBUNTU_DEFAULT_CACHE_RULES = []Rule{
 	{Pattern: regexp.MustCompile(`deb$`), CacheControl: `max-age=100000`, Rewrite: true, OS: TYPE_LINUX_DISTROS_UBUNTU},

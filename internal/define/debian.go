@@ -10,7 +10,7 @@ var DEBIAN_HOST_PATTERN = regexp.MustCompile(`/debian/(.+)$`)
 
 // https://www.debian.org/mirror/list 2022.11.19
 // Sites that contain protocol headers, restrict access to resources using that protocol
-var DEBIAN_OFFICAL_MIRRORS = []string{
+var DEBIAN_OFFICIAL_MIRRORS = []string{
 	"http://ftp.cn.debian.org/debian/",
 	"mirror.bjtu.edu.cn/debian/",
 	"mirrors.163.com/debian/",
@@ -30,7 +30,7 @@ var DEBIAN_CUSTOM_MIRRORS = []string{
 	"mirror.nju.edu.cn/debian/",
 }
 
-var BUILDIN_DEBIAN_MIRRORS = GenerateBuildInList(DEBIAN_OFFICAL_MIRRORS, DEBIAN_CUSTOM_MIRRORS)
+var BUILDIN_DEBIAN_MIRRORS = GenerateBuildInList(DEBIAN_OFFICIAL_MIRRORS, DEBIAN_CUSTOM_MIRRORS)
 
 var DEBIAN_DEFAULT_CACHE_RULES = []Rule{
 	{Pattern: regexp.MustCompile(`deb$`), CacheControl: `max-age=100000`, Rewrite: true, OS: TYPE_LINUX_DISTROS_DEBIAN},

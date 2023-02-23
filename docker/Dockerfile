@@ -1,4 +1,4 @@
-FROM golang:1.19.0-alpine3.16 as builder
+FROM golang:1.20.0-alpine3.16 as builder
 RUN apk update && \
     apk add ca-certificates
 ENV TZ=Asia/Shanghai

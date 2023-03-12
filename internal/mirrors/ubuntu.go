@@ -8,7 +8,7 @@ import (
 )
 
 func GetUbuntuMirrorUrlsByGeo() (mirrors []string, err error) {
-	response, err := http.Get(Define.UBUNTU_GEO_MIRROR_API)
+	response, err := http.Get(Define.UbuntuGeoMirrorApi)
 	if err != nil {
 		return mirrors, err
 	}

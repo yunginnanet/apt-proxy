@@ -81,11 +81,11 @@ func (c *client) do(r *http.Request) *clientResponse {
 }
 
 func (c *client) get(path string, headers ...string) *clientResponse {
-	return c.do(newRequest("GET", "http://example.org"+path, headers...))
+	return c.do(newRequest("GET", "https://github.com"+path, headers...))
 }
 
 func (c *client) head(path string, headers ...string) *clientResponse {
-	return c.do(newRequest("HEAD", "http://example.org"+path, headers...))
+	return c.do(newRequest("HEAD", "https://github.com"+path, headers...))
 }
 
 // func (c *client) put(path string, headers ...string) *clientResponse {

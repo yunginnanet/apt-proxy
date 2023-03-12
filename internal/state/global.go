@@ -1,11 +1,11 @@
 package state
 
-var PROXY_MODE = 0
+var ProxyMode = 0
 
 func SetProxyMode(mode int) {
-	PROXY_MODE = mode
+	ProxyMode = mode
 }
 
 func GetProxyMode() int {
-	return PROXY_MODE
+	return ProxyMode
 }

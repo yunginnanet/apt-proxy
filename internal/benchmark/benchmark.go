@@ -9,9 +9,9 @@ import (
 )
 
 const (
-	BENCHMARK_MAX_TIMEOUT    = 15 // 15 seconds, detect resource timeout
-	BENCHMARK_MAX_TRIES      = 3  // times, maximum number of attempts
-	BENCHMARK_DETECT_TIMEOUT = 3  // 3 seconds, for select fast mirror
+	BenchmarkMaxTimeout    = 15 // 15 seconds, detect resource timeout
+	BenchmarkMaxTries      = 3  // times, maximum number of attempts
+	BenchmarkDetectTimeout = 3  // 3 seconds, for select fast mirror
 )
 
 type Result struct {
@@ -22,7 +22,7 @@ type Result struct {
 func Benchmark(base string, query string, times int) (time.Duration, error) {
 	var sum int64
 
-	timeout := time.Duration(BENCHMARK_MAX_TIMEOUT * time.Second)
+	timeout := time.Duration(BenchmarkMaxTimeout * time.Second)
 	client := http.Client{
 		Timeout: timeout,
 	}
@@ -34,12 +34,19 @@ func Benchmark(base string, query string, times int) (time.Duration, error) {
 			return timeout, err
 		}
 
-		defer response.Body.Close()
-		_, err = io.ReadAll(response.Body)
-		if err != nil {
-			return timeout, err
+		if response.StatusCode == http.StatusNotFound {
+			log.Printf("Benchmark: %s%s not found", base, query)
+			break
 		}
 
+		_, err = io.ReadAll(response.Body)
+		if err != nil {
+			if response.Body != nil {
+				_ = response.Body.Close()
+			}
+			return timeout, err
+		}
+		_ = response.Body.Close()
 		sum = sum + int64(time.Since(timer))
 	}
 
@@ -52,7 +59,7 @@ func GetTheFastestMirror(mirrors []string, testUrl string) (string, error) {
 	// kick off all benchmarks in parallel
 	for _, url := range mirrors {
 		go func(u string) {
-			duration, err := Benchmark(u, testUrl, BENCHMARK_MAX_TRIES)
+			duration, err := Benchmark(u, testUrl, BenchmarkMaxTries)
 			if err == nil {
 				ch <- Result{u, duration}
 			}
@@ -68,7 +75,7 @@ func GetTheFastestMirror(mirrors []string, testUrl string) (string, error) {
 	results, err := ReadResults(ch, maxTries)
 	log.Printf("Finished benchmarking mirrors")
 	if len(results) == 0 {
-		return "", errors.New("No results found: " + err.Error())
+		return "", errors.Join(errors.New("no results found"), err)
 	} else if err != nil {
 		log.Printf("Error benchmarking mirrors: %s", err.Error())
 	}
@@ -84,7 +91,7 @@ func ReadResults(ch <-chan Result, size int) (br []Result, err error) {
 			if len(br) >= size {
 				return br, nil
 			}
-		case <-time.After(BENCHMARK_DETECT_TIMEOUT * time.Second):
+		case <-time.After(BenchmarkDetectTimeout * time.Second):
 			return br, errors.New("timed out waiting for results")
 		}
 	}

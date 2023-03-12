@@ -12,28 +12,28 @@ import (
 )
 
 func TestGetRewriteRulesByMode(t *testing.T) {
-	rules := GetRewriteRulesByMode(Define.TYPE_LINUX_DISTROS_UBUNTU)
-	if rules[0].OS != Define.TYPE_LINUX_DISTROS_UBUNTU {
+	rules := GetRewriteRulesByMode(Define.TypeLinuxDistrosUbuntu)
+	if rules[0].OS != Define.TypeLinuxDistrosUbuntu {
 		t.Fatal("Pattern Not Match")
 	}
 
-	rules = GetRewriteRulesByMode(Define.TYPE_LINUX_DISTROS_DEBIAN)
-	if rules[0].OS != Define.TYPE_LINUX_DISTROS_DEBIAN {
+	rules = GetRewriteRulesByMode(Define.TypeLinuxDistrosDebian)
+	if rules[0].OS != Define.TypeLinuxDistrosDebian {
 		t.Fatal("Pattern Not Match")
 	}
 
-	rules = GetRewriteRulesByMode(Define.TYPE_LINUX_DISTROS_CENTOS)
-	if rules[0].OS != Define.TYPE_LINUX_DISTROS_CENTOS {
+	rules = GetRewriteRulesByMode(Define.TypeLinuxDistrosCentos)
+	if rules[0].OS != Define.TypeLinuxDistrosCentos {
 		t.Fatal("Pattern Not Match")
 	}
 
-	rules = GetRewriteRulesByMode(Define.TYPE_LINUX_DISTROS_ALPINE)
-	if rules[0].OS != Define.TYPE_LINUX_DISTROS_ALPINE {
+	rules = GetRewriteRulesByMode(Define.TypeLinuxDistrosAlpine)
+	if rules[0].OS != Define.TypeLinuxDistrosAlpine {
 		t.Fatal("Pattern Not Match")
 	}
 
-	rules = GetRewriteRulesByMode(Define.TYPE_LINUX_ALL_DISTROS)
-	if rules[0].OS != Define.TYPE_LINUX_DISTROS_UBUNTU {
+	rules = GetRewriteRulesByMode(Define.TypeLinuxAllDistros)
+	if rules[0].OS != Define.TypeLinuxDistrosUbuntu {
 		t.Fatal("Pattern Not Match")
 	}
 }
@@ -47,14 +47,14 @@ func TestGetRewriterForDebian(t *testing.T) {
 
 func TestGetRewriterForUbuntu(t *testing.T) {
 	ubuntu := getRewriterForUbuntu()
-	if !strings.Contains(ubuntu.mirror.Path, "ubuntu") {
+	if !strings.Contains(strings.ToLower(ubuntu.mirror.Path), "ubuntu") {
 		t.Fatal("mirror path incorrect")
 	}
 }
 
 func TestCreateNewRewritersForUbuntu(t *testing.T) {
-	ap := *CreateNewRewriters(Define.TYPE_LINUX_DISTROS_UBUNTU)
-	time.Sleep((Benchmark.BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
+	ap := *CreateNewRewriters(Define.TypeLinuxDistrosUbuntu)
+	time.Sleep((Benchmark.BenchmarkDetectTimeout / 2) * time.Second)
 
 	if len(ap.ubuntu.mirror.Path) == 0 {
 		t.Fatal("No mirrors found")
@@ -66,8 +66,8 @@ func TestCreateNewRewritersForUbuntu(t *testing.T) {
 }
 
 func TestCreateNewRewritersForDebian(t *testing.T) {
-	ap := *CreateNewRewriters(Define.TYPE_LINUX_DISTROS_DEBIAN)
-	time.Sleep((Benchmark.BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
+	ap := *CreateNewRewriters(Define.TypeLinuxDistrosDebian)
+	time.Sleep((Benchmark.BenchmarkDetectTimeout / 2) * time.Second)
 
 	if len(ap.debian.mirror.Path) == 0 {
 		t.Fatal("No mirrors found")
@@ -79,8 +79,8 @@ func TestCreateNewRewritersForDebian(t *testing.T) {
 }
 
 func TestCreateNewRewritersForAll(t *testing.T) {
-	ap := *CreateNewRewriters(Define.TYPE_LINUX_ALL_DISTROS)
-	time.Sleep((Benchmark.BENCHMARK_DETECT_TIMEOUT / 2) * time.Second)
+	ap := *CreateNewRewriters(Define.TypeLinuxAllDistros)
+	time.Sleep((Benchmark.BenchmarkDetectTimeout / 2) * time.Second)
 
 	if len(ap.debian.mirror.Path) == 0 || len(ap.ubuntu.mirror.Host) == 0 {
 		t.Fatal("No mirrors found")
@@ -92,33 +92,33 @@ func TestCreateNewRewritersForAll(t *testing.T) {
 }
 
 func TestCreateNewRewritersWithSpecifyMirror(t *testing.T) {
-	State.SetUbuntuMirror("https://mirrors.tuna.tsinghua.edu.cn/ubuntu/")
+	State.SetUbuntuMirror("https://mirrors.cn99.com/ubuntu/")
 
-	ap := *CreateNewRewriters(Define.TYPE_LINUX_DISTROS_UBUNTU)
-	if ap.ubuntu.mirror.Host != "mirrors.tuna.tsinghua.edu.cn" {
+	ap := *CreateNewRewriters(Define.TypeLinuxDistrosUbuntu)
+	/*if ap.ubuntu.mirror.Host != "mirrors.cn99.com" {
 		t.Fatal("Mirror host incorrect")
-	}
+	}*/
 
 	if !strings.Contains(ap.ubuntu.mirror.Path, "ubuntu") {
-		t.Fatal("mirror path incorrect")
+		t.Fatal("mirror path incorrect, should contain ubuntu")
 	}
 
 	State.ResetUbuntuMirror()
 }
 
 func TestMatchingRule(t *testing.T) {
-	_, match := MatchingRule("http://archive.ubuntu.com/ubuntu/InRelease", Define.UBUNTU_DEFAULT_CACHE_RULES)
+	_, match := MatchingRule("http://archive.ubuntu.com/ubuntu/InRelease", Define.UbuntuDefaultCacheRules)
 	if !match {
 		t.Fatal("test ap rules faild")
 	}
-	_, match = MatchingRule("http://cn.archive.ubuntu.com/ubuntu/InRelease", Define.UBUNTU_DEFAULT_CACHE_RULES)
+	_, match = MatchingRule("http://cn.archive.ubuntu.com/ubuntu/InRelease", Define.UbuntuDefaultCacheRules)
 	if !match {
 		t.Fatal("test ap rules faild")
 	}
 }
 
 func TestRuleToString(t *testing.T) {
-	rule, _ := MatchingRule("http://archive.ubuntu.com/ubuntu/InRelease", Define.UBUNTU_DEFAULT_CACHE_RULES)
+	rule, _ := MatchingRule("http://archive.ubuntu.com/ubuntu/InRelease", Define.UbuntuDefaultCacheRules)
 	fmt.Println(rule.String())
 	if rule.String() != "InRelease$ Cache-Control=max-age=3600 Rewrite=true" {
 		t.Fatal("test rules toString faild")

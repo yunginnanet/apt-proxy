@@ -8,9 +8,12 @@ import (
 )
 
 func TestGetAndSetDebianMirror(t *testing.T) {
-	State.SetDebianMirror("https://mirrors.tuna.tsinghua.edu.cn/debian/")
+	State.SetDebianMirror("mirrors.163.com/debian/")
 	mirror := State.GetDebianMirror()
 	if !strings.Contains(mirror.Path, "debian") {
+		t.Fatal("Test Set/Get Debian Mirror Value Faild")
+	}
+	if !strings.Contains(mirror.Path, "mirrors.163.com") {
 		t.Fatal("Test Set/Get Debian Mirror Value Faild")
 	}
 
@@ -26,7 +29,7 @@ func TestGetAndSetDebianMirror(t *testing.T) {
 		t.Fatal("Test Clear Debian Mirror Faild")
 	}
 
-	State.SetDebianMirror("cn:tsinghua")
+	State.SetDebianMirror("cn:163")
 	mirror = State.GetDebianMirror()
 	if !strings.Contains(strings.ToLower(mirror.Path), "debian") {
 		t.Fatal("Test Set/Get Debian Mirror Value Faild")

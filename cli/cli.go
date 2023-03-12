@@ -8,37 +8,37 @@ import (
 )
 
 const (
-	DEFAULT_HOST          = "0.0.0.0"
-	DEFAULT_PORT          = "3142"
-	DEFAULT_CACHE_DIR     = "./.aptcache"
-	DEFAULT_UBUNTU_MIRROR = "" // "https://mirrors.tuna.tsinghua.edu.cn/ubuntu/"
-	DEFAULT_DEBIAN_MIRROR = "" // "https://mirrors.tuna.tsinghua.edu.cn/debian/"
-	DEFAULT_CENTOS_MIRROR = "" // "https://mirrors.tuna.tsinghua.edu.cn/centos/"
-	DEFAULT_ALPINE_MIRROR = "" // "https://mirrors.tuna.tsinghua.edu.cn/alpine/"
-	DEFAULT_MODE_NAME     = Define.LINUX_ALL_DISTROS
-	DEFAULT_DEBUG         = false
+	DefaultHost         = "0.0.0.0"
+	DefaultPort         = "3142"
+	DefaultCacheDir     = "./.aptcache"
+	DefaultUbuntuMirror = "" // "https://mirrors.tuna.tsinghua.edu.cn/ubuntu/"
+	DefaultDebianMirror = "" // "https://mirrors.tuna.tsinghua.edu.cn/debian/"
+	DefaultCentosMirror = "" // "https://mirrors.tuna.tsinghua.edu.cn/centos/"
+	DefaultAlpineMirror = "" // "https://mirrors.tuna.tsinghua.edu.cn/alpine/"
+	DefaultModeName     = Define.LinuxAllDistros
+	DefaultDebug        = false
 )
 
 var Version string
 
 func getProxyMode(mode string) int {
-	if mode == Define.LINUX_DISTROS_UBUNTU {
-		return Define.TYPE_LINUX_DISTROS_UBUNTU
+	if mode == Define.LinuxDistrosUbuntu {
+		return Define.TypeLinuxDistrosUbuntu
 	}
 
-	if mode == Define.LINUX_DISTROS_DEBIAN {
-		return Define.TYPE_LINUX_DISTROS_DEBIAN
+	if mode == Define.LinuxDistrosDebian {
+		return Define.TypeLinuxDistrosDebian
 	}
 
-	if mode == Define.LINUX_DISTROS_CENTOS {
-		return Define.TYPE_LINUX_DISTROS_CENTOS
+	if mode == Define.LinuxDistrosCentos {
+		return Define.TypeLinuxDistrosCentos
 	}
 
-	if mode == Define.LINUX_DISTROS_ALPINE {
-		return Define.TYPE_LINUX_DISTROS_ALPINE
+	if mode == Define.LinuxDistrosAlpine {
+		return Define.TypeLinuxDistrosAlpine
 	}
 
-	return Define.TYPE_LINUX_ALL_DISTROS
+	return Define.TypeLinuxAllDistros
 }
 
 func ParseFlags() (appFlags AppFlags) {
@@ -47,15 +47,15 @@ func ParseFlags() (appFlags AppFlags) {
 		port     string
 		userMode string
 	)
-	flag.StringVar(&host, "host", DEFAULT_HOST, "the host to bind to")
-	flag.StringVar(&port, "port", DEFAULT_PORT, "the port to bind to")
-	flag.StringVar(&userMode, "mode", DEFAULT_MODE_NAME, "select the mode of system to cache: `all` / `ubuntu` / `debian` / `centos` / `alpine`")
-	flag.BoolVar(&appFlags.Debug, "debug", DEFAULT_DEBUG, "whether to output debugging logging")
-	flag.StringVar(&appFlags.CacheDir, "cachedir", DEFAULT_CACHE_DIR, "the dir to store cache data in")
-	flag.StringVar(&appFlags.Ubuntu, "ubuntu", DEFAULT_UBUNTU_MIRROR, "the ubuntu mirror for fetching packages")
-	flag.StringVar(&appFlags.Debian, "debian", DEFAULT_DEBIAN_MIRROR, "the debian mirror for fetching packages")
-	flag.StringVar(&appFlags.CentOS, "centos", DEFAULT_CENTOS_MIRROR, "the centos mirror for fetching packages")
-	flag.StringVar(&appFlags.Alpine, "alpine", DEFAULT_ALPINE_MIRROR, "the alpine mirror for fetching packages")
+	flag.StringVar(&host, "host", DefaultHost, "the host to bind to")
+	flag.StringVar(&port, "port", DefaultPort, "the port to bind to")
+	flag.StringVar(&userMode, "mode", DefaultModeName, "select the mode of system to cache: `all` / `ubuntu` / `debian` / `centos` / `alpine`")
+	flag.BoolVar(&appFlags.Debug, "debug", DefaultDebug, "whether to output debugging logging")
+	flag.StringVar(&appFlags.CacheDir, "cachedir", DefaultCacheDir, "the dir to store cache data in")
+	flag.StringVar(&appFlags.Ubuntu, "ubuntu", DefaultUbuntuMirror, "the ubuntu mirror for fetching packages")
+	flag.StringVar(&appFlags.Debian, "debian", DefaultDebianMirror, "the debian mirror for fetching packages")
+	flag.StringVar(&appFlags.CentOS, "centos", DefaultCentosMirror, "the centos mirror for fetching packages")
+	flag.StringVar(&appFlags.Alpine, "alpine", DefaultAlpineMirror, "the alpine mirror for fetching packages")
 	flag.Parse()
 
 	mode := getProxyMode(userMode)

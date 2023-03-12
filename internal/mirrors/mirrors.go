@@ -10,19 +10,19 @@ import (
 func GenerateMirrorListByPredefined(osType int) (mirrors []string) {
 	var src []Define.UrlWithAlias
 	switch osType {
-	case Define.TYPE_LINUX_ALL_DISTROS:
-		src = append(src, Define.BUILDIN_UBUNTU_MIRRORS...)
-		src = append(src, Define.BUILDIN_DEBIAN_MIRRORS...)
-		src = append(src, Define.BUILDIN_CENTOS_MIRRORS...)
-		src = append(src, Define.BUILDIN_ALPINE_MIRRORS...)
-	case Define.TYPE_LINUX_DISTROS_UBUNTU:
-		src = Define.BUILDIN_UBUNTU_MIRRORS
-	case Define.TYPE_LINUX_DISTROS_DEBIAN:
-		src = Define.BUILDIN_DEBIAN_MIRRORS
-	case Define.TYPE_LINUX_DISTROS_CENTOS:
-		src = Define.BUILDIN_CENTOS_MIRRORS
-	case Define.TYPE_LINUX_DISTROS_ALPINE:
-		src = Define.BUILDIN_ALPINE_MIRRORS
+	case Define.TypeLinuxAllDistros:
+		src = append(src, Define.UbuntuDefaults...)
+		src = append(src, Define.BuildinDebianMirrors...)
+		src = append(src, Define.BuildinCentosMirrors...)
+		src = append(src, Define.BuildinAlpineMirrors...)
+	case Define.TypeLinuxDistrosUbuntu:
+		src = Define.UbuntuDefaults
+	case Define.TypeLinuxDistrosDebian:
+		src = Define.BuildinDebianMirrors
+	case Define.TypeLinuxDistrosCentos:
+		src = Define.BuildinCentosMirrors
+	case Define.TypeLinuxDistrosAlpine:
+		src = Define.BuildinAlpineMirrors
 	}
 
 	for _, mirror := range src {
@@ -31,36 +31,36 @@ func GenerateMirrorListByPredefined(osType int) (mirrors []string) {
 	return mirrors
 }
 
-var BUILDIN_UBUNTU_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_UBUNTU)
-var BUILDIN_DEBIAN_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_DEBIAN)
-var BUILDIN_CENTOS_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_CENTOS)
-var BUILDIN_ALPINE_MIRRORS = GenerateMirrorListByPredefined(Define.TYPE_LINUX_DISTROS_ALPINE)
+var BuildinUbuntuMirrors = GenerateMirrorListByPredefined(Define.TypeLinuxDistrosUbuntu)
+var BuildinDebianMirrors = GenerateMirrorListByPredefined(Define.TypeLinuxDistrosDebian)
+var BuildinCentosMirrors = GenerateMirrorListByPredefined(Define.TypeLinuxDistrosCentos)
+var BuildinAlpineMirrors = GenerateMirrorListByPredefined(Define.TypeLinuxDistrosAlpine)
 
 func GetGeoMirrorUrlsByMode(mode int) (mirrors []string) {
-	if mode == Define.TYPE_LINUX_DISTROS_UBUNTU {
+	if mode == Define.TypeLinuxDistrosUbuntu {
 		ubuntuMirrorsOnline, err := GetUbuntuMirrorUrlsByGeo()
 		if err != nil {
-			return BUILDIN_UBUNTU_MIRRORS
+			return BuildinUbuntuMirrors
 		}
 		return ubuntuMirrorsOnline
 	}
 
-	if mode == Define.TYPE_LINUX_DISTROS_DEBIAN {
-		return BUILDIN_DEBIAN_MIRRORS
+	if mode == Define.TypeLinuxDistrosDebian {
+		return BuildinDebianMirrors
 	}
 
-	if mode == Define.TYPE_LINUX_DISTROS_CENTOS {
-		return BUILDIN_CENTOS_MIRRORS
+	if mode == Define.TypeLinuxDistrosCentos {
+		return BuildinCentosMirrors
 	}
 
-	if mode == Define.TYPE_LINUX_DISTROS_ALPINE {
-		return BUILDIN_ALPINE_MIRRORS
+	if mode == Define.TypeLinuxDistrosAlpine {
+		return BuildinAlpineMirrors
 	}
 
-	mirrors = append(mirrors, BUILDIN_UBUNTU_MIRRORS...)
-	mirrors = append(mirrors, BUILDIN_DEBIAN_MIRRORS...)
-	mirrors = append(mirrors, BUILDIN_CENTOS_MIRRORS...)
-	mirrors = append(mirrors, BUILDIN_ALPINE_MIRRORS...)
+	mirrors = append(mirrors, BuildinUbuntuMirrors...)
+	mirrors = append(mirrors, BuildinDebianMirrors...)
+	mirrors = append(mirrors, BuildinCentosMirrors...)
+	mirrors = append(mirrors, BuildinAlpineMirrors...)
 	return mirrors
 }
 
@@ -82,26 +82,26 @@ func GetFullMirrorURL(mirror Define.UrlWithAlias) string {
 
 func GetMirrorURLByAliases(osType int, alias string) string {
 	switch osType {
-	case Define.TYPE_LINUX_DISTROS_UBUNTU:
-		for _, mirror := range Define.BUILDIN_UBUNTU_MIRRORS {
+	case Define.TypeLinuxDistrosUbuntu:
+		for _, mirror := range Define.UbuntuDefaults {
 			if mirror.Alias == alias {
 				return GetFullMirrorURL(mirror)
 			}
 		}
-	case Define.TYPE_LINUX_DISTROS_DEBIAN:
-		for _, mirror := range Define.BUILDIN_DEBIAN_MIRRORS {
+	case Define.TypeLinuxDistrosDebian:
+		for _, mirror := range Define.BuildinDebianMirrors {
 			if mirror.Alias == alias {
 				return GetFullMirrorURL(mirror)
 			}
 		}
-	case Define.TYPE_LINUX_DISTROS_CENTOS:
-		for _, mirror := range Define.BUILDIN_CENTOS_MIRRORS {
+	case Define.TypeLinuxDistrosCentos:
+		for _, mirror := range Define.BuildinCentosMirrors {
 			if mirror.Alias == alias {
 				return GetFullMirrorURL(mirror)
 			}
 		}
-	case Define.TYPE_LINUX_DISTROS_ALPINE:
-		for _, mirror := range Define.BUILDIN_ALPINE_MIRRORS {
+	case Define.TypeLinuxDistrosAlpine:
+		for _, mirror := range Define.BuildinAlpineMirrors {
 			if mirror.Alias == alias {
 				return GetFullMirrorURL(mirror)
 			}
@@ -112,14 +112,14 @@ func GetMirrorURLByAliases(osType int, alias string) string {
 
 func GetPredefinedConfiguration(proxyMode int) (string, *regexp.Regexp) {
 	switch proxyMode {
-	case Define.TYPE_LINUX_DISTROS_UBUNTU:
-		return Define.UBUNTU_BENCHMAKR_URL, Define.UBUNTU_HOST_PATTERN
-	case Define.TYPE_LINUX_DISTROS_DEBIAN:
-		return Define.DEBIAN_BENCHMAKR_URL, Define.DEBIAN_HOST_PATTERN
-	case Define.TYPE_LINUX_DISTROS_CENTOS:
-		return Define.CENTOS_BENCHMAKR_URL, Define.CENTOS_HOST_PATTERN
-	case Define.TYPE_LINUX_DISTROS_ALPINE:
-		return Define.ALPINE_BENCHMAKR_URL, Define.ALPINE_HOST_PATTERN
+	case Define.TypeLinuxDistrosUbuntu:
+		return Define.UbuntuBenchmakrUrl, Define.UbuntuHostPattern
+	case Define.TypeLinuxDistrosDebian:
+		return Define.DebianBenchmakrUrl, Define.DebianHostPattern
+	case Define.TypeLinuxDistrosCentos:
+		return Define.CentosBenchmakrUrl, Define.CentosHostPattern
+	case Define.TypeLinuxDistrosAlpine:
+		return Define.AlpineBenchmakrUrl, Define.AlpineHostPattern
 	}
 	return "", nil
 }

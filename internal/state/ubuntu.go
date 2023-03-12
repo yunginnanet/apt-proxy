@@ -7,32 +7,32 @@ import (
 	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
 )
 
-var UBUNTU_MIRROR *url.URL
+var UbuntuMirror *url.URL
 
 func SetUbuntuMirror(input string) {
 	if input == "" {
-		UBUNTU_MIRROR = nil
+		UbuntuMirror = nil
 		return
 	}
 
 	mirror := input
-	alias := Mirrors.GetMirrorURLByAliases(Define.TYPE_LINUX_DISTROS_UBUNTU, input)
+	alias := Mirrors.GetMirrorURLByAliases(Define.TypeLinuxDistrosUbuntu, input)
 	if alias != "" {
 		mirror = alias
 	}
 
 	url, err := url.Parse(mirror)
 	if err != nil {
-		UBUNTU_MIRROR = nil
+		UbuntuMirror = nil
 		return
 	}
-	UBUNTU_MIRROR = url
+	UbuntuMirror = url
 }
 
 func GetUbuntuMirror() *url.URL {
-	return UBUNTU_MIRROR
+	return UbuntuMirror
 }
 
 func ResetUbuntuMirror() {
-	UBUNTU_MIRROR = nil
+	UbuntuMirror = nil
 }

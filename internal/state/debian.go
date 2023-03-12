@@ -7,32 +7,32 @@ import (
 	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
 )
 
-var DEBIAN_MIRROR *url.URL
+var DebianMirror *url.URL
 
 func SetDebianMirror(input string) {
 	if input == "" {
-		DEBIAN_MIRROR = nil
+		DebianMirror = nil
 		return
 	}
 
 	mirror := input
-	alias := Mirrors.GetMirrorURLByAliases(Define.TYPE_LINUX_DISTROS_DEBIAN, input)
+	alias := Mirrors.GetMirrorURLByAliases(Define.TypeLinuxDistrosDebian, input)
 	if alias != "" {
 		mirror = alias
 	}
 
 	url, err := url.Parse(mirror)
 	if err != nil {
-		DEBIAN_MIRROR = nil
+		DebianMirror = nil
 		return
 	}
-	DEBIAN_MIRROR = url
+	DebianMirror = url
 }
 
 func GetDebianMirror() *url.URL {
-	return DEBIAN_MIRROR
+	return DebianMirror
 }
 
 func ResetDebianMirror() {
-	DEBIAN_MIRROR = nil
+	DebianMirror = nil
 }

@@ -52,8 +52,8 @@ func (ap *AptProxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 			fmt.Println("render internal urls error")
 		}
 	} else {
-		if Define.UBUNTU_HOST_PATTERN.MatchString(r.URL.Path) {
-			rule, match := Rewriter.MatchingRule(r.URL.Path, Define.UBUNTU_DEFAULT_CACHE_RULES)
+		if Define.UbuntuHostPattern.MatchString(r.URL.Path) {
+			rule, match := Rewriter.MatchingRule(r.URL.Path, Define.UbuntuDefaultCacheRules)
 			if match {
 				r.Header.Del("Cache-Control")
 				if rule.Rewrite {
@@ -65,8 +65,8 @@ func (ap *AptProxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		if Define.DEBIAN_HOST_PATTERN.MatchString(r.URL.Path) {
-			rule, match := Rewriter.MatchingRule(r.URL.Path, Define.DEBIAN_DEFAULT_CACHE_RULES)
+		if Define.DebianHostPattern.MatchString(r.URL.Path) {
+			rule, match := Rewriter.MatchingRule(r.URL.Path, Define.DebianDefaultCacheRules)
 			if match {
 				r.Header.Del("Cache-Control")
 				if rule.Rewrite {
@@ -78,8 +78,8 @@ func (ap *AptProxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		if Define.CENTOS_HOST_PATTERN.MatchString(r.URL.Path) {
-			rule, match := Rewriter.MatchingRule(r.URL.Path, Define.CENTOS_DEFAULT_CACHE_RULES)
+		if Define.CentosHostPattern.MatchString(r.URL.Path) {
+			rule, match := Rewriter.MatchingRule(r.URL.Path, Define.CentosDefaultCacheRules)
 			if match {
 				r.Header.Del("Cache-Control")
 				if rule.Rewrite {
@@ -91,8 +91,8 @@ func (ap *AptProxy) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		if Define.ALPINE_HOST_PATTERN.MatchString(r.URL.Path) {
-			rule, match := Rewriter.MatchingRule(r.URL.Path, Define.ALPINE_DEFAULT_CACHE_RULES)
+		if Define.AlpineHostPattern.MatchString(r.URL.Path) {
+			rule, match := Rewriter.MatchingRule(r.URL.Path, Define.AlpineDefaultCacheRules)
 			if match {
 				r.Header.Del("Cache-Control")
 				if rule.Rewrite {

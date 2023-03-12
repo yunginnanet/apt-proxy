@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var errNoHeader = errors.New("Header doesn't exist")
+var errNoHeader = errors.New("header doesn't exist")
 
 func timeHeader(key string, h http.Header) (time.Time, error) {
 	if header := h.Get(key); header != "" {

@@ -25,30 +25,30 @@ type URLRewriter struct {
 }
 
 func GetRewriteRulesByMode(mode int) (rules []Define.Rule) {
-	if mode == Define.TYPE_LINUX_DISTROS_UBUNTU {
-		return Define.UBUNTU_DEFAULT_CACHE_RULES
+	if mode == Define.TypeLinuxDistrosUbuntu {
+		return Define.UbuntuDefaultCacheRules
 	}
-	if mode == Define.TYPE_LINUX_DISTROS_DEBIAN {
-		return Define.DEBIAN_DEFAULT_CACHE_RULES
+	if mode == Define.TypeLinuxDistrosDebian {
+		return Define.DebianDefaultCacheRules
 	}
-	if mode == Define.TYPE_LINUX_DISTROS_CENTOS {
-		return Define.CENTOS_DEFAULT_CACHE_RULES
+	if mode == Define.TypeLinuxDistrosCentos {
+		return Define.CentosDefaultCacheRules
 	}
-	if mode == Define.TYPE_LINUX_DISTROS_ALPINE {
-		return Define.ALPINE_DEFAULT_CACHE_RULES
+	if mode == Define.TypeLinuxDistrosAlpine {
+		return Define.AlpineDefaultCacheRules
 	}
 
-	rules = append(rules, Define.UBUNTU_DEFAULT_CACHE_RULES...)
-	rules = append(rules, Define.DEBIAN_DEFAULT_CACHE_RULES...)
-	rules = append(rules, Define.CENTOS_DEFAULT_CACHE_RULES...)
-	rules = append(rules, Define.ALPINE_DEFAULT_CACHE_RULES...)
+	rules = append(rules, Define.UbuntuDefaultCacheRules...)
+	rules = append(rules, Define.DebianDefaultCacheRules...)
+	rules = append(rules, Define.CentosDefaultCacheRules...)
+	rules = append(rules, Define.AlpineDefaultCacheRules...)
 	return rules
 }
 
 func getRewriterForAlpine() *URLRewriter {
 	u := &URLRewriter{}
 	mirror := State.GetAlpineMirror()
-	benchmarkUrl, pattern := Mirrors.GetPredefinedConfiguration(Define.TYPE_LINUX_DISTROS_ALPINE)
+	benchmarkUrl, pattern := Mirrors.GetPredefinedConfiguration(Define.TypeLinuxDistrosAlpine)
 	u.pattern = pattern
 
 	if mirror != nil {
@@ -57,7 +57,7 @@ func getRewriterForAlpine() *URLRewriter {
 		return u
 	}
 
-	mirrors := Mirrors.GetGeoMirrorUrlsByMode(Define.TYPE_LINUX_DISTROS_ALPINE)
+	mirrors := Mirrors.GetGeoMirrorUrlsByMode(Define.TypeLinuxDistrosAlpine)
 	fastest, err := Benchmark.GetTheFastestMirror(mirrors, benchmarkUrl)
 	if err != nil {
 		log.Println("Error finding fastest Alpine mirror", err)
@@ -74,7 +74,7 @@ func getRewriterForAlpine() *URLRewriter {
 func getRewriterForCentOS() *URLRewriter {
 	u := &URLRewriter{}
 	mirror := State.GetCentOSMirror()
-	benchmarkUrl, pattern := Mirrors.GetPredefinedConfiguration(Define.TYPE_LINUX_DISTROS_CENTOS)
+	benchmarkUrl, pattern := Mirrors.GetPredefinedConfiguration(Define.TypeLinuxDistrosCentos)
 	u.pattern = pattern
 
 	if mirror != nil {
@@ -83,7 +83,7 @@ func getRewriterForCentOS() *URLRewriter {
 		return u
 	}
 
-	mirrors := Mirrors.GetGeoMirrorUrlsByMode(Define.TYPE_LINUX_DISTROS_CENTOS)
+	mirrors := Mirrors.GetGeoMirrorUrlsByMode(Define.TypeLinuxDistrosCentos)
 	fastest, err := Benchmark.GetTheFastestMirror(mirrors, benchmarkUrl)
 	if err != nil {
 		log.Println("Error finding fastest CentOS mirror", err)
@@ -100,7 +100,7 @@ func getRewriterForCentOS() *URLRewriter {
 func getRewriterForDebian() *URLRewriter {
 	u := &URLRewriter{}
 	mirror := State.GetDebianMirror()
-	benchmarkUrl, pattern := Mirrors.GetPredefinedConfiguration(Define.TYPE_LINUX_DISTROS_DEBIAN)
+	benchmarkUrl, pattern := Mirrors.GetPredefinedConfiguration(Define.TypeLinuxDistrosDebian)
 	u.pattern = pattern
 
 	if mirror != nil {
@@ -109,7 +109,7 @@ func getRewriterForDebian() *URLRewriter {
 		return u
 	}
 
-	mirrors := Mirrors.GetGeoMirrorUrlsByMode(Define.TYPE_LINUX_DISTROS_DEBIAN)
+	mirrors := Mirrors.GetGeoMirrorUrlsByMode(Define.TypeLinuxDistrosDebian)
 	fastest, err := Benchmark.GetTheFastestMirror(mirrors, benchmarkUrl)
 	if err != nil {
 		log.Println("Error finding fastest Debian mirror", err)
@@ -126,16 +126,16 @@ func getRewriterForDebian() *URLRewriter {
 func getRewriterForUbuntu() *URLRewriter {
 	u := &URLRewriter{}
 	mirror := State.GetUbuntuMirror()
-	benchmarkUrl, pattern := Mirrors.GetPredefinedConfiguration(Define.TYPE_LINUX_DISTROS_UBUNTU)
+	benchmarkUrl, pattern := Mirrors.GetPredefinedConfiguration(Define.TypeLinuxDistrosUbuntu)
 	u.pattern = pattern
 
 	if mirror != nil {
-		log.Printf("using specify Ubuntu mirror %s", mirror)
+		log.Printf("using Ubuntu mirror %s", mirror)
 		u.mirror = mirror
 		return u
 	}
 
-	mirrors := Mirrors.GetGeoMirrorUrlsByMode(Define.TYPE_LINUX_DISTROS_UBUNTU)
+	mirrors := Mirrors.GetGeoMirrorUrlsByMode(Define.TypeLinuxDistrosUbuntu)
 	fastest, err := Benchmark.GetTheFastestMirror(mirrors, benchmarkUrl)
 	if err != nil {
 		log.Println("Error finding fastest Ubuntu mirror", err)
@@ -152,22 +152,22 @@ func getRewriterForUbuntu() *URLRewriter {
 func CreateNewRewriters(mode int) *URLRewriters {
 	rewriters := &URLRewriters{}
 
-	if mode == Define.TYPE_LINUX_DISTROS_UBUNTU {
+	if mode == Define.TypeLinuxDistrosUbuntu {
 		rewriters.ubuntu = getRewriterForUbuntu()
 		return rewriters
 	}
 
-	if mode == Define.TYPE_LINUX_DISTROS_DEBIAN {
+	if mode == Define.TypeLinuxDistrosDebian {
 		rewriters.debian = getRewriterForDebian()
 		return rewriters
 	}
 
-	if mode == Define.TYPE_LINUX_DISTROS_CENTOS {
+	if mode == Define.TypeLinuxDistrosCentos {
 		rewriters.centos = getRewriterForCentOS()
 		return rewriters
 	}
 
-	if mode == Define.TYPE_LINUX_DISTROS_ALPINE {
+	if mode == Define.TypeLinuxDistrosAlpine {
 		rewriters.alpine = getRewriterForAlpine()
 		return rewriters
 	}
@@ -184,13 +184,13 @@ func RewriteRequestByMode(r *http.Request, rewriters *URLRewriters, mode int) {
 
 	var rewriter *URLRewriter
 	switch mode {
-	case Define.TYPE_LINUX_DISTROS_UBUNTU:
+	case Define.TypeLinuxDistrosUbuntu:
 		rewriter = rewriters.ubuntu
-	case Define.TYPE_LINUX_DISTROS_DEBIAN:
+	case Define.TypeLinuxDistrosDebian:
 		rewriter = rewriters.debian
-	case Define.TYPE_LINUX_DISTROS_CENTOS:
+	case Define.TypeLinuxDistrosCentos:
 		rewriter = rewriters.centos
-	case Define.TYPE_LINUX_DISTROS_ALPINE:
+	case Define.TypeLinuxDistrosAlpine:
 		rewriter = rewriters.alpine
 	}
 

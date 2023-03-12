@@ -48,17 +48,17 @@ func TestGenerateBuildInMirorItem(t *testing.T) {
 }
 
 func TestGenerateBuildInList(t *testing.T) {
-	mirrors := Define.GenerateBuildInList(Define.UBUNTU_OFFICIAL_MIRRORS, Define.UBUNTU_CUSTOM_MIRRORS)
+	mirrors := Define.GenerateBuildInList(Define.UbuntuOfficialMirrors, Define.UbuntuCustomMirrors)
 
 	count := 0
-	for _, url := range Define.UBUNTU_OFFICIAL_MIRRORS {
+	for _, url := range Define.UbuntuOfficialMirrors {
 		if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
 			count += 1
 		} else {
 			count += 2
 		}
 	}
-	for _, url := range Define.UBUNTU_CUSTOM_MIRRORS {
+	for _, url := range Define.UbuntuCustomMirrors {
 		if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
 			count += 1
 		} else {

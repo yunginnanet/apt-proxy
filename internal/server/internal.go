@@ -10,14 +10,14 @@ import (
 )
 
 const (
-	INTERNAL_PAGE_HOME string = "/"
-	INTERNAL_PAGE_PING string = "/_/ping/"
+	InternalPageHome string = "/"
+	InternalPagePing string = "/_/ping/"
 )
 
 const (
-	TYPE_NOT_FOUND int = 0
-	TYPE_HOME      int = 1
-	TYPE_PING      int = 2
+	TypeNotFound int = 0
+	TypeHome     int = 1
+	TypePing     int = 2
 )
 
 func IsInternalUrls(url string) bool {
@@ -26,25 +26,25 @@ func IsInternalUrls(url string) bool {
 }
 
 func GetInternalResType(url string) int {
-	if url == INTERNAL_PAGE_HOME {
-		return TYPE_HOME
+	if url == InternalPageHome {
+		return TypeHome
 	}
 
-	if url == INTERNAL_PAGE_PING {
-		return TYPE_PING
+	if url == InternalPagePing {
+		return TypePing
 	}
 
-	return TYPE_NOT_FOUND
+	return TypeNotFound
 }
 
 // TODO: use configuration
-const CACHE_META_DIR = "./.aptcache/header/v1"
-const LABEL_NO_VALID_VALUE = "N/A"
+const CacheMetaDir = "./.aptcache/header/v1"
+const LabelNoValidValue = "N/A"
 
 func RenderInternalUrls(url string) (string, int) {
 	switch GetInternalResType(url) {
-	case TYPE_HOME:
-		cacheSizeLabel := LABEL_NO_VALID_VALUE
+	case TypeHome:
+		cacheSizeLabel := LabelNoValidValue
 		// TODO: use configuration
 		cacheSize, err := system.DirSize("./.aptcache")
 		if err == nil {
@@ -53,9 +53,9 @@ func RenderInternalUrls(url string) (string, int) {
 			// return "Get Cache Size Failed", http.StatusBadGateway
 		}
 
-		filesNumberLabel := LABEL_NO_VALID_VALUE
-		if _, err := os.Stat(CACHE_META_DIR); !os.IsNotExist(err) {
-			files, err := os.ReadDir(CACHE_META_DIR)
+		filesNumberLabel := LabelNoValidValue
+		if _, err := os.Stat(CacheMetaDir); !os.IsNotExist(err) {
+			files, err := os.ReadDir(CacheMetaDir)
 			if err == nil {
 				filesNumberLabel = strconv.Itoa(len(files))
 				// } else {
@@ -65,7 +65,7 @@ func RenderInternalUrls(url string) (string, int) {
 			// return "Get Cache Meta Failed", http.StatusBadGateway
 		}
 
-		diskAvailableLabel := LABEL_NO_VALID_VALUE
+		diskAvailableLabel := LabelNoValidValue
 		available, err := system.DiskAvailable()
 		if err == nil {
 			diskAvailableLabel = system.ByteCountDecimal(available)
@@ -73,12 +73,12 @@ func RenderInternalUrls(url string) (string, int) {
 			// return "Get Disk Available Failed", http.StatusBadGateway
 		}
 
-		memoryUsageLabel := LABEL_NO_VALID_VALUE
+		memoryUsageLabel := LabelNoValidValue
 		memoryUsage, goroutine := system.GetMemoryUsageAndGoroutine()
 		memoryUsageLabel = system.ByteCountDecimal(memoryUsage)
 
 		return GetBaseTemplate(cacheSizeLabel, filesNumberLabel, diskAvailableLabel, memoryUsageLabel, goroutine), 200
-	case TYPE_PING:
+	case TypePing:
 		return "pong", http.StatusOK
 	}
 	return "Not Found", http.StatusNotFound

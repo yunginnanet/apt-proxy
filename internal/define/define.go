@@ -7,19 +7,19 @@ import (
 )
 
 const (
-	LINUX_ALL_DISTROS    string = "all"
-	LINUX_DISTROS_UBUNTU string = "ubuntu"
-	LINUX_DISTROS_DEBIAN string = "debian"
-	LINUX_DISTROS_CENTOS string = "centos"
-	LINUX_DISTROS_ALPINE string = "alpine"
+	LinuxAllDistros    string = "all"
+	LinuxDistrosUbuntu string = "ubuntu"
+	LinuxDistrosDebian string = "debian"
+	LinuxDistrosCentos string = "centos"
+	LinuxDistrosAlpine string = "alpine"
 )
 
 const (
-	TYPE_LINUX_ALL_DISTROS    int = 0
-	TYPE_LINUX_DISTROS_UBUNTU int = 1
-	TYPE_LINUX_DISTROS_DEBIAN int = 2
-	TYPE_LINUX_DISTROS_CENTOS int = 3
-	TYPE_LINUX_DISTROS_ALPINE int = 4
+	TypeLinuxAllDistros    int = 0
+	TypeLinuxDistrosUbuntu int = 1
+	TypeLinuxDistrosDebian int = 2
+	TypeLinuxDistrosCentos int = 3
+	TypeLinuxDistrosAlpine int = 4
 )
 
 type Rule struct {
@@ -45,8 +45,9 @@ type UrlWithAlias struct {
 
 func GenerateAliasFromURL(url string) string {
 	pureHost := regexp.MustCompile(`^https?://|\/.*`).ReplaceAllString(url, "")
-	tldRemoved := regexp.MustCompile(`\.edu\.cn$|.cn$|\.com$|\.net$|\.net.cn$|\.org$|\.org\.cn$`).ReplaceAllString(pureHost, "")
+	tldRemoved := regexp.MustCompile(`\.edu\.cn$|\.edu$|\.mit\.edu$|\.cn$|\.com$|\.net$|\.net.cn$|\.org$|\.org\.cn$`).ReplaceAllString(pureHost, "")
 	group := strings.Split(tldRemoved, ".")
+	println("cn:" + group[len(group)-1])
 	return "cn:" + group[len(group)-1]
 }
 

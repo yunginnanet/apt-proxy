@@ -8,7 +8,7 @@ import (
 )
 
 func TestGetAndSetUbuntuMirror(t *testing.T) {
-	State.SetUbuntuMirror("https://mirrors.tuna.tsinghua.edu.cn/ubuntu/")
+	State.SetUbuntuMirror("mirror.fcix.net/ubuntu/")
 	mirror := State.GetUbuntuMirror()
 	if !strings.Contains(mirror.Path, "ubuntu") {
 		t.Fatal("Test Set/Get Ubuntu Mirror Value Faild")
@@ -26,7 +26,7 @@ func TestGetAndSetUbuntuMirror(t *testing.T) {
 		t.Fatal("Test Clear Ubuntu Mirror Faild")
 	}
 
-	State.SetUbuntuMirror("cn:tsinghua")
+	State.SetUbuntuMirror("cn:fcix")
 	mirror = State.GetUbuntuMirror()
 	if !strings.Contains(strings.ToLower(mirror.Path), "ubuntu") {
 		t.Fatal("Test Set/Get Ubuntu Mirror Value Faild")

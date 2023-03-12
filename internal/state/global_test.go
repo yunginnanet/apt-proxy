@@ -7,8 +7,8 @@ import (
 )
 
 func TestSetProxyMode(t *testing.T) {
-	SetProxyMode(Define.TYPE_LINUX_ALL_DISTROS)
-	if GetProxyMode() != Define.TYPE_LINUX_ALL_DISTROS {
+	SetProxyMode(Define.TypeLinuxAllDistros)
+	if GetProxyMode() != Define.TypeLinuxAllDistros {
 		t.Fatal("Test Set/Get ProxyMode Faild")
 	}
 }

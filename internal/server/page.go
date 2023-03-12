@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-const SERVER_DEFAULT_TEMPLATE = `<!DOCTYPE html>
+const DefaultTemplate = `<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -211,7 +211,7 @@ const SERVER_DEFAULT_TEMPLATE = `<!DOCTYPE html>
 func GetBaseTemplate(cacheSize string, filesNumber string, availableSize string,
 	memoryUsage string, goroutines string) string {
 
-	tpl := strings.Replace(SERVER_DEFAULT_TEMPLATE, "$APT_PROXY_CACHE_SIZE", cacheSize, 1)
+	tpl := strings.Replace(DefaultTemplate, "$APT_PROXY_CACHE_SIZE", cacheSize, 1)
 	tpl = strings.Replace(tpl, "$APT_PROXY_FILE_NUMBER", filesNumber, 1)
 	tpl = strings.Replace(tpl, "$APT_PROXY_AVAILABLE_SIZE", availableSize, 1)
 	tpl = strings.Replace(tpl, "$APT_PROXY_MEMORY_USAGE", memoryUsage, 1)

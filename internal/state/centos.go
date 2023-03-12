@@ -7,32 +7,32 @@ import (
 	Mirrors "github.com/soulteary/apt-proxy/internal/mirrors"
 )
 
-var CENTOS_MIRROR *url.URL
+var CentosMirror *url.URL
 
 func SetCentOSMirror(input string) {
 	if input == "" {
-		CENTOS_MIRROR = nil
+		CentosMirror = nil
 		return
 	}
 
 	mirror := input
-	alias := Mirrors.GetMirrorURLByAliases(Define.TYPE_LINUX_DISTROS_CENTOS, input)
+	alias := Mirrors.GetMirrorURLByAliases(Define.TypeLinuxDistrosCentos, input)
 	if alias != "" {
 		mirror = alias
 	}
 
 	url, err := url.Parse(mirror)
 	if err != nil {
-		CENTOS_MIRROR = nil
+		CentosMirror = nil
 		return
 	}
-	CENTOS_MIRROR = url
+	CentosMirror = url
 }
 
 func GetCentOSMirror() *url.URL {
-	return CENTOS_MIRROR
+	return CentosMirror
 }
 
 func ResetCentOSMirror() {
-	CENTOS_MIRROR = nil
+	CentosMirror = nil
 }

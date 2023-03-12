@@ -12,15 +12,15 @@ import (
 
 func TestBenchmark(t *testing.T) {
 	const resourcePath = ""
-	_, err := Benchmark.Benchmark(Define.UBUNTU_GEO_MIRROR_API, resourcePath, Benchmark.BENCHMARK_MAX_TRIES)
+	_, err := Benchmark.Benchmark(Define.UbuntuGeoMirrorApi, resourcePath, Benchmark.BenchmarkMaxTries)
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestGetTheFastestMirror(t *testing.T) {
-	mirrors := Mirrors.GetGeoMirrorUrlsByMode(Define.TYPE_LINUX_DISTROS_UBUNTU)
-	_, err := Benchmark.GetTheFastestMirror(mirrors, Define.UBUNTU_BENCHMAKR_URL)
+	mirrors := Mirrors.GetGeoMirrorUrlsByMode(Define.TypeLinuxDistrosUbuntu)
+	_, err := Benchmark.GetTheFastestMirror(mirrors, Define.UbuntuBenchmakrUrl)
 	if err != nil {
 		t.Fatal(err)
 	}

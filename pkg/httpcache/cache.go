@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/soulteary/apt-proxy/pkg/vfs"
+	"github.com/spf13/afero"
 )
 
 const (
@@ -25,7 +25,7 @@ const (
 	formatPrefix = "v1/"
 )
 
-// Returned when a resource doesn't exist
+// ErrNotFoundInCache is returned when a resource doesn't exist
 var ErrNotFoundInCache = errors.New("not found in cache")
 
 type Cache interface {
@@ -38,8 +38,50 @@ type Cache interface {
 
 // cache provides a storage mechanism for cached Resources
 type cache struct {
-	fs    vfs.VFS
-	stale map[string]time.Time
+	fs     afero.Fs
+	chroot string
+	stale  map[string]time.Time
+}
+
+func (c *cache) Open(path string) (afero.File, error) {
+	return c.fs.Open(path)
+}
+
+func (c *cache) OpenFile(path string, flag int, perm os.FileMode) (afero.File, error) {
+	return c.fs.OpenFile(path, flag, perm)
+}
+
+func (c *cache) Lstat(path string) (os.FileInfo, error) {
+	return c.fs.Stat(path) // FIXME
+}
+
+func (c *cache) Stat(path string) (os.FileInfo, error) {
+	return c.fs.Stat(path)
+}
+
+func (c *cache) ReadDir(path string) ([]os.FileInfo, error) {
+	dir, err := c.fs.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		err = dir.Close()
+	}()
+	var res []os.FileInfo
+	res, err = dir.Readdir(-1)
+	return res, err
+}
+
+func (c *cache) Mkdir(path string, perm os.FileMode) error {
+	return c.fs.Mkdir(path, perm)
+}
+
+func (c *cache) Remove(path string) error {
+	return c.fs.Remove(path)
+}
+
+func (c *cache) String() string {
+	return fmt.Sprintf("Cache %s", "afero")
 }
 
 var _ Cache = (*cache)(nil)
@@ -49,14 +91,14 @@ type Header struct {
 	StatusCode int
 }
 
-// NewCache returns a cache backend off the provided VFS
-func NewVFSCache(fs vfs.VFS) Cache {
+// NewVFSCache returns a cache backend off the provided VFS
+func NewVFSCache(fs afero.Fs) Cache {
 	return &cache{fs: fs, stale: map[string]time.Time{}}
 }
 
 // NewMemoryCache returns an ephemeral cache in memory
 func NewMemoryCache() Cache {
-	return NewVFSCache(vfs.Memory())
+	return NewVFSCache(afero.NewMemMapFs())
 }
 
 // NewDiskCache returns a disk-backed cache
@@ -64,19 +106,12 @@ func NewDiskCache(dir string) (Cache, error) {
 	if err := os.MkdirAll(dir, 0750); err != nil {
 		return nil, err
 	}
-	fs, err := vfs.FS(dir)
-	if err != nil {
-		return nil, err
-	}
-	chfs, err := vfs.Chroot("/", fs)
-	if err != nil {
-		return nil, err
-	}
-	return NewVFSCache(chfs), nil
+	fs := &cache{fs: afero.NewBasePathFs(afero.NewOsFs(), dir), chroot: dir, stale: map[string]time.Time{}}
+	return NewVFSCache(fs.fs), nil
 }
 
 func (c *cache) vfsWrite(path string, r io.Reader) error {
-	if err := vfs.MkdirAll(c.fs, pathutil.Dir(path), 0700); err != nil {
+	if err := c.fs.MkdirAll(pathutil.Dir(path), 0700); err != nil {
 		return err
 	}
 	f, err := c.fs.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0600)
@@ -95,7 +130,7 @@ func (c *cache) Header(key string) (Header, error) {
 	path := headerPrefix + formatPrefix + hashKey(key)
 	f, err := c.fs.Open(path)
 	if err != nil {
-		if vfs.IsNotExist(err) {
+		if os.IsNotExist(err) {
 			return Header{}, ErrNotFoundInCache
 		}
 		return Header{}, err
@@ -154,14 +189,14 @@ func (c *cache) storeHeader(code int, h http.Header, key string) error {
 func (c *cache) Retrieve(key string) (*Resource, error) {
 	f, err := c.fs.Open(bodyPrefix + formatPrefix + hashKey(key))
 	if err != nil {
-		if vfs.IsNotExist(err) {
+		if os.IsNotExist(err) {
 			return nil, ErrNotFoundInCache
 		}
 		return nil, err
 	}
 	h, err := c.Header(key)
 	if err != nil {
-		if vfs.IsNotExist(err) {
+		if os.IsNotExist(err) {
 			return nil, ErrNotFoundInCache
 		}
 		return nil, err

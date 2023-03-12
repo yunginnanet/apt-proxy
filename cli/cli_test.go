@@ -8,23 +8,23 @@ import (
 )
 
 func TestGetProxyMode(t *testing.T) {
-	if getProxyMode("not-support-os") != Define.TYPE_LINUX_ALL_DISTROS {
+	if getProxyMode("not-support-os") != Define.TypeLinuxAllDistros {
 		t.Fatal("Incorrect return default value")
 	}
 
-	if getProxyMode(Define.LINUX_DISTROS_UBUNTU) != Define.TYPE_LINUX_DISTROS_UBUNTU {
+	if getProxyMode(Define.LinuxDistrosUbuntu) != Define.TypeLinuxDistrosUbuntu {
 		t.Fatal("Incorrect return value")
 	}
 
-	if getProxyMode(Define.LINUX_DISTROS_DEBIAN) != Define.TYPE_LINUX_DISTROS_DEBIAN {
+	if getProxyMode(Define.LinuxDistrosDebian) != Define.TypeLinuxDistrosDebian {
 		t.Fatal("Incorrect return value")
 	}
 
-	if getProxyMode(Define.LINUX_DISTROS_CENTOS) != Define.TYPE_LINUX_DISTROS_CENTOS {
+	if getProxyMode(Define.LinuxDistrosCentos) != Define.TypeLinuxDistrosCentos {
 		t.Fatal("Incorrect return value")
 	}
 
-	if getProxyMode(Define.LINUX_DISTROS_ALPINE) != Define.TYPE_LINUX_DISTROS_ALPINE {
+	if getProxyMode(Define.LinuxDistrosAlpine) != Define.TypeLinuxDistrosAlpine {
 		t.Fatal("Incorrect return value")
 	}
 }
@@ -33,27 +33,27 @@ func TestParseFlagsAndDaemonInit(t *testing.T) {
 	os.Args = append(os.Args, "--mode=not-support-os")
 	flags := ParseFlags()
 
-	if flags.Debug != DEFAULT_DEBUG {
+	if flags.Debug != DefaultDebug {
 		t.Fatal("Default option `Debug` value mismatch")
 	}
 
-	if flags.Listen != (DEFAULT_HOST + ":" + DEFAULT_PORT) {
+	if flags.Listen != (DefaultHost + ":" + DefaultPort) {
 		t.Fatal("Default option `Listen` value mismatch")
 	}
 
-	if flags.Mode != getProxyMode(DEFAULT_MODE_NAME) {
+	if flags.Mode != getProxyMode(DefaultModeName) {
 		t.Fatal("Default option `Mode` value mismatch")
 	}
 
-	if flags.Ubuntu != DEFAULT_UBUNTU_MIRROR {
+	if flags.Ubuntu != DefaultUbuntuMirror {
 		t.Fatal("Default option `Ubuntu` value mismatch")
 	}
 
-	if flags.Debian != DEFAULT_DEBIAN_MIRROR {
+	if flags.Debian != DefaultDebianMirror {
 		t.Fatal("Default option `Debian` value mismatch")
 	}
 
-	if flags.CacheDir != DEFAULT_CACHE_DIR {
+	if flags.CacheDir != DefaultCacheDir {
 		t.Fatal("Default option `CacheDir` value mismatch")
 	}
 
